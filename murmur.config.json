@@ -1,0 +1,12 @@
+{
+  "targets": ["copilot", "goose"],
+  "project": {
+    "name": "murmur",
+    "description": "Murmuration's own dogfooded agent pack."
+  },
+  "publish": {
+    "domainTerms": [],
+    "placeholders": {},
+    "allowlist": []
+  }
+}

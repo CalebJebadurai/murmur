@@ -23,3 +23,8 @@ build/
 # Test / coverage
 coverage/
 .nyc_output/
+
+# Murmur artifacts
+murmur-clean/
+.smoke-out/
+.murmur-stage-*/
