@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+bun.lockb
+.pnp.*
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Editor / OS
+.DS_Store
+.idea/
+*.log
+
+# Test / coverage
+coverage/
+.nyc_output/

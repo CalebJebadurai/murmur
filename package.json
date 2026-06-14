@@ -1,0 +1,40 @@
+{
+  "name": "murmur",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Tool-agnostic, packageable multi-agent + subagent framework. Generic agents, on-demand subagents, knowledge from skills/instructions, codebase auto-init.",
+  "type": "module",
+  "license": "MIT",
+  "author": "cnickson",
+  "keywords": [
+    "ai-agents",
+    "subagents",
+    "multi-agent",
+    "skills",
+    "instructions",
+    "copilot",
+    "claude-code",
+    "goose",
+    "cursor",
+    "acp",
+    "scaffolding",
+    "cli"
+  ],
+  "bin": {
+    "murmur": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "echo \"TODO: bun build\" && exit 0",
+    "dev": "echo \"TODO: bun dev\" && exit 0",
+    "test": "echo \"TODO: bun test\" && exit 0"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  },
+  "files": [
+    "dist",
+    "templates",
+    "README.md",
+    "LICENSE"
+  ]
+}
