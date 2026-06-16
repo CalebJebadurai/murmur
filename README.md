@@ -137,4 +137,4 @@ automated via release-please (merging to `main` opens a version-bump + changelog
 
 ## License
 
-MIT © cnickson
+MIT © calebjebadurai
