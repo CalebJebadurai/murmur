@@ -1,5 +1,5 @@
 {
-  "name": "murmur",
+  "name": "murmr",
   "version": "0.1.0",
   "description": "Tool-agnostic, packageable multi-agent + subagent framework. Generic agents, on-demand subagents, knowledge from skills/instructions, codebase auto-init.",
   "type": "module",
@@ -20,7 +20,8 @@
     "cli"
   ],
   "bin": {
-    "murmur": "./dist/cli.js"
+    "murmr": "./dist/cli.js",
+    "mrmr": "./dist/cli.js"
   },
   "repository": {
     "type": "git",

@@ -17,14 +17,14 @@ const TEMPLATE: Record<AddKind, string> = {
   instruction: "scaffold/instruction.md",
 };
 
-/** `murmur add <kind> <name>` — scaffold a new IR definition from a template. */
+/** `murmr add <kind> <name>` — scaffold a new IR definition from a template. */
 export async function addCommand(
   projectRoot: string,
   kind: AddKind,
   name: string,
 ): Promise<number> {
   if (!name || !/^[a-z0-9][a-z0-9-]*$/.test(name)) {
-    console.error("Provide a kebab-case name, e.g. `murmur add agent my-agent`.");
+    console.error("Provide a kebab-case name, e.g. `murmr add agent my-agent`.");
     return 1;
   }
   const murmurDir = join(projectRoot, "murmur");
@@ -37,6 +37,6 @@ export async function addCommand(
   const contents = tpl.replaceAll("__NAME__", name);
   await Bun.write(dest, contents);
   console.log(`add: created ${kind} at murmur/${DEST[kind](name)}`);
-  console.log("Fill in the __PLACEHOLDER__ fields, then run `murmur doctor`.");
+  console.log("Fill in the __PLACEHOLDER__ fields, then run `murmr doctor`.");
   return 0;
 }

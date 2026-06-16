@@ -79,7 +79,7 @@ export function scoreRubric(
   return { rubric: rubric.name, dimensions: dims, earned, max, severityCounts, pass };
 }
 
-/** `murmur score <document> --rubric <name>` — deterministic arithmetic. */
+/** `murmr score <document> --rubric <name>` — deterministic arithmetic. */
 export async function scoreCommand(projectRoot: string, opts: ScoreOptions): Promise<number> {
   const murmurDir = join(projectRoot, "murmur");
   if (!existsSync(join(murmurDir, "rubrics"))) {
@@ -88,7 +88,7 @@ export async function scoreCommand(projectRoot: string, opts: ScoreOptions): Pro
   }
   const loaded = await loadIR(murmurDir);
   if (!loaded.ok) {
-    console.error("IR has validation errors; run `murmur doctor`.");
+    console.error("IR has validation errors; run `murmr doctor`.");
     return 1;
   }
   const rubric = loaded.value.rubrics.find((r) => r.name === opts.rubric);

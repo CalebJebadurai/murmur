@@ -42,7 +42,7 @@
 | Knowledge externalized to skills/instructions | ⚠️ | ✅ | ⚠️ | ✅ (CI-enforced gate) |
 | Codebase auto-init (local) | ❌ | ❌ | ❌ | ✅ (deterministic structural pass) |
 | Compile-once / emit-many | ❌ | ⚠️ (mirrors skills) | ❌ | ✅ (adapter interface) |
-| Installable CLI | ✅ | ✅ | ❌ | ✅ (`bunx murmur`) |
+| Installable CLI | ✅ | ✅ | ❌ | ✅ (`bunx murmr`) |
 | Publish-time context stripping | ❌ | ❌ | ❌ | ✅ (defense-in-depth) |
 
 ## Differentiator — honest two-tier framing

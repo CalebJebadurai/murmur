@@ -9,7 +9,7 @@ Procedural knowledge for the `murmur-init` agent. Contains no project facts.
 
 ## What the structural pass already produced
 
-`murmur init` (deterministic, no LLM) parsed package.json, tsconfig.json, the
+`murmr init` (deterministic, no LLM) parsed package.json, tsconfig.json, the
 directory tree, lockfiles, test config, and CI files, emitting:
 - `project-structure` — directory layout and module map
 - `build-system` — package manager, scripts, bundler

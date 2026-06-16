@@ -19,13 +19,13 @@ compiling — and optionally running — governed multi-agent pipelines.
   emits a master architect-style agent (union roster + advisory prose tables);
   goose emits a recipe with `sub_recipes` + advisory orchestration metadata
   (declared degradation — goose cannot enforce loops/parallelism natively).
-- **`murmur run <pipeline>`** — a deterministic local driver that walks a pipeline,
+- **`murmr run <pipeline>`** — a deterministic local driver that walks a pipeline,
   counts loop iterations against caps, resolves branch + tier, and emits a
   `RUN-LOG.md` (agri format). It embeds no LLM: real agent turns are delegated to a
   host CLI via a gated, argv-array `Bun.spawn` (`--allow-run`), with untrusted
   output handling (size limits, no eval, soft-failure) and a compile-and-instruct
   degradation (the permanent path for Copilot, which has no headless CLI).
-- **Rubric IR (6th kind) + `murmur score`** — typed scorecards with conditional
+- **Rubric IR (6th kind) + `murmr score`** — typed scorecards with conditional
   dimensions and weighted multi-rubric aggregation; `score` computes weighted
   totals deterministically from host-supplied `SCORE:` lines (no LLM).
 - **Output-section contracts** — optional ordered `sections` extension to
@@ -56,7 +56,7 @@ compile-once / emit-many architecture.
 - **Two structurally-dissimilar adapters:** Copilot (persona-Markdown
   `.github/agents/*.agent.md` + instructions + skills) and goose (parameterized
   recipe YAML + `.goosehints` + AGENTS.md/CLAUDE.md parity).
-- **CLI** (`murmur`) with `init`, `add`, `compile`, `doctor`, `list`, `publish`.
+- **CLI** (`murmr`) with `init`, `add`, `compile`, `doctor`, `list`, `publish`.
 - **Deterministic structural `init`** pass (no LLM, no network) plus an
   agent-invoked semantic pass (`murmur-init` agent/skill).
 - **Master-agent dynamic spawning** via the externalized `subagent-authoring`

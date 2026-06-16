@@ -5,7 +5,7 @@ description: How this project is built, tested, and run — package manager, scr
 
 # Build System
 
-> Structural placeholder for the Murmuration base library. `murmur init` regenerates
+> Structural placeholder for the Murmuration base library. `murmr init` regenerates
 > it from package.json, lockfiles, and CI configuration.
 
 - Package manager and why (bun / npm / pnpm).

@@ -1,6 +1,6 @@
 # Contributing to Murmuration
 
-Thanks for your interest in `murmur`! This document explains how to develop, test,
+Thanks for your interest in `murmr`! This document explains how to develop, test,
 and contribute changes, and how releases are versioned and published.
 
 ## Prerequisites

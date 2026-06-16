@@ -1,6 +1,6 @@
 # Goose-Drivability Spike (v0.2.0)
 
-Gate for v0.2d. Decides whether `murmur run` can drive a host agent CLI per
+Gate for v0.2d. Decides whether `murmr run` can drive a host agent CLI per
 agent-turn (murmur orchestrates, enforces caps) or only invoke a whole recipe
 once (host orchestrates, murmur enforces nothing).
 
@@ -8,7 +8,7 @@ once (host orchestrates, murmur enforces nothing).
 
 Within a single session, with an installed + authenticated `goose` (or `claude`) CLI:
 
-1. Compile the dual-branch `architect` pipeline: `murmur compile --target goose`.
+1. Compile the dual-branch `architect` pipeline: `murmr compile --target goose`.
 2. Feed the emitted `recipes/architect.yaml` to `goose run` and observe whether a
    single invocation yields capturable, parseable output (exit code, stdout, files).
 3. Attempt the per-turn model: `Bun.spawn` the host CLI once per phase agent and
@@ -31,7 +31,7 @@ environment, so the spike has not been executed.
 
 ## Consequence (gating rule)
 
-- Until a **positive** per-turn drivability result is recorded above, `murmur run`
+- Until a **positive** per-turn drivability result is recorded above, `murmr run`
   ships in **deterministic-skeleton + compile-and-instruct** form only: it walks the
   pipeline offline, counts loops, enforces parallelism bookkeeping, and emits a
   RUN-LOG, but the `--allow-run` host-CLI delegation (v0.2d) is treated as

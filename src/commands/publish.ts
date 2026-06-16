@@ -13,7 +13,7 @@ export type PublishOptions = {
 };
 
 /**
- * `murmur publish` — defense-in-depth context stripping.
+ * `murmr publish` — defense-in-depth context stripping.
  *
  * Reads murmur/ and writes a scrubbed copy to a SEPARATE directory (never mutates
  * the source). `--dry-run` writes nothing and shows the scrub summary. `--strict`
@@ -25,7 +25,7 @@ export async function publishCommand(
 ): Promise<number> {
   const murmurDir = join(projectRoot, "murmur");
   if (!existsSync(join(murmurDir, "agents"))) {
-    console.error('No murmur/ directory found. Run "murmur init" first.');
+    console.error('No murmur/ directory found. Run "murmr init" first.');
     return 1;
   }
   const outDir = join(projectRoot, opts.out ?? "murmur-clean");

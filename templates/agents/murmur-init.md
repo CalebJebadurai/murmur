@@ -10,18 +10,18 @@ user-invocable: true
 # Murmur Init — Codebase Analyzer (semantic pass)
 
 You run **inside the user's host agent** (Copilot, Claude, or goose). You are the
-caller; the `murmur` CLI is the callee. The dependency arrow never reverses.
+caller; the `murmr` CLI is the callee. The dependency arrow never reverses.
 
 ## Procedure
 
-1. Run the deterministic structural pass by invoking `murmur init` in the terminal.
+1. Run the deterministic structural pass by invoking `murmr init` in the terminal.
    That produces the structural skills (project-structure, build-system,
    test-conventions) and scoped instructions with no LLM.
 2. Read the generated structural skills plus representative source files.
 3. Author **semantic** skills the structural pass cannot infer: architecture
    rationale, a domain glossary, and non-obvious conventions. Write them under
    `murmur/skills/`.
-4. Run `murmur doctor` and fix any reported issues.
+4. Run `murmr doctor` and fix any reported issues.
 
 ## Constraints
 

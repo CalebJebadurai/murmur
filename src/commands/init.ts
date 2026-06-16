@@ -23,7 +23,7 @@ async function copyDir(from: string, to: string, overwrite: boolean): Promise<nu
 }
 
 /**
- * `murmur init` — deterministic structural pass.
+ * `murmr init` — deterministic structural pass.
  *
  * Copies the generic base library (agents, subagents, the subagent-authoring skill),
  * then overlays codebase-derived structural skills/instructions. No LLM, no network.

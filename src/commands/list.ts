@@ -2,16 +2,16 @@ import { join } from "node:path";
 import { existsSync } from "node:fs";
 import { loadIR } from "../schema/load.ts";
 
-/** `murmur list` — inventory the IR definitions in murmur/. */
+/** `murmr list` — inventory the IR definitions in murmur/. */
 export async function listCommand(projectRoot: string): Promise<number> {
   const murmurDir = join(projectRoot, "murmur");
   if (!existsSync(join(murmurDir, "agents"))) {
-    console.log('No murmur/ directory in this project. Run "murmur init" first.');
+    console.log('No murmur/ directory in this project. Run "murmr init" first.');
     return 0;
   }
   const loaded = await loadIR(murmurDir);
   if (!loaded.ok) {
-    console.error("IR has validation errors; run `murmur doctor`.");
+    console.error("IR has validation errors; run `murmr doctor`.");
     return 1;
   }
   const ir = loaded.value;

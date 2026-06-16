@@ -6,7 +6,7 @@ description: How this project's directories, modules, and entry points are organ
 # Project Structure
 
 > This skill is a structural placeholder authored by hand for the Murmuration base
-> library. In a real project, `murmur init` regenerates it from static analysis of
+> library. In a real project, `murmr init` regenerates it from static analysis of
 > the actual directory tree. All codebase-specific layout facts belong here, not in
 > agent bodies.
 

@@ -28,7 +28,7 @@ initial session was intentionally limited to **repo + README + this spec**.
 
 ### 2.3 Subagents
 - Narrow, often ephemeral specialists with isolated context.
-- Created by hand (`murmur add subagent`) or on demand by the master agent.
+- Created by hand (`murmr add subagent`) or on demand by the master agent.
 
 ### 2.4 Skills
 - Self-contained knowledge packages (a `SKILL.md` + optional assets).
@@ -64,11 +64,11 @@ murmur/
 
 - `init`, `add agent|subagent|skill|instruction`, `compile --target`, `doctor`,
   `publish`, `list`, `update`.
-- Global install (`bun add -g murmur`) + project-local (`bunx murmur`).
+- Global install (`bun add -g murmr`) + project-local (`bunx murmr`).
 
 ## 5. Publish / context-stripping
 
-- `murmur publish` scrubs generated artifacts of:
+- `murmr publish` scrubs generated artifacts of:
   - repo names, paths, proprietary domain terms, secrets, author PII.
 - Produces a clean, reusable agent pack.
 

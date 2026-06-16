@@ -33,9 +33,9 @@ function parseArgs(argv: string[]): Flags {
   return { positionals, flags };
 }
 
-const USAGE = `murmur ${VERSION} — tool-agnostic multi-agent framework
+const USAGE = `murmr ${VERSION} — tool-agnostic multi-agent framework
 
-Usage: murmur <command> [options]
+Usage: murmr <command> [options]        (alias: mrmr)
 
 Commands:
   init                       Generate murmur/ from the codebase (structural pass)
@@ -52,9 +52,9 @@ Global options:
   --version                  Show version
 
 Examples:
-  murmur init
-  murmur compile --target copilot
-  murmur publish --dry-run --strict
+  murmr init
+  murmr compile --target copilot
+  murmr publish --dry-run --strict
 `;
 
 async function main(): Promise<number> {
@@ -80,7 +80,7 @@ async function main(): Promise<number> {
       const kind = positionals[1] as AddKind | undefined;
       const name = positionals[2];
       if (!kind || !["agent", "subagent", "skill", "instruction"].includes(kind)) {
-        console.error("Usage: murmur add <agent|subagent|skill|instruction> <name>");
+        console.error("Usage: murmr add <agent|subagent|skill|instruction> <name>");
         return 1;
       }
       return addCommand(root, kind, name ?? "");
@@ -94,7 +94,7 @@ async function main(): Promise<number> {
     case "run": {
       const pipeline = positionals[1];
       if (!pipeline) {
-        console.error("Usage: murmur run <pipeline> [--tier <t>] [--branch <b>] [--dry-run]");
+        console.error("Usage: murmr run <pipeline> [--tier <t>] [--branch <b>] [--dry-run]");
         return 1;
       }
       return runCommand(root, {
@@ -115,7 +115,7 @@ async function main(): Promise<number> {
       const document = positionals[1];
       const rubric = typeof flags["rubric"] === "string" ? flags["rubric"] : undefined;
       if (!document || !rubric) {
-        console.error("Usage: murmur score <document> --rubric <name>");
+        console.error("Usage: murmr score <document> --rubric <name>");
         return 1;
       }
       return scoreCommand(root, {
@@ -134,7 +134,7 @@ async function main(): Promise<number> {
         allowConfigExec: flags["allow-config-exec"] === true,
       });
     default:
-      console.error(`Unknown command "${cmd}". Run \`murmur --help\`.`);
+      console.error(`Unknown command "${cmd}". Run \`murmr --help\`.`);
       return 1;
   }
 }

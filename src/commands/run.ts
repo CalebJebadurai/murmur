@@ -186,16 +186,16 @@ export function formatRunLog(report: RunReport, date: string): string {
   ].join("\n");
 }
 
-/** `murmur run <pipeline>` — deterministic orchestration skeleton. */
+/** `murmr run <pipeline>` — deterministic orchestration skeleton. */
 export async function runCommand(projectRoot: string, opts: RunOptions): Promise<number> {
   const murmurDir = join(projectRoot, "murmur");
   if (!existsSync(join(murmurDir, "pipelines"))) {
-    console.error('No murmur/pipelines/ directory found. Run "murmur init" and add a pipeline first.');
+    console.error('No murmur/pipelines/ directory found. Run "murmr init" and add a pipeline first.');
     return 1;
   }
   const report = await runDoctor(murmurDir);
   if (!report.ok) {
-    console.error("Refusing to run: doctor found problems. Run `murmur doctor`.");
+    console.error("Refusing to run: doctor found problems. Run `murmr doctor`.");
     return 1;
   }
   const loaded = await loadIR(murmurDir);
@@ -271,7 +271,7 @@ export async function runCommand(projectRoot: string, opts: RunOptions): Promise
   if (degraded) {
     console.log(
       "run: --allow-run was passed but no run.host is configured in murmur.config —\n" +
-        "     degrading to compile-and-instruct. Run `murmur compile` and invoke the\n" +
+        "     degrading to compile-and-instruct. Run `murmr compile` and invoke the\n" +
         "     emitted orchestrator in your host runtime.",
     );
   }

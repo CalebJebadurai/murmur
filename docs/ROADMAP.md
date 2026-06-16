@@ -1,6 +1,6 @@
 # Murmuration Roadmap
 
-> Single source of truth for where `murmur` is going. v0.1.0 (shipped) defines and
+> Single source of truth for where `murmr` is going. v0.1.0 (shipped) defines and
 > compiles agent definitions. The roadmap below grows murmur from a *definition
 > compiler* into a portable engine for **governed multi-agent / agent-swarm
 > workflows** with automatic context **and** tool generation.
@@ -13,9 +13,9 @@ tools, and a governed orchestration pipeline — that compiles to whatever runti
 use (Copilot, Claude Code, goose, Cursor, ACP).
 
 ```bash
-bunx murmur init        # analyze codebase → context + tools + agents + pipeline
-murmur compile          # emit to every configured runtime
-murmur run <pipeline>   # execute a governed pipeline locally, with a RUN-LOG
+bunx murmr init         # analyze codebase → context + tools + agents + pipeline
+murmr compile           # emit to every configured runtime
+murmr run <pipeline>    # execute a governed pipeline locally, with a RUN-LOG
 ```
 
 ## Shipped — v0.1.0
@@ -51,7 +51,7 @@ phases, per-phase agent dispatch, gating conditions, loop limits, and parallelis
 caps — compiled into each runtime's orchestration form (a Copilot master
 `architect`-style agent; a goose recipe with `sub_recipes` + sequencing).
 
-- **`murmur run <pipeline>`** — execute a pipeline locally, emitting a `RUN-LOG.md`
+- **`murmr run <pipeline>`** — execute a pipeline locally, emitting a `RUN-LOG.md`
   (date, tier, iterations, scores, verifier verdict).
 - **Pipeline tiers** — lightweight / standard / extended.
 - _Source patterns:_ `architect.agent.md`, `RUN-LOG.md`.
@@ -60,7 +60,7 @@ caps — compiled into each runtime's orchestration form (a Copilot master
 
 - **Scoring rubrics as a first-class artifact** — typed scorecards (dimensions,
   mandatory/optional questions, 1–5 scales, severity counts, readiness gates) that a
-  `critic` agent loads. `murmur score` validates a document against a rubric.
+  `critic` agent loads. `murmr score` validates a document against a rubric.
 - **Output-section contracts** — extend instructions with an enforced ordered-section
   schema (e.g. the 12-section analysis / 11-section domain formats), checkable by
   `doctor`.
@@ -69,7 +69,7 @@ caps — compiled into each runtime's orchestration form (a Copilot master
 ## v0.4 — Selective dispatch & rosters
 
 - **Dispatch tables** in agent frontmatter: machine-readable "invoke when / skip when"
-  matrices, plus a **task classifier** (`murmur classify`) that selects an agent set
+  matrices, plus a **task classifier** (`murmr classify`) that selects an agent set
   by task type.
 - **Domain-critic roster** in the base library (business-critic, social-critic,
   data-critic, fact-checker, verifier) as generic templates.
@@ -93,23 +93,23 @@ analysis, scaffolds runtime tools the agents can call:
   from the codebase (build commands, test runners, scripts, API surfaces).
 - Compile tools per runtime: MCP `mcpServers` for Claude, goose `extensions`,
   Copilot tool references.
-- **`murmur add tool <name>`** and tool inclusion in `init`.
+- **`murmr add tool <name>`** and tool inclusion in `init`.
 
 ## v0.7 — Runtime adapters (the original Phase F)
 
 - **Claude Code** adapter (near-free; shares Copilot's persona-Markdown substrate).
 - **Cursor** adapter (`.cursor/rules` MDC + skills).
 - **ACP** adapter — the protocol-level portability target (JSON-RPC/stdio, MCP types).
-- **npm-package plugin model** — adapters shippable as `murmur-plugin-*` with
+- **npm-package plugin model** — adapters shippable as `murmr-plugin-*` with
   auto-discovery, replacing directly-registered TypeScript adapters.
 - **Skill assets** — directory-structured skills with per-runtime asset resolution.
 
 ## v0.8 — Project & DX hardening
 
-- **Git-hook integration** — generate a `lefthook.yml` that runs `murmur doctor` +
+- **Git-hook integration** — generate a `lefthook.yml` that runs `murmr doctor` +
   the externalization gate pre-commit; **agent CODEOWNERS** protection.
 - **Schema-driven validation** à la Velite `defineCollection` for plugin authors.
-- **Docs compiler** — `murmur docs` compiles agent packs + run-logs into a browsable
+- **Docs compiler** — `murmr docs` compiles agent packs + run-logs into a browsable
   HTML guide.
 - **Env-driven config with auto-detection** and **phase-tagged config** in JSDoc.
 - _Source patterns:_ agri (lefthook/CODEOWNERS), portfolio (Velite), chat (`build.py`),
@@ -126,7 +126,7 @@ no competitor (goose, Claude Code, ECC.tools) offers together.
 
 ## Priority order
 
-1. Pipeline/orchestration IR + `murmur run` + RUN-LOG (v0.2) — the keystone.
+1. Pipeline/orchestration IR + `murmr run` + RUN-LOG (v0.2) — the keystone.
 2. Scoring rubrics + output-section contracts (v0.3).
 3. Selective-dispatch tables + task classifier + critic rosters (v0.4).
 4. Concurrency / worker-budget engine (v0.5).

@@ -120,7 +120,7 @@ export class GooseAdapter implements RuntimeCompiler {
       sub_recipes: roster.map((name) => ({ name, path: `recipes/${name}.yaml` })),
       // Declared degradation: goose cannot enforce loops/parallel caps natively.
       annotations: {
-        murmur_advisory: "loops and parallelism are advisory; only `murmur run` enforces them",
+        murmur_advisory: "loops and parallelism are advisory; only `murmr run` enforces them",
         routing: { at: pipeline.routing.at, map: pipeline.routing.map },
         branches,
       },

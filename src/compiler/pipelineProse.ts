@@ -40,7 +40,7 @@ function tierTable(branch: BranchDefinition): string {
 
 /**
  * Render a pipeline as advisory prose tables (one section per branch). The caps
- * and loops are ADVISORY here — a host model interprets them; only `murmur run`'s
+ * and loops are ADVISORY here — a host model interprets them; only `murmr run`'s
  * own worker pool enforces them.
  */
 export function renderPipelineProse(p: PipelineDefinition): string {
@@ -51,7 +51,7 @@ export function renderPipelineProse(p: PipelineDefinition): string {
     "",
     "> **Note:** The phase, loop, and parallelism tables below are **advisory** —",
     "> a host model interprets them. Deterministic enforcement of loop and",
-    "> concurrency caps happens only under `murmur run`.",
+    "> concurrency caps happens only under `murmr run`.",
     "",
     "## Routing",
     "",

@@ -13,21 +13,21 @@ export type CompileOptions = {
   allowConfigExec?: boolean;
 };
 
-/** `murmur compile [--target <id>] [--out <dir>]`. */
+/** `murmr compile [--target <id>] [--out <dir>]`. */
 export async function compileCommand(
   projectRoot: string,
   opts: CompileOptions,
 ): Promise<number> {
   const murmurDir = join(projectRoot, "murmur");
   if (!existsSync(join(murmurDir, "agents"))) {
-    console.error('No murmur/ directory found. Run "murmur init" first.');
+    console.error('No murmur/ directory found. Run "murmr init" first.');
     return 1;
   }
 
   // Refuse to compile invalid IR.
   const report = await runDoctor(murmurDir);
   if (!report.ok) {
-    console.error("Refusing to compile: doctor found problems. Run `murmur doctor`.");
+    console.error("Refusing to compile: doctor found problems. Run `murmr doctor`.");
     return 1;
   }
 

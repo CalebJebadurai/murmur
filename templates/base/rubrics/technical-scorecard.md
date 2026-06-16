@@ -6,7 +6,7 @@ description: Generic technical review scorecard for evaluating an implementation
 # Technical Scorecard
 
 A generic, project-fact-free technical review rubric. Critics emit one
-`SCORE: <dimension> = <n>` line per dimension; `murmur score` computes the
+`SCORE: <dimension> = <n>` line per dimension; `murmr score` computes the
 weighted total deterministically.
 
 ```yaml
