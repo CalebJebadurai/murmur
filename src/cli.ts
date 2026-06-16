@@ -5,6 +5,8 @@ import { listCommand } from "./commands/list.ts";
 import { initCommand, type InitMode } from "./commands/init.ts";
 import { addCommand, type AddKind } from "./commands/add.ts";
 import { publishCommand } from "./commands/publish.ts";
+import { runCommand } from "./commands/run.ts";
+import { scoreCommand } from "./commands/score.ts";
 
 const VERSION = "0.1.0";
 
@@ -39,6 +41,8 @@ Commands:
   init                       Generate murmur/ from the codebase (structural pass)
   add <kind> <name>          Scaffold an agent|subagent|skill|instruction
   compile [--target <id>]    Compile murmur/ to a runtime (copilot, goose)
+  run <pipeline> [--tier T]  Walk a pipeline (deterministic); emits a RUN-LOG
+  score <doc> --rubric <r>   Score a document against a rubric (arithmetic only)
   doctor                     Validate the murmur/ IR
   list                       Inventory the murmur/ IR
   publish [--out <dir>]      Scrub codebase context into a shareable copy
@@ -87,8 +91,39 @@ async function main(): Promise<number> {
         out: typeof flags["out"] === "string" ? flags["out"] : undefined,
         allowConfigExec: flags["allow-config-exec"] === true,
       });
+    case "run": {
+      const pipeline = positionals[1];
+      if (!pipeline) {
+        console.error("Usage: murmur run <pipeline> [--tier <t>] [--branch <b>] [--dry-run]");
+        return 1;
+      }
+      return runCommand(root, {
+        pipeline,
+        tier: typeof flags["tier"] === "string" ? flags["tier"] : undefined,
+        branch: typeof flags["branch"] === "string" ? flags["branch"] : undefined,
+        classification:
+          typeof flags["classification"] === "string" ? flags["classification"] : undefined,
+        dryRun: flags["dry-run"] === true,
+        allowRun: flags["allow-run"] === true,
+        allowConfigExec: flags["allow-config-exec"] === true,
+        out: typeof flags["out"] === "string" ? flags["out"] : undefined,
+      });
+    }
     case "doctor":
       return doctorCommand(root);
+    case "score": {
+      const document = positionals[1];
+      const rubric = typeof flags["rubric"] === "string" ? flags["rubric"] : undefined;
+      if (!document || !rubric) {
+        console.error("Usage: murmur score <document> --rubric <name>");
+        return 1;
+      }
+      return scoreCommand(root, {
+        document,
+        rubric,
+        out: typeof flags["out"] === "string" ? flags["out"] : undefined,
+      });
+    }
     case "list":
       return listCommand(root);
     case "publish":

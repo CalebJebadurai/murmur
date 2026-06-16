@@ -17,4 +17,10 @@ export type ValidationResult<T> =
   | { ok: false; errors: ValidationError[] };
 
 /** The kind of an IR definition, inferred from its directory. */
-export type DefinitionKind = "agent" | "subagent" | "skill" | "instruction";
+export type DefinitionKind =
+  | "agent"
+  | "subagent"
+  | "skill"
+  | "instruction"
+  | "pipeline"
+  | "rubric";

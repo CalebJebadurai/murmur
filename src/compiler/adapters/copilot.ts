@@ -1,10 +1,12 @@
 import type {
   AgentDefinition,
   InstructionDefinition,
+  PipelineDefinition,
   SkillDefinition,
   SubagentDefinition,
 } from "../../schema/index.ts";
 import { emitFrontmatterDoc, type YamlValue } from "../../util/yaml.ts";
+import { pipelineRoster, renderPipelineProse } from "../pipelineProse.ts";
 import type {
   CompileContext,
   EmittedFile,
@@ -74,6 +76,22 @@ export class CopilotAdapter implements RuntimeCompiler {
       {
         path: `.github/instructions/${instruction.name}.instructions.md`,
         contents: emitFrontmatterDoc(fm, instruction.rules),
+      },
+    ];
+  }
+
+  compilePipeline(pipeline: PipelineDefinition): EmittedFile[] {
+    // A master architect-style agent: union roster in frontmatter so runSubagent
+    // can reach every dispatched agent; the body holds advisory prose tables.
+    const fm: Record<string, YamlValue> = {
+      description: pipeline.description,
+      agents: pipelineRoster(pipeline),
+      "user-invocable": true,
+    };
+    return [
+      {
+        path: `.github/agents/${pipeline.name}.agent.md`,
+        contents: emitFrontmatterDoc(fm, renderPipelineProse(pipeline)),
       },
     ];
   }

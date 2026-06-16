@@ -16,6 +16,12 @@ export type ProjectConfig = {
   description?: string;
 };
 
+/** Run-driver host-CLI configuration. */
+export type RunConfig = {
+  /** Base argv for the host agent CLI, e.g. ["goose", "run"]. NEVER a shell string. */
+  host?: string[];
+};
+
 /** The murmur.config.{ts,json} shape. */
 export type MurmurConfig = {
   /** Enabled compile-target identifiers, e.g. ["copilot", "goose"]. */
@@ -24,6 +30,7 @@ export type MurmurConfig = {
   /** Adapter plugin file paths (v0.1.0: TS adapter files registered directly). */
   plugins?: string[];
   publish?: PublishConfig;
+  run?: RunConfig;
 };
 
 export const DEFAULT_CONFIG: MurmurConfig = {

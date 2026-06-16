@@ -98,6 +98,59 @@ export async function runDoctor(murmurDir: string): Promise<DoctorReport> {
     }
   }
 
+  // Pipeline reference-integrity, routing, loop-cap, and tier checks.
+  for (const p of ir.pipelines) {
+    const file = `murmur/pipelines/${p.name}.md`;
+    const branchNames = new Set(Object.keys(p.branches));
+    // routing
+    if (!branchNames.has("") && Object.keys(p.routing.map).length > 0) {
+      for (const [label, branch] of Object.entries(p.routing.map)) {
+        if (!branchNames.has(branch))
+          errors.push({ message: `routing maps "${label}" to unknown branch "${branch}"`, file, field: "routing.map" });
+      }
+    }
+    for (const [bname, branch] of Object.entries(p.branches)) {
+      const phaseIds = new Set(branch.phases.map((ph) => ph.id));
+      // routing.at must exist in at least one branch — check per pipeline below
+      for (const phase of branch.phases) {
+        for (const a of phase.agents) {
+          if (a.builtin) continue;
+          if (!agentNames.has(a.name))
+            errors.push({
+              message: `branch "${bname}" phase "${phase.id}" references missing agent "${a.name}"`,
+              file,
+              field: "phases",
+            });
+        }
+      }
+      for (const loop of branch.loops) {
+        if (!phaseIds.has(loop.from))
+          errors.push({ message: `loop "${loop.name}" from unknown phase "${loop.from}" in branch "${bname}"`, file, field: "loops" });
+        if (!phaseIds.has(loop.to))
+          errors.push({ message: `loop "${loop.name}" to unknown phase "${loop.to}" in branch "${bname}"`, file, field: "loops" });
+      }
+      for (const tier of branch.tiers) {
+        for (const pid of tier.phases) {
+          if (!phaseIds.has(pid))
+            errors.push({ message: `tier "${tier.name}" lists unknown phase "${pid}" in branch "${bname}"`, file, field: "tiers" });
+        }
+      }
+      const allAgentNames = new Set(branch.phases.flatMap((ph) => ph.agents.map((a) => a.name)));
+      for (const [x, y] of branch.parallel.neverParallel) {
+        if (!allAgentNames.has(x))
+          errors.push({ message: `neverParallel names "${x}" not dispatched in branch "${bname}"`, file, field: "parallel" });
+        if (!allAgentNames.has(y))
+          errors.push({ message: `neverParallel names "${y}" not dispatched in branch "${bname}"`, file, field: "parallel" });
+      }
+    }
+    // routing.at must be a real phase in at least one branch
+    const everyPhase = new Set(
+      Object.values(p.branches).flatMap((b) => b.phases.map((ph) => ph.id)),
+    );
+    if (p.routing.at && !everyPhase.has(p.routing.at))
+      errors.push({ message: `routing.at "${p.routing.at}" is not a declared phase`, file, field: "routing.at" });
+  }
+
   errors.push(...findCircular(ir));
 
   return { ok: errors.length === 0, errors };
