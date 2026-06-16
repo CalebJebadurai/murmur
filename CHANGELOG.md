@@ -4,6 +4,18 @@ All notable changes to Murmuration are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the project adheres to
 semantic versioning.
 
+## [0.1.1](https://github.com/CalebJebadurai/murmur/compare/murmur-v0.1.0...murmur-v0.1.1) (2026-06-16)
+
+
+### Features
+
+* orchestration layer — pipeline IR, run driver, rubrics, score (v0.2/v0.3) ([c7a7e28](https://github.com/CalebJebadurai/murmur/commit/c7a7e28e25753368d245f8a5bbfde42568091480))
+
+
+### Documentation
+
+* add roadmap, contributing, automated versioning ([7f5338f](https://github.com/CalebJebadurai/murmur/commit/7f5338fcca3c947e82048c51de30395293e31ccb))
+
 ## [0.2.0] — 2026-06-16
 
 The orchestration layer: murmur moves from compiling agent definitions to
