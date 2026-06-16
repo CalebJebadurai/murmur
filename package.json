@@ -22,17 +22,34 @@
   "bin": {
     "murmur": "./dist/cli.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CalebJebadurai/murmur.git"
+  },
+  "homepage": "https://github.com/CalebJebadurai/murmur#readme",
+  "bugs": {
+    "url": "https://github.com/CalebJebadurai/murmur/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "bun build src/cli.ts --target bun --outdir dist --minify && chmod +x dist/cli.js",
     "dev": "bun run src/cli.ts",
     "test": "bun test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "externalization": "bun run scripts/check-externalization.ts",
+    "prepare": "lefthook install || true",
+    "prepublishOnly": "bun run build"
   },
   "engines": {
     "bun": ">=1.0.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
     "@types/bun": "latest",
+    "lefthook": "^1.6.0",
     "typescript": "^5.7.0"
   },
   "files": [

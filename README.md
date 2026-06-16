@@ -5,7 +5,7 @@
 
 A *murmuration* is thousands of starlings moving as a single, coordinated intelligence — **no central controller, emergent behavior from simple shared rules.** That's the design philosophy: a small set of generic agents, a master agent that spawns specialized subagents on demand, and a shared substrate of skills/instructions that gives them context.
 
-> **Status:** 🚧 Scaffold / vision stage. Repo initialized; implementation to follow. See [`docs/VISION.md`](docs/VISION.md) for the full architecture.
+> **Status:** ✅ v0.1.0 shipped. Defines and compiles agents/subagents/skills/instructions, with `init`, `compile` (Copilot + goose), `doctor`, `add`, `list`, and a defense-in-depth `publish` scrubber. The roadmap grows this into a portable engine for **governed multi-agent / agent-swarm workflows** with automatic context **and** tool generation — see [`docs/ROADMAP.md`](docs/ROADMAP.md) and [`docs/VISION.md`](docs/VISION.md).
 
 ---
 
@@ -65,40 +65,75 @@ Agents, skills, and instructions are authored once in an abstract format and **c
 
 ---
 
-## Planned CLI
+## Install & quick start
+
+No install required — run it straight from the registry with `bunx`:
 
 ```bash
-# Global (once)
-bun add -g murmur            # or: bunx murmur <cmd>
+# In any project directory:
+bunx murmur init                 # analyze the codebase → agents + skills + instructions
+bunx murmur compile --target copilot   # or: goose
+bunx murmur doctor               # validate the generated IR
+```
 
+Or install it for repeated use:
+
+```bash
+bun add -g murmur                # global
+# or, as a dev dependency in a project:
+bun add -d murmur
+```
+
+The goal: **anyone runs one command in any codebase and gets it ready for any
+multi-agent / agent-swarm workflow** — with auto-generated context (skills +
+instructions today; tools and pipelines on the [roadmap](docs/ROADMAP.md)) that
+compiles to whatever runtime they use.
+
+---
+
+## CLI
+
+```bash
 # Project level
 murmur init                  # analyze codebase → generate skills + instructions + agents
 murmur add agent <name>      # scaffold a new generic agent
 murmur add subagent <name>   # scaffold a specialist subagent
 murmur add skill <name>      # scaffold a skill
-murmur compile --target copilot|claude|goose|cursor|acp
+murmur add instruction <name># scaffold a scoped instruction
+murmur compile --target copilot|goose   # claude|cursor|acp on the roadmap
 murmur doctor                # validate frontmatter, applyTo globs, references
-murmur publish               # strip codebase-specific context, prep for sharing
+murmur list                  # inventory the murmur/ IR
+murmur publish [--dry-run] [--strict]    # strip codebase-specific context for sharing
 ```
 
 ---
 
 ## Publishing hygiene
 
-Before this repo (or any derived agent pack) is published, **all codebase-specific context is stripped** — `murmur publish` (planned) scrubs generated skills/instructions of project-identifying details, leaving only the generic agent framework.
+Before this repo (or any derived agent pack) is published, **all codebase-specific context is stripped** — `murmur publish` scrubs generated skills/instructions of project-identifying details (repo name, paths, domain terms, PII) and runs gitleaks-style secret scanning, leaving only the generic agent framework. `--dry-run` previews the scrub; `--strict` fails if any secret-shaped string survives.
 
 ---
 
 ## Roadmap
 
-- [x] Repo scaffold + vision
-- [ ] Abstract agent/skill/instruction schema
-- [ ] Compiler (Copilot + Claude Code first)
-- [ ] `init` codebase-analyzer agent
-- [ ] Master agent + subagent spawning protocol
-- [ ] CLI (`bun`)
-- [ ] `publish` context-stripping
-- [ ] ACP target
+v0.1.0 defines and compiles agents. The roadmap grows murmur into a portable engine for **governed multi-agent pipelines** with automatic context and tool generation:
+
+- **v0.2** — Orchestration IR (`pipeline`/`workflow`) + `murmur run` + `RUN-LOG`
+- **v0.3** — Scoring rubrics + output-section contracts (`murmur score`)
+- **v0.4** — Selective-dispatch tables + task classifier + critic rosters
+- **v0.5** — Concurrency engine (worker pool + rpm/tpm budgets)
+- **v0.6** — Tool generation (auto MCP / tool stubs)
+- **v0.7** — Claude Code → Cursor → ACP adapters + plugin model
+- **v0.8** — Git hooks, schema-driven plugin validation, docs compiler
+- **v1.0** — The full union: portable governed agent swarms
+
+Full detail in [`docs/ROADMAP.md`](docs/ROADMAP.md).
+
+## Contributing
+
+Contributions welcome — see [`CONTRIBUTING.md`](CONTRIBUTING.md). Commits follow
+[Conventional Commits](https://www.conventionalcommits.org/) and releases are
+automated via release-please (merging to `main` opens a version-bump + changelog PR).
 
 ## License
 
