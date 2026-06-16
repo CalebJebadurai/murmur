@@ -8,6 +8,8 @@ import type {
 import {
   validateAgent,
   validateInstruction,
+  validatePipeline,
+  validateRubric,
   validateSkill,
   validateSubagent,
 } from "./validate.ts";
@@ -29,7 +31,7 @@ async function readFiles(dir: string, pattern: string): Promise<string[]> {
  */
 export async function loadIR(murmurDir: string): Promise<LoadResult> {
   const errors: ValidationError[] = [];
-  const set: IRSet = { agents: [], subagents: [], skills: [], instructions: [] };
+  const set: IRSet = { agents: [], subagents: [], skills: [], instructions: [], pipelines: [], rubrics: [] };
 
   const agentFiles = await readFiles(join(murmurDir, "agents"), "*.md");
   for (const f of agentFiles) {
@@ -60,6 +62,20 @@ export async function loadIR(murmurDir: string): Promise<LoadResult> {
   for (const f of instrFiles) {
     const res = validateInstruction(await Bun.file(f).text(), f);
     if (res.ok) set.instructions.push(res.value);
+    else errors.push(...res.errors);
+  }
+
+  const pipeFiles = await readFiles(join(murmurDir, "pipelines"), "*.md");
+  for (const f of pipeFiles) {
+    const res = validatePipeline(await Bun.file(f).text(), f);
+    if (res.ok) set.pipelines.push(res.value);
+    else errors.push(...res.errors);
+  }
+
+  const rubricFiles = await readFiles(join(murmurDir, "rubrics"), "*.md");
+  for (const f of rubricFiles) {
+    const res = validateRubric(await Bun.file(f).text(), f);
+    if (res.ok) set.rubrics.push(res.value);
     else errors.push(...res.errors);
   }
 

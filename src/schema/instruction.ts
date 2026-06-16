@@ -1,8 +1,16 @@
 /**
  * InstructionDefinition — a behavioral rule scoped by an `applyTo` glob.
  *
- * Mirrors the minimal observed Copilot instruction frontmatter (only `applyTo`).
+ * Mirrors the minimal observed Copilot instruction frontmatter (only `applyTo`),
+ * with an optional ordered output-section contract.
  */
+export type OutputSection = {
+  name: string;
+  required: boolean;
+  order: number;
+  wordTarget?: number;
+};
+
 export type InstructionDefinition = {
   /** Filename stem. */
   name: string;
@@ -10,4 +18,6 @@ export type InstructionDefinition = {
   applyTo: string;
   /** The rules body (Markdown). */
   rules: string;
+  /** Optional ordered section contract documents under applyTo must satisfy. */
+  sections?: OutputSection[];
 };

@@ -5,9 +5,11 @@ import {
   type Frontmatter,
 } from "../util/frontmatter.ts";
 import { isValidGlob } from "../util/glob.ts";
+import { extractYamlBlock, parsePipelineYaml } from "../util/pipelineYaml.ts";
 import type {
   AgentDefinition,
   InstructionDefinition,
+  OutputSection,
   SkillDefinition,
   SubagentDefinition,
   ValidationError,
@@ -128,5 +130,43 @@ export function validateInstruction(
     errors.push({ message: "instruction body (rules) is empty", file, field: "rules" });
   }
   if (errors.length) return { ok: false, errors };
-  return { ok: true, value: { name: stem(file), applyTo, rules: body } };
+  const value: InstructionDefinition = { name: stem(file), applyTo, rules: body };
+  const sections = parseSections(body, file, errors);
+  if (errors.length) return { ok: false, errors };
+  if (sections.length) value.sections = sections;
+  return { ok: true, value };
 }
+
+/** Parse an optional ordered `sections:` contract from a fenced yaml block. */
+function parseSections(body: string, file: string, errors: ValidationError[]): OutputSection[] {
+  if (!extractYamlBlock(body)) return [];
+  const parsed = parsePipelineYaml(body, file);
+  if (!parsed.ok) {
+    errors.push({ message: `PARSE-ERROR (line ${parsed.error.line}): ${parsed.error.message}`, file });
+    return [];
+  }
+  const root = parsed.value;
+  if (typeof root !== "object" || root === null || Array.isArray(root)) return [];
+  const sNode = (root as { [k: string]: unknown })["sections"];
+  if (!Array.isArray(sNode)) return [];
+  const out: OutputSection[] = [];
+  let order = 0;
+  for (const s of sNode) {
+    if (typeof s !== "object" || s === null || Array.isArray(s)) continue;
+    const rec = s as { [k: string]: unknown };
+    const name = typeof rec["name"] === "string" ? rec["name"] : "";
+    if (!name) continue;
+    const sec: OutputSection = {
+      name,
+      required: rec["required"] !== false,
+      order: typeof rec["order"] === "number" ? rec["order"] : order,
+    };
+    if (typeof rec["wordTarget"] === "number") sec.wordTarget = rec["wordTarget"];
+    out.push(sec);
+    order++;
+  }
+  return out;
+}
+
+export { validatePipeline } from "./validatePipeline.ts";
+export { validateRubric } from "./validateRubric.ts";

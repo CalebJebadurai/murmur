@@ -1,10 +1,12 @@
 import type {
   AgentDefinition,
   InstructionDefinition,
+  PipelineDefinition,
   SkillDefinition,
   SubagentDefinition,
 } from "../../schema/index.ts";
 import { emitYaml, type YamlValue } from "../../util/yaml.ts";
+import { pipelineRoster } from "../pipelineProse.ts";
 import type {
   CompileContext,
   EmittedFile,
@@ -93,6 +95,42 @@ export class GooseAdapter implements RuntimeCompiler {
     // goose surfaces scoped rules as hint fragments.
     const contents = `# Applies to: ${instruction.applyTo}\n\n${instruction.rules.trim()}\n`;
     return [{ path: `hints/${instruction.name}.md`, contents }];
+  }
+
+  compilePipeline(pipeline: PipelineDefinition): EmittedFile[] {
+    // goose recipes have no native loop/parallel/ordering semantics, so the
+    // orchestration is emitted as ADVISORY metadata with a declared degradation.
+    const roster = pipelineRoster(pipeline);
+    const branches: YamlValue = Object.fromEntries(
+      Object.entries(pipeline.branches).map(([bname, b]) => [
+        bname,
+        {
+          sequence: b.phases.map((ph) => ph.id),
+          loops: b.loops.map((l) => ({ name: l.name, from: l.from, to: l.to, min: l.min, max: l.max })),
+          max_concurrent: b.parallel.maxConcurrent,
+          never_parallel: b.parallel.neverParallel.map((pair) => pair.join(" + ")),
+        },
+      ]),
+    );
+    const recipe: Record<string, YamlValue> = {
+      version: "1.0.0",
+      title: pipeline.name,
+      description: pipeline.description,
+      instructions: `Orchestration pipeline. Routing at phase ${pipeline.routing.at}.`,
+      sub_recipes: roster.map((name) => ({ name, path: `recipes/${name}.yaml` })),
+      // Declared degradation: goose cannot enforce loops/parallel caps natively.
+      annotations: {
+        murmur_advisory: "loops and parallelism are advisory; only `murmur run` enforces them",
+        routing: { at: pipeline.routing.at, map: pipeline.routing.map },
+        branches,
+      },
+    };
+    return [
+      {
+        path: `recipes/${pipeline.name}.yaml`,
+        contents: `# murmur pipeline (advisory orchestration metadata)\n${emitYaml(recipe)}\n`,
+      },
+    ];
   }
 
   finalize(ctx: CompileContext): EmittedFile[] {

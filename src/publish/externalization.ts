@@ -38,7 +38,7 @@ export async function scanExternalization(
   }
 
   const leaks: ExternalizationReport["leaks"] = [];
-  const agentGlob = new Glob("{agents,subagents}/**/*.md");
+  const agentGlob = new Glob("{agents,subagents,pipelines}/**/*.md");
   for await (const rel of agentGlob.scan({ cwd: murmurDir, onlyFiles: true })) {
     const text = await Bun.file(join(murmurDir, rel)).text();
     for (const { pattern, re } of leakPatterns) {

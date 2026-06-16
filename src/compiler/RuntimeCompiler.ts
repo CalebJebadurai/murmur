@@ -3,6 +3,7 @@ import type {
   InstructionDefinition,
   IRSet,
   MurmurConfig,
+  PipelineDefinition,
   SkillDefinition,
   SubagentDefinition,
 } from "../schema/index.ts";
@@ -37,6 +38,12 @@ export interface RuntimeCompiler {
     ctx: CompileContext,
   ): EmittedFile[];
 
+  /**
+   * Optional pipeline (orchestration) compilation. Adapters that cannot express
+   * orchestration omit this; emitAll then skips them, so absence is a clean no-op.
+   */
+  compilePipeline?(pipeline: PipelineDefinition, ctx: CompileContext): EmittedFile[];
+
   /** Optional target-level files (e.g. goose AGENTS.md / CLAUDE.md parity). */
   finalize?(ctx: CompileContext): EmittedFile[];
 }
@@ -52,6 +59,8 @@ export function emitAll(
   for (const skill of ctx.ir.skills) files.push(...adapter.compileSkill(skill, ctx));
   for (const instr of ctx.ir.instructions)
     files.push(...adapter.compileInstruction(instr, ctx));
+  if (adapter.compilePipeline)
+    for (const p of ctx.ir.pipelines) files.push(...adapter.compilePipeline(p, ctx));
   if (adapter.finalize) files.push(...adapter.finalize(ctx));
   return files;
 }
