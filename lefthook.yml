@@ -1,0 +1,17 @@
+# Lefthook git hooks for murmur.
+# Installed automatically on `bun install` via the package.json "prepare" script.
+
+pre-commit:
+  parallel: true
+  commands:
+    typecheck:
+      run: bun run typecheck
+    test:
+      run: bun test
+    externalization-gate:
+      run: bun run scripts/check-externalization.ts
+
+commit-msg:
+  commands:
+    commitlint:
+      run: bunx commitlint --edit {1}
