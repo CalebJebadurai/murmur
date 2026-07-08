@@ -1,9 +1,13 @@
 ---
 description: "Use when: a task needs decomposition and coordination across multiple specialists, or when no existing specialist fits and a new one must be spawned."
-tools: [read, search, edit, new, agent]
-skills: [subagent-authoring]
-instructions: []
-agents: [curator]
+tools:
+  - read
+  - search
+  - edit
+  - new
+  - agent
+agents:
+  - curator
 user-invocable: true
 ---
 
@@ -42,3 +46,4 @@ When a subtask has no matching specialist:
   all domain knowledge into skills and instructions.
 - Never use the file-writing spawn path on a runtime whose hot-load capability is
   unproven; default to the ephemeral-persona path.
+

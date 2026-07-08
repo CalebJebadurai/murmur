@@ -10,6 +10,8 @@ pre-commit:
       run: bun test
     externalization-gate:
       run: bun run scripts/check-externalization.ts
+    agents-doctor:
+      run: bun run src/cli.ts doctor
 
 commit-msg:
   commands:

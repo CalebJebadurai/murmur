@@ -1,0 +1,75 @@
+# murmur pipeline (advisory orchestration metadata)
+version: 1.0.0
+title: architect
+description: "Use when: planning, analyzing, or designing implementation strategies through a governed multi-phase pipeline with selective dispatch, scoring, and refinement loops."
+instructions: Orchestration pipeline. Routing at phase 0b.
+sub_recipes:
+  - name: analyst
+    path: recipes/analyst.yaml
+  - name: architect
+    path: recipes/architect.yaml
+  - name: business-critic
+    path: recipes/business-critic.yaml
+  - name: critic
+    path: recipes/critic.yaml
+  - name: fact-checker
+    path: recipes/fact-checker.yaml
+  - name: implementer
+    path: recipes/implementer.yaml
+  - name: planner
+    path: recipes/planner.yaml
+  - name: prompt-engineer
+    path: recipes/prompt-engineer.yaml
+  - name: research-critic
+    path: recipes/research-critic.yaml
+  - name: researcher
+    path: recipes/researcher.yaml
+  - name: verifier
+    path: recipes/verifier.yaml
+annotations:
+  murmur_advisory: "loops and parallelism are advisory; only `murmr run` enforces them"
+  routing:
+    at: 0b
+    map:
+      CODING: coding
+      RESEARCH: research
+      HYBRID: coding
+  branches:
+    coding:
+      sequence:
+        - "0"
+        - 0b
+        - "1"
+        - "2"
+        - "3"
+        - "4"
+        - "5"
+        - 5b
+        - 5c
+      loops:
+        - name: critic-planner
+          from: "3"
+          to: "3"
+          min: 1
+          max: 3
+      max_concurrent: 3
+      never_parallel:
+        - critic + planner
+    research:
+      sequence:
+        - "0"
+        - R1
+        - R2
+        - R3
+        - R4
+        - R5
+        - R5b
+      loops:
+        - name: research-critic-planner
+          from: R3
+          to: R3
+          min: 1
+          max: 2
+      max_concurrent: 2
+      never_parallel:
+        - research-critic + planner

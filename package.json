@@ -1,10 +1,36 @@
 {
   "name": "murmr",
   "version": "0.1.0",
-  "description": "Tool-agnostic, packageable multi-agent + subagent framework. Generic agents, on-demand subagents, knowledge from skills/instructions, codebase auto-init.",
-  "type": "module",
-  "license": "MIT",
   "author": "calebjebadurai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CalebJebadurai/murmur.git"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
+    "@types/bun": "latest",
+    "lefthook": "^1.6.0",
+    "typescript": "^5.7.0"
+  },
+  "bin": {
+    "murmr": "./dist/cli.js",
+    "mrmr": "./dist/cli.js"
+  },
+  "bugs": {
+    "url": "https://github.com/CalebJebadurai/murmur/issues"
+  },
+  "description": "Tool-agnostic, packageable multi-agent + subagent framework. Generic agents, on-demand subagents, knowledge from skills/instructions, codebase auto-init.",
+  "engines": {
+    "bun": ">=1.0.0"
+  },
+  "files": [
+    "dist",
+    "templates",
+    "README.md",
+    "LICENSE"
+  ],
+  "homepage": "https://github.com/CalebJebadurai/murmur#readme",
   "keywords": [
     "ai-agents",
     "subagents",
@@ -19,18 +45,7 @@
     "scaffolding",
     "cli"
   ],
-  "bin": {
-    "murmr": "./dist/cli.js",
-    "mrmr": "./dist/cli.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/CalebJebadurai/murmur.git"
-  },
-  "homepage": "https://github.com/CalebJebadurai/murmur#readme",
-  "bugs": {
-    "url": "https://github.com/CalebJebadurai/murmur/issues"
-  },
+  "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
@@ -40,23 +55,10 @@
     "test": "bun test",
     "typecheck": "tsc --noEmit",
     "externalization": "bun run scripts/check-externalization.ts",
+    "agents": "bun run src/cli.ts compile --target copilot && bun run src/cli.ts compile --target goose",
+    "agents:check": "bun run src/cli.ts doctor",
     "prepare": "lefthook install || true",
     "prepublishOnly": "bun run build"
   },
-  "engines": {
-    "bun": ">=1.0.0"
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^19.0.0",
-    "@commitlint/config-conventional": "^19.0.0",
-    "@types/bun": "latest",
-    "lefthook": "^1.6.0",
-    "typescript": "^5.7.0"
-  },
-  "files": [
-    "dist",
-    "templates",
-    "README.md",
-    "LICENSE"
-  ]
+  "type": "module"
 }
