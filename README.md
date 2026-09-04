@@ -103,11 +103,13 @@ murmr add agent <name>             # scaffold a new generic agent
 murmr add subagent <name>          # scaffold a specialist subagent
 murmr add skill <name>             # scaffold a skill
 murmr add instruction <name>       # scaffold a scoped instruction
+murmr add tool <name>              # scaffold a typed tool / MCP definition
 murmr compile --target agy|copilot|goose|claude|cursor
 murmr watch [--target <id>]        # real-time recompiler daemon with debounced change detection
 murmr hook install                 # install Git pre-commit verification hook (.git/hooks/pre-commit)
 murmr hook status                  # check status of Git pre-commit hook
 murmr tool discover [--write]      # auto-discover package scripts/tools & generate tool skills
+murmr docs [--out <dir>] [--serve] # compile interactive HTML documentation portal with live preview
 murmr run <pipeline> [--tier T]    # walk a pipeline with interactive progress UI; emits RUN-LOG
 murmr score <doc> --rubric <name>  # score a document against quantitative rubrics
 murmr classify "<task description>" # classify task & select agent roster

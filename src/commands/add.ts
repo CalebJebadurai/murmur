@@ -1,13 +1,14 @@
 import { join } from "node:path";
 import { templatesDir } from "../util/templates.ts";
 
-export type AddKind = "agent" | "subagent" | "skill" | "instruction";
+export type AddKind = "agent" | "subagent" | "skill" | "instruction" | "tool";
 
 const DEST: Record<AddKind, (name: string) => string> = {
   agent: (n) => `agents/${n}.md`,
   subagent: (n) => `subagents/${n}.md`,
   skill: (n) => `skills/${n}/SKILL.md`,
   instruction: (n) => `instructions/${n}.md`,
+  tool: (n) => `tools/${n}.md`,
 };
 
 const TEMPLATE: Record<AddKind, string> = {
@@ -15,6 +16,7 @@ const TEMPLATE: Record<AddKind, string> = {
   subagent: "scaffold/subagent.md",
   skill: "scaffold/skill.md",
   instruction: "scaffold/instruction.md",
+  tool: "scaffold/tool.md",
 };
 
 /** `murmr add <kind> <name>` — scaffold a new IR definition from a template. */

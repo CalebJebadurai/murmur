@@ -1,4 +1,5 @@
 import { Glob } from "bun";
+import { existsSync } from "node:fs";
 import { join } from "node:path";
 import type {
   IRSet,
@@ -13,10 +14,12 @@ import {
   validateSkill,
   validateSubagent,
 } from "./validate.ts";
+import { validateTool } from "./tool.ts";
 
 export type LoadResult = ValidationResult<IRSet>;
 
 async function readFiles(dir: string, pattern: string): Promise<string[]> {
+  if (!existsSync(dir)) return [];
   const out: string[] = [];
   const glob = new Glob(pattern);
   for await (const rel of glob.scan({ cwd: dir, onlyFiles: true })) {
@@ -31,7 +34,15 @@ async function readFiles(dir: string, pattern: string): Promise<string[]> {
  */
 export async function loadIR(murmurDir: string): Promise<LoadResult> {
   const errors: ValidationError[] = [];
-  const set: IRSet = { agents: [], subagents: [], skills: [], instructions: [], pipelines: [], rubrics: [] };
+  const set: IRSet = {
+    agents: [],
+    subagents: [],
+    skills: [],
+    instructions: [],
+    pipelines: [],
+    rubrics: [],
+    tools: [],
+  };
 
   const agentFiles = await readFiles(join(murmurDir, "agents"), "*.md");
   for (const f of agentFiles) {
@@ -76,6 +87,13 @@ export async function loadIR(murmurDir: string): Promise<LoadResult> {
   for (const f of rubricFiles) {
     const res = validateRubric(await Bun.file(f).text(), f);
     if (res.ok) set.rubrics.push(res.value);
+    else errors.push(...res.errors);
+  }
+
+  const toolFiles = await readFiles(join(murmurDir, "tools"), "*.md");
+  for (const f of toolFiles) {
+    const res = validateTool(await Bun.file(f).text(), f);
+    if (res.ok) set.tools.push(res.value);
     else errors.push(...res.errors);
   }
 

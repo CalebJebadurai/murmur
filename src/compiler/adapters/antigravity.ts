@@ -156,8 +156,14 @@ export class AntigravityAdapter implements RuntimeCompiler {
         ...ctx.ir.skills.map((s) => `- **${s.name}** — ${s.description}`),
       );
     }
+    if (ctx.ir.tools && ctx.ir.tools.length) {
+      lines.push("", "## Tools", "");
+      lines.push(
+        ...ctx.ir.tools.map((t) => `- **${t.name}** — ${t.description} (\`${t.command}\`)`),
+      );
+    }
 
-    return [
+    const emitted: EmittedFile[] = [
       {
         path: `.agents/plugins/${plugin}/plugin.json`,
         contents: `${JSON.stringify(pluginJson, null, 2)}\n`,
@@ -167,5 +173,22 @@ export class AntigravityAdapter implements RuntimeCompiler {
         contents: `${lines.join("\n")}\n`,
       },
     ];
+
+    if (ctx.ir.tools && ctx.ir.tools.length) {
+      const servers: Record<string, { command: string; args: string[]; env?: Record<string, string> }> = {};
+      for (const t of ctx.ir.tools) {
+        servers[t.name] = {
+          command: t.command,
+          args: t.args,
+          ...(Object.keys(t.env).length ? { env: t.env } : {}),
+        };
+      }
+      emitted.push({
+        path: `.agents/plugins/${plugin}/mcp_config.json`,
+        contents: `${JSON.stringify({ mcpServers: servers }, null, 2)}\n`,
+      });
+    }
+
+    return emitted;
   }
 }

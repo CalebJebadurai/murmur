@@ -11,6 +11,7 @@ import { classifyCommand } from "./commands/classify.ts";
 import { watchCommand } from "./commands/watch.ts";
 import { hookCommand, type HookAction } from "./commands/hook.ts";
 import { toolCommand } from "./commands/tool.ts";
+import { docsCommand } from "./commands/docs.ts";
 
 const VERSION = "0.1.0";
 
@@ -43,11 +44,12 @@ Usage: murmr <command> [options]        (alias: mrmr)
 
 Commands:
   init                       Generate murmur/ from the codebase (structural pass)
-  add <kind> <name>          Scaffold an agent|subagent|skill|instruction
+  add <kind> <name>          Scaffold an agent|subagent|skill|instruction|tool
   compile [--target <id>]    Compile murmur/ to a runtime (copilot, goose, agy, claude, cursor)
   watch [--target <id>]      Watch murmur/ for changes and recompile automatically
   hook <install|uninstall|status> Manage Git pre-commit verification hook
   tool [discover|list]       Auto-discover codebase tools and generate tool skills
+  docs [--out <dir>] [--serve] Compile a browsable HTML documentation portal
   run <pipeline> [--tier T]  Walk a pipeline (deterministic); emits a RUN-LOG
   score <doc> --rubric <r>   Score a document against a rubric (arithmetic only)
   classify <task>            Classify a task and select an agent roster
@@ -96,8 +98,8 @@ async function main(): Promise<number> {
     case "add": {
       const kind = positionals[1] as AddKind | undefined;
       const name = positionals[2];
-      if (!kind || !["agent", "subagent", "skill", "instruction"].includes(kind)) {
-        console.error("Usage: murmr add <agent|subagent|skill|instruction> <name>");
+      if (!kind || !["agent", "subagent", "skill", "instruction", "tool"].includes(kind)) {
+        console.error("Usage: murmr add <agent|subagent|skill|instruction|tool> <name>");
         return 1;
       }
       return addCommand(root, kind, name ?? "");
@@ -126,6 +128,12 @@ async function main(): Promise<number> {
         json: flags["json"] === true,
       });
     }
+    case "docs":
+      return docsCommand(root, {
+        out: typeof flags["out"] === "string" ? flags["out"] : undefined,
+        serve: flags["serve"] === true,
+        port: typeof flags["port"] === "string" ? parseInt(flags["port"], 10) : undefined,
+      });
     case "run": {
       const pipeline = positionals[1];
       if (!pipeline) {

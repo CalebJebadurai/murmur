@@ -121,6 +121,32 @@ export class ClaudeAdapter implements RuntimeCompiler {
         ...ctx.ir.instructions.map((i) => `- **${i.name}** (\`${i.applyTo}\`)`),
       );
     }
-    return [{ path: "CLAUDE.md", contents: `${lines.join("\n")}\n` }];
+    if (ctx.ir.tools && ctx.ir.tools.length) {
+      lines.push("", "## Tools", "");
+      lines.push(
+        ...ctx.ir.tools.map((t) => `- **${t.name}** — ${t.description} (\`${t.command}\`)`),
+      );
+    }
+
+    const emitted: EmittedFile[] = [
+      { path: "CLAUDE.md", contents: `${lines.join("\n")}\n` },
+    ];
+
+    if (ctx.ir.tools && ctx.ir.tools.length) {
+      const servers: Record<string, { command: string; args: string[]; env?: Record<string, string> }> = {};
+      for (const t of ctx.ir.tools) {
+        servers[t.name] = {
+          command: t.command,
+          args: t.args,
+          ...(Object.keys(t.env).length ? { env: t.env } : {}),
+        };
+      }
+      emitted.push({
+        path: ".claude/mcp_config.json",
+        contents: `${JSON.stringify({ mcpServers: servers }, null, 2)}\n`,
+      });
+    }
+
+    return emitted;
   }
 }

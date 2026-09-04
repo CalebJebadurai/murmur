@@ -34,12 +34,15 @@ export type {
   DefinitionKind,
 } from "./types.ts";
 
+export type { ToolDefinition } from "./tool.ts";
+
 import type { AgentDefinition } from "./agent.ts";
 import type { SubagentDefinition } from "./subagent.ts";
 import type { SkillDefinition } from "./skill.ts";
 import type { InstructionDefinition } from "./instruction.ts";
 import type { PipelineDefinition } from "./pipeline.ts";
 import type { RubricDefinition } from "./rubric.ts";
+import type { ToolDefinition } from "./tool.ts";
 
 /** The full set of IR definitions loaded from a murmur/ directory. */
 export type IRSet = {
@@ -49,4 +52,5 @@ export type IRSet = {
   instructions: InstructionDefinition[];
   pipelines: PipelineDefinition[];
   rubrics: RubricDefinition[];
+  tools: ToolDefinition[];
 };
