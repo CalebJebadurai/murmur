@@ -70,9 +70,13 @@ async function main(): Promise<number> {
     console.log(VERSION);
     return 0;
   }
-  if (!cmd || flags["help"] || cmd === "help") {
+  if (flags["help"] || cmd === "help") {
     console.log(USAGE);
-    return cmd ? 0 : 1;
+    return 0;
+  }
+  if (!cmd) {
+    console.log(USAGE);
+    return 1;
   }
 
   switch (cmd) {
