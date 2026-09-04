@@ -22,7 +22,7 @@
   },
   "description": "Tool-agnostic, packageable multi-agent + subagent framework. Generic agents, on-demand subagents, knowledge from skills/instructions, codebase auto-init.",
   "engines": {
-    "bun": ">=1.0.0"
+    "bun": ">=1.4.0"
   },
   "files": [
     "dist",
