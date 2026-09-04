@@ -41,9 +41,10 @@ Agents, skills, and instructions are authored once in an abstract format and **c
 
 | Runtime | Compiles to |
 |---|---|
+| Google Antigravity | `.agents/plugins/<name>/`, `plugin.json`, `agents/`, `skills/`, `rules/`, `AGENTS.md` |
 | VS Code Copilot | `.github/agents/*.md`, `*.instructions.md`, `*.prompt.md`, `SKILL.md` |
-| Claude Code | sub-agents, `CLAUDE.md`, `.claude/skills/` |
 | goose (AAIF) | recipes, root-level skills, `AGENTS.md` |
+| Claude Code | sub-agents, `CLAUDE.md`, `.claude/skills/` |
 | Cursor | `.cursor/` rules + skills |
 | ACP-compatible editors | via the [Agent Client Protocol](https://agentclientprotocol.com/) (north-star target) |
 
@@ -72,8 +73,8 @@ No install required — run it straight from the registry with `bunx`:
 ```bash
 # In any project directory:
 bunx murmr init                  # analyze the codebase → agents + skills + instructions
-bunx murmr compile --target copilot    # or: goose
-bunx murmr doctor                # validate the generated IR
+bunx murmr compile --target agy  # or: copilot, goose
+bunx murmr doctor --fix          # validate and self-heal missing references
 ```
 
 Or install it for repeated use:
@@ -97,14 +98,14 @@ compiles to whatever runtime they use.
 
 ```bash
 # Project level
-murmr init                   # analyze codebase → generate skills + instructions + agents
-murmr add agent <name>       # scaffold a new generic agent
-murmr add subagent <name>    # scaffold a specialist subagent
-murmr add skill <name>       # scaffold a skill
-murmr add instruction <name> # scaffold a scoped instruction
-murmr compile --target copilot|goose    # claude|cursor|acp on the roadmap
-murmr doctor                 # validate frontmatter, applyTo globs, references
-murmr list                   # inventory the murmur/ IR
+murmr init                         # analyze codebase → generate skills + instructions + agents
+murmr add agent <name>             # scaffold a new generic agent
+murmr add subagent <name>          # scaffold a specialist subagent
+murmr add skill <name>             # scaffold a skill
+murmr add instruction <name>       # scaffold a scoped instruction
+murmr compile --target agy|copilot|goose  # claude|cursor|acp on the roadmap
+murmr doctor [--fix]               # validate & self-heal missing references
+murmr list                         # inventory the murmur/ IR
 murmr publish [--dry-run] [--strict]     # strip codebase-specific context for sharing
 ```
 

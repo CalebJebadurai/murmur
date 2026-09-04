@@ -85,4 +85,45 @@ describe("doctor", () => {
       await rm(dir, { recursive: true, force: true });
     }
   });
+
+  test("automatically fixes missing skill, instruction, and subagent references when opts.fix is true", async () => {
+    const dir = await scratchMurmur();
+    try {
+      await Bun.write(
+        join(dir, "agents", "needs-healing.md"),
+        `---\ndescription: "Agent requiring healing"\nskills: [auto-skill]\ninstructions: [auto-rule]\nagents: [auto-sub]\n---\n\n# Needs Healing\n\nbody\n`,
+      );
+
+      // Verify doctor detects problems before fix
+      const before = await runDoctor(dir, { fix: false });
+      expect(before.ok).toBe(false);
+      expect(before.errors.length).toBe(3);
+
+      // Run doctor with fix: true
+      const healed = await runDoctor(dir, { fix: true });
+      expect(healed.ok).toBe(true);
+      expect(healed.errors).toHaveLength(0);
+      expect(healed.fixed).toBeDefined();
+      expect(healed.fixed).toContain("skills/auto-skill/SKILL.md");
+      expect(healed.fixed).toContain("instructions/auto-rule.md");
+      expect(healed.fixed).toContain("subagents/auto-sub.md");
+
+      // Verify files actually exist on disk with valid content
+      const skillText = await Bun.file(join(dir, "skills", "auto-skill", "SKILL.md")).text();
+      expect(skillText).toContain("name: auto-skill");
+
+      const ruleText = await Bun.file(join(dir, "instructions", "auto-rule.md")).text();
+      expect(ruleText).toContain('applyTo: "**/*"');
+
+      const subText = await Bun.file(join(dir, "subagents", "auto-sub.md")).text();
+      expect(subText).toContain("Specialist subagent for auto-sub");
+
+      // Running doctor again without fix confirms everything stays clean
+      const after = await runDoctor(dir);
+      expect(after.ok).toBe(true);
+      expect(after.errors).toHaveLength(0);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
 });

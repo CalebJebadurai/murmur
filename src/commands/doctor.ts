@@ -1,11 +1,17 @@
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { mkdir } from "node:fs/promises";
 import { loadIR } from "../schema/load.ts";
 import { isValidGlob } from "../util/glob.ts";
 import type { IRSet, ValidationError } from "../schema/index.ts";
 
+export type DoctorOptions = {
+  fix?: boolean;
+};
+
 export type DoctorReport = {
   ok: boolean;
   errors: ValidationError[];
+  fixed?: string[];
 };
 
 /** Detect circular subagent references (A dispatches B, B dispatches A). */
@@ -50,8 +56,14 @@ function findCircular(ir: IRSet): ValidationError[] {
  * Validate the murmur/ IR: schema correctness (via the loader), reference
  * integrity (skills/instructions/agents referenced must exist), applyTo glob
  * syntax, and circular subagent dependencies.
+ *
+ * If `opts.fix` is enabled, missing skill, instruction, and subagent references
+ * are automatically scaffolded, making the IR self-healing.
  */
-export async function runDoctor(murmurDir: string): Promise<DoctorReport> {
+export async function runDoctor(
+  murmurDir: string,
+  opts?: DoctorOptions,
+): Promise<DoctorReport> {
   const loaded = await loadIR(murmurDir);
   if (!loaded.ok) return { ok: false, errors: loaded.errors };
 
@@ -65,24 +77,37 @@ export async function runDoctor(murmurDir: string): Promise<DoctorReport> {
     ...ir.subagents.map((s) => s.name),
   ]);
 
+  const missingSkills = new Set<string>();
+  const missingInstructions = new Set<string>();
+  const missingAgents = new Set<string>();
+
   const checkRefs = (
     owner: { name: string; skills: string[]; instructions: string[]; agents: string[] },
     kind: string,
   ): void => {
     const file = `murmur/${kind}/${owner.name}.md`;
-    for (const s of owner.skills)
-      if (!skillNames.has(s))
+    for (const s of owner.skills) {
+      if (!skillNames.has(s)) {
         errors.push({ message: `references missing skill "${s}"`, file, field: "skills" });
-    for (const i of owner.instructions)
-      if (!instrNames.has(i))
+        missingSkills.add(s);
+      }
+    }
+    for (const i of owner.instructions) {
+      if (!instrNames.has(i)) {
         errors.push({
           message: `references missing instruction "${i}"`,
           file,
           field: "instructions",
         });
-    for (const a of owner.agents)
-      if (!agentNames.has(a))
+        missingInstructions.add(i);
+      }
+    }
+    for (const a of owner.agents) {
+      if (!agentNames.has(a)) {
         errors.push({ message: `references missing agent "${a}"`, file, field: "agents" });
+        missingAgents.add(a);
+      }
+    }
   };
 
   for (const a of ir.agents) checkRefs(a, "agents");
@@ -115,12 +140,14 @@ export async function runDoctor(murmurDir: string): Promise<DoctorReport> {
       for (const phase of branch.phases) {
         for (const a of phase.agents) {
           if (a.builtin) continue;
-          if (!agentNames.has(a.name))
+          if (!agentNames.has(a.name)) {
             errors.push({
               message: `branch "${bname}" phase "${phase.id}" references missing agent "${a.name}"`,
               file,
               field: "phases",
             });
+            missingAgents.add(a.name);
+          }
         }
       }
       for (const loop of branch.loops) {
@@ -153,16 +180,58 @@ export async function runDoctor(murmurDir: string): Promise<DoctorReport> {
 
   errors.push(...findCircular(ir));
 
+  // If self-healing is requested and we detected missing references, scaffold them
+  if (opts?.fix && (missingSkills.size > 0 || missingInstructions.size > 0 || missingAgents.size > 0)) {
+    const fixed: string[] = [];
+
+    for (const s of missingSkills) {
+      const dest = join(murmurDir, "skills", s, "SKILL.md");
+      await mkdir(dirname(dest), { recursive: true });
+      const content = `---\nname: ${s}\ndescription: "Knowledge and guidelines for ${s}."\n---\n\n# ${s}\n\nCodebase-specific knowledge and reference patterns for ${s}.\n`;
+      await Bun.write(dest, content);
+      fixed.push(`skills/${s}/SKILL.md`);
+    }
+
+    for (const i of missingInstructions) {
+      const dest = join(murmurDir, "instructions", `${i}.md`);
+      await mkdir(dirname(dest), { recursive: true });
+      const content = `---\napplyTo: "**/*"\n---\n\n# ${i} Conventions\n\nScoped rules and behavioral conventions for ${i}.\n`;
+      await Bun.write(dest, content);
+      fixed.push(`instructions/${i}.md`);
+    }
+
+    for (const a of missingAgents) {
+      const dest = join(murmurDir, "subagents", `${a}.md`);
+      await mkdir(dirname(dest), { recursive: true });
+      const content = `---\ndescription: "Specialist subagent for ${a}."\nspawn-trigger: "when ${a} tasks or domain problems arise"\n---\n\n# ${a}\n\nSpecialist subagent role and responsibilities for ${a}.\n`;
+      await Bun.write(dest, content);
+      fixed.push(`subagents/${a}.md`);
+    }
+
+    // Re-validate to verify that fixes resolved the problems
+    const recheck = await runDoctor(murmurDir, { fix: false });
+    return { ok: recheck.ok, errors: recheck.errors, fixed };
+  }
+
   return { ok: errors.length === 0, errors };
 }
 
 /** CLI entry: run doctor on `<root>/murmur`, print results, return exit code. */
-export async function doctorCommand(projectRoot: string): Promise<number> {
+export async function doctorCommand(
+  projectRoot: string,
+  opts?: DoctorOptions,
+): Promise<number> {
   const murmurDir = join(projectRoot, "murmur");
   if (!(await Bun.file(join(murmurDir, "agents")).exists().catch(() => false))) {
     // directory check via a known subpath; fall through to loader which reports cleanly
   }
-  const report = await runDoctor(murmurDir);
+  const report = await runDoctor(murmurDir, opts);
+  if (report.fixed && report.fixed.length > 0) {
+    console.log(`doctor: automatically fixed ${report.fixed.length} issue(s):`);
+    for (const f of report.fixed) {
+      console.log(`  + created murmur/${f}`);
+    }
+  }
   if (report.ok) {
     console.log("doctor: no problems found.");
     return 0;

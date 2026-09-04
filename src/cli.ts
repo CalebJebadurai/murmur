@@ -40,10 +40,10 @@ Usage: murmr <command> [options]        (alias: mrmr)
 Commands:
   init                       Generate murmur/ from the codebase (structural pass)
   add <kind> <name>          Scaffold an agent|subagent|skill|instruction
-  compile [--target <id>]    Compile murmur/ to a runtime (copilot, goose)
+  compile [--target <id>]    Compile murmur/ to a runtime (copilot, goose, agy)
   run <pipeline> [--tier T]  Walk a pipeline (deterministic); emits a RUN-LOG
   score <doc> --rubric <r>   Score a document against a rubric (arithmetic only)
-  doctor                     Validate the murmur/ IR
+  doctor [--fix]             Validate the murmur/ IR (auto-scaffold missing refs)
   list                       Inventory the murmur/ IR
   publish [--out <dir>]      Scrub codebase context into a shareable copy
 
@@ -53,7 +53,8 @@ Global options:
 
 Examples:
   murmr init
-  murmr compile --target copilot
+  murmr compile --target agy
+  murmr doctor --fix
   murmr publish --dry-run --strict
 `;
 
@@ -110,7 +111,7 @@ async function main(): Promise<number> {
       });
     }
     case "doctor":
-      return doctorCommand(root);
+      return doctorCommand(root, { fix: flags["fix"] === true });
     case "score": {
       const document = positionals[1];
       const rubric = typeof flags["rubric"] === "string" ? flags["rubric"] : undefined;

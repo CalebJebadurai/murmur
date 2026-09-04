@@ -73,6 +73,53 @@ describe("goose adapter golden output", () => {
   });
 });
 
+describe("antigravity adapter golden output", () => {
+  test("emits .agents/plugins/<name>, plugin.json, agents, skills, rules and AGENTS.md", async () => {
+    const res = await loadIR(MURMUR_DIR);
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    const ctx: CompileContext = {
+      config: { ...DEFAULT_CONFIG, project: { name: "demo-project" } },
+      ir: res.value,
+    };
+    const out = await freshOut();
+    try {
+      const adapter = getAdapter("agy");
+      expect(adapter).toBeDefined();
+      await compileTarget(adapter!, ctx, out);
+
+      const pluginJson = await Bun.file(
+        join(out, ".agents/plugins/demo-project/plugin.json"),
+      ).json();
+      expect(pluginJson.name).toBe("demo-project");
+
+      const master = await Bun.file(
+        join(out, ".agents/plugins/demo-project/agents/master.md"),
+      ).text();
+      expect(master).toContain("name: master");
+      expect(master).toContain("mainAgent: true");
+      expect(master).toContain("subagent: true");
+      expect(master).toContain("commandExecutionPolicy: auto");
+      expect(master).toContain("# Master");
+
+      const skill = await Bun.file(
+        join(out, ".agents/plugins/demo-project/skills/build-system/SKILL.md"),
+      ).text();
+      expect(skill).toContain("name: build-system");
+
+      const rule = await Bun.file(
+        join(out, ".agents/plugins/demo-project/rules/typescript-conventions.md"),
+      ).text();
+      expect(rule).toContain("applyTo:");
+
+      const agentsMd = await Bun.file(join(out, "AGENTS.md")).text();
+      expect(agentsMd).toContain("## Main Agents");
+    } finally {
+      await rm(out, { recursive: true, force: true });
+    }
+  });
+});
+
 describe("atomic compile", () => {
   test("a mid-compile adapter failure leaves the output tree untouched", async () => {
     const res = await loadIR(MURMUR_DIR);
