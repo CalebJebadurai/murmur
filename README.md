@@ -98,16 +98,22 @@ compiles to whatever runtime they use.
 
 ```bash
 # Project level
-murmr init                         # analyze codebase → generate skills + instructions + agents
+murmr init [--tools]               # analyze codebase → generate skills + instructions + agents
 murmr add agent <name>             # scaffold a new generic agent
 murmr add subagent <name>          # scaffold a specialist subagent
 murmr add skill <name>             # scaffold a skill
 murmr add instruction <name>       # scaffold a scoped instruction
 murmr compile --target agy|copilot|goose|claude|cursor
+murmr watch [--target <id>]        # real-time recompiler daemon with debounced change detection
+murmr hook install                 # install Git pre-commit verification hook (.git/hooks/pre-commit)
+murmr hook status                  # check status of Git pre-commit hook
+murmr tool discover [--write]      # auto-discover package scripts/tools & generate tool skills
+murmr run <pipeline> [--tier T]    # walk a pipeline with interactive progress UI; emits RUN-LOG
+murmr score <doc> --rubric <name>  # score a document against quantitative rubrics
 murmr classify "<task description>" # classify task & select agent roster
 murmr doctor [--fix]               # validate & self-heal missing references
 murmr list                         # inventory the murmur/ IR
-murmr publish [--dry-run] [--strict]     # strip codebase-specific context for sharing
+murmr publish [--dry-run] [--strict] # strip codebase-specific context for sharing
 ```
 
 ---

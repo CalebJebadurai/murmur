@@ -3,11 +3,15 @@ import { join } from "node:path";
 import { templatesDir } from "../util/templates.ts";
 import { analyzeStructural, renderStructuralSkills } from "../analyzer/structural.ts";
 
+import { discoverTools, renderToolsSkill } from "./tool.ts";
+
 export type InitMode = "merge" | "overwrite" | "cancel";
 
 export type InitOptions = {
   /** Behavior when murmur/ already exists. Default "merge" (non-interactive safe). */
   mode?: InitMode;
+  /** Discover and write project tools skill. */
+  tools?: boolean;
 };
 
 async function copyDir(from: string, to: string, overwrite: boolean): Promise<number> {
@@ -57,6 +61,16 @@ export async function initCommand(
     const dest = join(murmurDir, f.path);
     await Bun.write(dest, f.contents);
     written++;
+  }
+
+  // 3. If tools requested, discover and write project-tools skill
+  if (opts.tools) {
+    const tools = await discoverTools(projectRoot);
+    if (tools.length > 0) {
+      const dest = join(murmurDir, "skills", "project-tools", "SKILL.md");
+      await Bun.write(dest, renderToolsSkill(tools));
+      written++;
+    }
   }
 
   console.log(

@@ -28,3 +28,6 @@ coverage/
 murmur-clean/
 .smoke-out/
 .murmur-stage-*/
+.agents/
+.claude/
+.cursor/

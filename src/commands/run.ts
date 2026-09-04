@@ -43,6 +43,7 @@ export type RunOptions = {
   allowRun?: boolean;
   allowConfigExec?: boolean;
   out?: string;
+  verbose?: boolean;
   /** Test seam: override the dispatcher. */
   dispatcher?: Dispatcher;
 };
@@ -239,7 +240,28 @@ export async function runCommand(projectRoot: string, opts: RunOptions): Promise
     }
   }
 
-  const runReport = await execute(sel.name, sel.branch, phases, tier, dispatch);
+  const isTTY = typeof process !== "undefined" && process.stdout && process.stdout.isTTY;
+  const showBanner = !opts.dryRun || opts.verbose;
+
+  if (showBanner || isTTY) {
+    console.log(`\n┌─ murmr run ───────────────────────────────────────────────────`);
+    console.log(`│ Pipeline : ${pipeline.name}`);
+    console.log(`│ Branch   : ${sel.name}`);
+    console.log(`│ Tier     : ${tier}`);
+    console.log(`│ Mode     : ${opts.dryRun ? "dry-run (simulation)" : opts.allowRun ? "live host dispatch" : "deterministic stub"}`);
+    console.log(`└───────────────────────────────────────────────────────────────\n`);
+  }
+
+  const runReport = await execute(sel.name, sel.branch, phases, tier, async (agent, phase, iteration) => {
+    const res = await dispatch(agent, phase, iteration);
+    if (showBanner || isTTY) {
+      const scoreBadge = typeof res.score === "number" ? ` [SCORE: ${res.score}]` : "";
+      const noteBadge = res.note ? ` (${res.note})` : "";
+      const statusIcon = res.status === "SUCCESS" ? "✓" : res.status === "SKIPPED" ? "↷" : "✗";
+      console.log(`  ${statusIcon} Phase ${phase.padEnd(2)} │ ${agent.padEnd(16)} (iter ${iteration}) → ${res.status}${scoreBadge}${noteBadge}`);
+    }
+    return res;
+  });
   runReport.pipeline = pipeline.name;
 
   const date = new Date().toISOString().slice(0, 10);
@@ -249,6 +271,10 @@ export async function runCommand(projectRoot: string, opts: RunOptions): Promise
   const logPath = join(outDir, "RUN-LOG.md");
   if (!opts.dryRun) {
     await Bun.write(logPath, log);
+  }
+
+  if (showBanner || isTTY) {
+    console.log(`\n────────────────────────────────────────────────────────────────`);
   }
 
   console.log(
@@ -274,6 +300,9 @@ export async function runCommand(projectRoot: string, opts: RunOptions): Promise
         "     degrading to compile-and-instruct. Run `murmr compile` and invoke the\n" +
         "     emitted orchestrator in your host runtime.",
     );
+  }
+  if (showBanner || isTTY) {
+    console.log(`────────────────────────────────────────────────────────────────\n`);
   }
   return 0;
 }

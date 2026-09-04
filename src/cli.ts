@@ -8,6 +8,9 @@ import { publishCommand } from "./commands/publish.ts";
 import { runCommand } from "./commands/run.ts";
 import { scoreCommand } from "./commands/score.ts";
 import { classifyCommand } from "./commands/classify.ts";
+import { watchCommand } from "./commands/watch.ts";
+import { hookCommand, type HookAction } from "./commands/hook.ts";
+import { toolCommand } from "./commands/tool.ts";
 
 const VERSION = "0.1.0";
 
@@ -42,6 +45,9 @@ Commands:
   init                       Generate murmur/ from the codebase (structural pass)
   add <kind> <name>          Scaffold an agent|subagent|skill|instruction
   compile [--target <id>]    Compile murmur/ to a runtime (copilot, goose, agy, claude, cursor)
+  watch [--target <id>]      Watch murmur/ for changes and recompile automatically
+  hook <install|uninstall|status> Manage Git pre-commit verification hook
+  tool [discover|list]       Auto-discover codebase tools and generate tool skills
   run <pipeline> [--tier T]  Walk a pipeline (deterministic); emits a RUN-LOG
   score <doc> --rubric <r>   Score a document against a rubric (arithmetic only)
   classify <task>            Classify a task and select an agent roster
@@ -54,8 +60,11 @@ Global options:
   --version                  Show version
 
 Examples:
-  murmr init
+  murmr init --tools
   murmr compile --target agy
+  murmr watch --target agy
+  murmr hook install
+  murmr tool discover --write
   murmr classify "refactor auth database queries"
   murmr doctor --fix
   murmr publish --dry-run --strict
@@ -82,7 +91,7 @@ async function main(): Promise<number> {
   switch (cmd) {
     case "init": {
       const mode = (flags["mode"] as InitMode) ?? undefined;
-      return initCommand(root, { mode });
+      return initCommand(root, { mode, tools: flags["tools"] === true });
     }
     case "add": {
       const kind = positionals[1] as AddKind | undefined;
@@ -99,6 +108,24 @@ async function main(): Promise<number> {
         out: typeof flags["out"] === "string" ? flags["out"] : undefined,
         allowConfigExec: flags["allow-config-exec"] === true,
       });
+    case "watch":
+      return watchCommand(root, {
+        target: typeof flags["target"] === "string" ? flags["target"] : undefined,
+        out: typeof flags["out"] === "string" ? flags["out"] : undefined,
+        allowConfigExec: flags["allow-config-exec"] === true,
+        once: flags["once"] === true,
+      });
+    case "hook": {
+      const action = (positionals[1] as HookAction) || "install";
+      return hookCommand(root, action);
+    }
+    case "tool": {
+      const action = positionals[1] === "list" ? "list" : "discover";
+      return toolCommand(root, action, {
+        write: flags["write"] === true,
+        json: flags["json"] === true,
+      });
+    }
     case "run": {
       const pipeline = positionals[1];
       if (!pipeline) {
