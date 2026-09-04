@@ -44,8 +44,8 @@ Agents, skills, and instructions are authored once in an abstract format and **c
 | Google Antigravity | `.agents/plugins/<name>/`, `plugin.json`, `agents/`, `skills/`, `rules/`, `AGENTS.md` |
 | VS Code Copilot | `.github/agents/*.md`, `*.instructions.md`, `*.prompt.md`, `SKILL.md` |
 | goose (AAIF) | recipes, root-level skills, `AGENTS.md` |
-| Claude Code | sub-agents, `CLAUDE.md`, `.claude/skills/` |
-| Cursor | `.cursor/` rules + skills |
+| Claude Code | `.claude/agents/*.md`, `CLAUDE.md`, `.claude/skills/`, `.claude/rules/` |
+| Cursor | `.cursor/rules/*.mdc`, `.cursor/agents/`, `.cursor/skills/`, `AGENTS.md` |
 | ACP-compatible editors | via the [Agent Client Protocol](https://agentclientprotocol.com/) (north-star target) |
 
 `AGENTS.md` is treated as the universal lowest-common-denominator manifest.
@@ -103,7 +103,8 @@ murmr add agent <name>             # scaffold a new generic agent
 murmr add subagent <name>          # scaffold a specialist subagent
 murmr add skill <name>             # scaffold a skill
 murmr add instruction <name>       # scaffold a scoped instruction
-murmr compile --target agy|copilot|goose  # claude|cursor|acp on the roadmap
+murmr compile --target agy|copilot|goose|claude|cursor
+murmr classify "<task description>" # classify task & select agent roster
 murmr doctor [--fix]               # validate & self-heal missing references
 murmr list                         # inventory the murmur/ IR
 murmr publish [--dry-run] [--strict]     # strip codebase-specific context for sharing

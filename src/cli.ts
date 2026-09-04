@@ -7,6 +7,7 @@ import { addCommand, type AddKind } from "./commands/add.ts";
 import { publishCommand } from "./commands/publish.ts";
 import { runCommand } from "./commands/run.ts";
 import { scoreCommand } from "./commands/score.ts";
+import { classifyCommand } from "./commands/classify.ts";
 
 const VERSION = "0.1.0";
 
@@ -40,9 +41,10 @@ Usage: murmr <command> [options]        (alias: mrmr)
 Commands:
   init                       Generate murmur/ from the codebase (structural pass)
   add <kind> <name>          Scaffold an agent|subagent|skill|instruction
-  compile [--target <id>]    Compile murmur/ to a runtime (copilot, goose, agy)
+  compile [--target <id>]    Compile murmur/ to a runtime (copilot, goose, agy, claude, cursor)
   run <pipeline> [--tier T]  Walk a pipeline (deterministic); emits a RUN-LOG
   score <doc> --rubric <r>   Score a document against a rubric (arithmetic only)
+  classify <task>            Classify a task and select an agent roster
   doctor [--fix]             Validate the murmur/ IR (auto-scaffold missing refs)
   list                       Inventory the murmur/ IR
   publish [--out <dir>]      Scrub codebase context into a shareable copy
@@ -54,6 +56,7 @@ Global options:
 Examples:
   murmr init
   murmr compile --target agy
+  murmr classify "refactor auth database queries"
   murmr doctor --fix
   murmr publish --dry-run --strict
 `;
@@ -123,6 +126,16 @@ async function main(): Promise<number> {
         document,
         rubric,
         out: typeof flags["out"] === "string" ? flags["out"] : undefined,
+      });
+    }
+    case "classify": {
+      const task = positionals.slice(1).join(" ");
+      if (!task.trim()) {
+        console.error('Usage: murmr classify "<task description>"');
+        return 1;
+      }
+      return classifyCommand(root, task, {
+        json: flags["json"] === true,
       });
     }
     case "list":

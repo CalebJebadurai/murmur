@@ -120,6 +120,76 @@ describe("antigravity adapter golden output", () => {
   });
 });
 
+describe("claude adapter golden output", () => {
+  test("emits .claude/agents, skills, rules, and root CLAUDE.md", async () => {
+    const res = await loadIR(MURMUR_DIR);
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    const ctx: CompileContext = {
+      config: { ...DEFAULT_CONFIG, project: { name: "claude-demo" } },
+      ir: res.value,
+    };
+    const out = await freshOut();
+    try {
+      const adapter = getAdapter("claude");
+      expect(adapter).toBeDefined();
+      await compileTarget(adapter!, ctx, out);
+
+      const master = await Bun.file(join(out, ".claude/agents/master.md")).text();
+      expect(master).toContain("name: master");
+      expect(master).toContain("# Master");
+
+      const skill = await Bun.file(
+        join(out, ".claude/skills/build-system/SKILL.md"),
+      ).text();
+      expect(skill).toContain("name: build-system");
+
+      const claudeMd = await Bun.file(join(out, "CLAUDE.md")).text();
+      expect(claudeMd).toContain("Claude Code Project Guide");
+      expect(claudeMd).toContain("## Available Agents");
+    } finally {
+      await rm(out, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("cursor adapter golden output", () => {
+  test("emits .cursor/rules/*.mdc, agents, skills, and root AGENTS.md", async () => {
+    const res = await loadIR(MURMUR_DIR);
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    const ctx: CompileContext = {
+      config: { ...DEFAULT_CONFIG, project: { name: "cursor-demo" } },
+      ir: res.value,
+    };
+    const out = await freshOut();
+    try {
+      const adapter = getAdapter("cursor");
+      expect(adapter).toBeDefined();
+      await compileTarget(adapter!, ctx, out);
+
+      const mdc = await Bun.file(
+        join(out, ".cursor/rules/typescript-conventions.mdc"),
+      ).text();
+      expect(mdc).toContain("globs:");
+      expect(mdc).toContain("description:");
+
+      const master = await Bun.file(join(out, ".cursor/agents/master.md")).text();
+      expect(master).toContain("name: master");
+
+      const skill = await Bun.file(
+        join(out, ".cursor/skills/build-system/SKILL.md"),
+      ).text();
+      expect(skill).toContain("name: build-system");
+
+      const agentsMd = await Bun.file(join(out, "AGENTS.md")).text();
+      expect(agentsMd).toContain("## Agents");
+    } finally {
+      await rm(out, { recursive: true, force: true });
+    }
+  });
+});
+
 describe("atomic compile", () => {
   test("a mid-compile adapter failure leaves the output tree untouched", async () => {
     const res = await loadIR(MURMUR_DIR);
