@@ -5,7 +5,7 @@
 
 A *murmuration* is thousands of starlings moving as a single, coordinated intelligence — **no central controller, emergent behavior from simple shared rules.** That's the design philosophy: a small set of generic agents, a master agent that spawns specialized subagents on demand, and a shared substrate of skills/instructions that gives them context.
 
-> **Status:** ✅ v0.1.0 shipped. Defines and compiles agents/subagents/skills/instructions, with `init`, `compile` (Copilot + goose), `doctor`, `add`, `list`, and a defense-in-depth `publish` scrubber. The roadmap grows this into a portable engine for **governed multi-agent / agent-swarm workflows** with automatic context **and** tool generation — see [`docs/ROADMAP.md`](docs/ROADMAP.md) and [`docs/VISION.md`](docs/VISION.md).
+> **Status:** ✅ v0.2.0 shipped. Defines and compiles agents/subagents/skills/instructions/tools/pipelines, with `init`, `compile` (Copilot, goose, Antigravity, Claude, Cursor), `watch`, `hook`, `tool`, `docs`, `doctor --fix`, `classify`, and a defense-in-depth `publish` scrubber.
 
 ---
 
