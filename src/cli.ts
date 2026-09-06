@@ -13,7 +13,7 @@ import { hookCommand, type HookAction } from "./commands/hook.ts";
 import { toolCommand } from "./commands/tool.ts";
 import { docsCommand } from "./commands/docs.ts";
 
-const VERSION = "0.4.0";
+const VERSION = "0.5.0";
 
 type Flags = { positionals: string[]; flags: Record<string, string | boolean> };
 
@@ -137,9 +137,13 @@ async function main(): Promise<number> {
     case "run": {
       const pipeline = positionals[1];
       if (!pipeline) {
-        console.error("Usage: murmr run <pipeline> [--tier <t>] [--branch <b>] [--dry-run]");
+        console.error("Usage: murmr run <pipeline> [--tier <t>] [--branch <b>] [--concurrency <n>] [--retries <n>] [--dry-run]");
         return 1;
       }
+      const concurrencyRaw = flags["concurrency"] ?? flags["c"];
+      const concurrency = typeof concurrencyRaw === "string" ? parseInt(concurrencyRaw, 10) : typeof concurrencyRaw === "number" ? concurrencyRaw : undefined;
+      const retriesRaw = flags["retries"];
+      const retries = typeof retriesRaw === "string" ? parseInt(retriesRaw, 10) : typeof retriesRaw === "number" ? retriesRaw : undefined;
       return runCommand(root, {
         pipeline,
         tier: typeof flags["tier"] === "string" ? flags["tier"] : undefined,
@@ -150,6 +154,8 @@ async function main(): Promise<number> {
         allowRun: flags["allow-run"] === true,
         allowConfigExec: flags["allow-config-exec"] === true,
         out: typeof flags["out"] === "string" ? flags["out"] : undefined,
+        concurrency: Number.isFinite(concurrency) ? concurrency : undefined,
+        retries: Number.isFinite(retries) ? retries : undefined,
       });
     }
     case "doctor":

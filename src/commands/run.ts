@@ -4,6 +4,7 @@ import { loadIR } from "../schema/load.ts";
 import { runDoctor } from "./doctor.ts";
 import { loadConfig } from "../util/loadConfig.ts";
 import { makeHostDispatcher } from "./hostDispatch.ts";
+import { runWorkerPool } from "../util/workerPool.ts";
 import type {
   BranchDefinition,
   PhaseDefinition,
@@ -44,6 +45,12 @@ export type RunOptions = {
   allowConfigExec?: boolean;
   out?: string;
   verbose?: boolean;
+  /** Max concurrent agent turns (v0.5 concurrency engine). */
+  concurrency?: number;
+  /** Max retries for failed agent turns. */
+  retries?: number;
+  /** Initial retry delay in ms. */
+  retryDelayMs?: number;
   /** Test seam: override the dispatcher. */
   dispatcher?: Dispatcher;
 };
@@ -67,7 +74,9 @@ export type RunReport = {
   totalIterations: number;
   exec: ExecEntry[];
   scored: number[];
+  peakConcurrency?: number;
 };
+
 
 function selectBranch(p: PipelineDefinition, opts: RunOptions): { name: string; branch: BranchDefinition } | null {
   if (opts.branch && p.branches[opts.branch]) return { name: opts.branch, branch: p.branches[opts.branch]! };
@@ -101,6 +110,11 @@ async function execute(
   phases: PhaseDefinition[],
   tierName: string,
   dispatch: Dispatcher,
+  opts?: {
+    concurrency?: number;
+    retries?: number;
+    retryDelayMs?: number;
+  },
 ): Promise<RunReport> {
   const exec: ExecEntry[] = [];
   const scored: number[] = [];
@@ -109,20 +123,55 @@ async function execute(
 
   const loopByFrom = new Map(branch.loops.map((l) => [l.from, l]));
   const neverParallel = branch.parallel.neverParallel;
+  const configuredConcurrency = opts?.concurrency;
+  const effectiveMaxConcurrent = configuredConcurrency
+    ? Math.max(1, Math.min(configuredConcurrency, branch.parallel.maxConcurrent))
+    : Math.max(1, branch.parallel.maxConcurrent);
+
+  let peakConcurrency = 0;
 
   const runPhaseOnce = async (phase: PhaseDefinition, iteration: number): Promise<boolean> => {
-    let earlyExit = false;
-    // Parallelism bookkeeping: record neverParallel violations would-be (skeleton
-    // does not actually parallelize; v0.5 enforces via the worker pool).
-    void neverParallel;
-    void branch.parallel.maxConcurrent;
-    for (const a of phase.agents) {
-      const res = await dispatch(a.name, phase.id, iteration);
-      exec.push({ phase: phase.id, agent: a.name, iteration, status: res.status, note: res.note });
-      if (typeof res.score === "number") scored.push(res.score);
-      if (res.earlyExit) earlyExit = true;
+    if (phase.agents.length === 0) return false;
+
+    const poolItems = phase.agents.map((a) => ({
+      name: a.name,
+      payload: a,
+    }));
+
+    const poolResult = await runWorkerPool(
+      poolItems,
+      async (agent) => {
+        const res = await dispatch(agent.name, phase.id, iteration);
+        return {
+          status: res.status,
+          earlyExit: res.earlyExit,
+          score: res.score,
+          note: res.note,
+        };
+      },
+      {
+        maxConcurrent: effectiveMaxConcurrent,
+        neverParallel,
+        maxRetries: opts?.retries,
+        retryDelayMs: opts?.retryDelayMs,
+        stopOnEarlyExit: true,
+      },
+    );
+
+    peakConcurrency = Math.max(peakConcurrency, poolResult.peakConcurrency);
+
+    for (const r of poolResult.results) {
+      exec.push({
+        phase: phase.id,
+        agent: r.name,
+        iteration,
+        status: r.result.status,
+        note: r.result.note,
+      });
+      if (typeof r.result.score === "number") scored.push(r.result.score);
     }
-    return earlyExit;
+
+    return poolResult.earlyExitTriggered;
   };
 
   let i = 0;
@@ -154,7 +203,7 @@ async function execute(
   }
 
   const totalIterations = Object.values(iterationsByLoop).reduce((a, b) => a + b, 0);
-  return { pipeline: "", branch: branchName, tier: tierName, iterationsByLoop, totalIterations, exec, scored };
+  return { pipeline: "", branch: branchName, tier: tierName, iterationsByLoop, totalIterations, exec, scored, peakConcurrency };
 }
 
 /** Format a RUN-LOG in the agri two-part format (summary table + execution log). */
@@ -252,16 +301,27 @@ export async function runCommand(projectRoot: string, opts: RunOptions): Promise
     console.log(`└───────────────────────────────────────────────────────────────\n`);
   }
 
-  const runReport = await execute(sel.name, sel.branch, phases, tier, async (agent, phase, iteration) => {
-    const res = await dispatch(agent, phase, iteration);
-    if (showBanner || isTTY) {
-      const scoreBadge = typeof res.score === "number" ? ` [SCORE: ${res.score}]` : "";
-      const noteBadge = res.note ? ` (${res.note})` : "";
-      const statusIcon = res.status === "SUCCESS" ? "✓" : res.status === "SKIPPED" ? "↷" : "✗";
-      console.log(`  ${statusIcon} Phase ${phase.padEnd(2)} │ ${agent.padEnd(16)} (iter ${iteration}) → ${res.status}${scoreBadge}${noteBadge}`);
-    }
-    return res;
-  });
+  const runReport = await execute(
+    sel.name,
+    sel.branch,
+    phases,
+    tier,
+    async (agent, phase, iteration) => {
+      const res = await dispatch(agent, phase, iteration);
+      if (showBanner || isTTY) {
+        const scoreBadge = typeof res.score === "number" ? ` [SCORE: ${res.score}]` : "";
+        const noteBadge = res.note ? ` (${res.note})` : "";
+        const statusIcon = res.status === "SUCCESS" ? "✓" : res.status === "SKIPPED" ? "↷" : "✗";
+        console.log(`  ${statusIcon} Phase ${phase.padEnd(2)} │ ${agent.padEnd(16)} (iter ${iteration}) → ${res.status}${scoreBadge}${noteBadge}`);
+      }
+      return res;
+    },
+    {
+      concurrency: opts.concurrency,
+      retries: opts.retries,
+      retryDelayMs: opts.retryDelayMs,
+    },
+  );
   runReport.pipeline = pipeline.name;
 
   const date = new Date().toISOString().slice(0, 10);
@@ -277,9 +337,10 @@ export async function runCommand(projectRoot: string, opts: RunOptions): Promise
     console.log(`\n────────────────────────────────────────────────────────────────`);
   }
 
+  const concInfo = runReport.peakConcurrency ? `, peak concurrency: ${runReport.peakConcurrency}` : "";
   console.log(
     `run: pipeline "${pipeline.name}" branch "${sel.name}" tier "${tier}" — ` +
-      `${runReport.exec.length} turn(s), loops {${Object.entries(runReport.iterationsByLoop).map(([k, v]) => `${k}:${v}`).join(", ") || "none"}}.`,
+      `${runReport.exec.length} turn(s)${concInfo}, loops {${Object.entries(runReport.iterationsByLoop).map(([k, v]) => `${k}:${v}`).join(", ") || "none"}}.`,
   );
   if (opts.dryRun) {
     console.log("run: --dry-run — no files written, no host CLI spawned.");
