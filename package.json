@@ -13,6 +13,8 @@
     "lefthook": "^1.6.0",
     "typescript": "^5.7.0"
   },
+  "main": "dist/index.js",
+  "types": "src/index.ts",
   "bin": {
     "murmr": "dist/cli.js",
     "mrmr": "dist/cli.js"
@@ -50,7 +52,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "bun build src/cli.ts --target bun --outdir dist --minify && chmod +x dist/cli.js",
+    "build": "bun build src/cli.ts src/index.ts --target bun --outdir dist --minify && chmod +x dist/cli.js",
     "dev": "bun run src/cli.ts",
     "test": "bun test",
     "typecheck": "tsc --noEmit",

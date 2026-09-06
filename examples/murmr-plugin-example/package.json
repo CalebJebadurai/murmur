@@ -1,0 +1,15 @@
+{
+  "name": "murmr-plugin-example",
+  "version": "1.0.0",
+  "description": "Example third-party compiler adapter plugin for murmuration (murmr)",
+  "main": "src/index.ts",
+  "type": "module",
+  "peerDependencies": {
+    "murmr": "^1.0.0"
+  },
+  "keywords": [
+    "murmr-plugin",
+    "ai-agents",
+    "compiler"
+  ]
+}
