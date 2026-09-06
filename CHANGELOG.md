@@ -4,6 +4,30 @@ All notable changes to Murmuration are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the project adheres to
 semantic versioning.
 
+## [1.0.0] — 2026-09-06
+
+The Full Union: Murmuration moves from an abstract agent definition compiler to a complete, portable engine for **governed multi-agent orchestration** across 6 native targets with zero runtime dependencies.
+
+### Added
+
+- **Directory-Structured Skill Assets (`SkillAsset`)**:
+  - `SkillAsset` interface (`relativePath`, `absolutePath`, `contents`) in IR.
+  - Companion asset discovery in `src/schema/load.ts` (`skills/<name>/*`).
+  - Companion asset emission across all 6 compiler adapters (`copilot`, `goose`, `antigravity`, `claude`, `cursor`, `acp`).
+- **npm Plugin Architecture**:
+  - `murmr-plugin-*` auto-discovery in `package.json`.
+  - `defineAdapter` typed wrapper for plugin authors (`src/compiler/plugin.ts`).
+  - Dynamic runtime registration with `--allow-config-exec` security permissions.
+- **Agent Client Protocol (ACP) Adapter**:
+  - Conforms to [agentclientprotocol.com](https://agentclientprotocol.com/).
+  - Emits `.acp/manifest.json`, `.acp/agents/*.json`, `.acp/pipelines/*.json`, and a standalone JSON-RPC 2.0 stdio server (`.acp/server.ts`).
+- **Cloud Sandbox Dispatcher**:
+  - `makeSandboxDispatcher` supporting isolated Docker containers (`--sandbox docker`) and remote HTTP/JSON-RPC runners (`--sandbox remote`).
+- **Worker Pool Concurrency Engine**:
+  - Budgeted concurrent execution (`runWorkerPool`) with `neverParallel` mutual exclusion and exponential backoff retries in `murmr run`.
+- **End-to-End Orchestration Probe**:
+  - Full-lifecycle automated integration probe in `tests/e2eProbe.test.ts`.
+
 ## [0.2.0] — 2026-06-16
 
 The orchestration layer: murmur moves from compiling agent definitions to
