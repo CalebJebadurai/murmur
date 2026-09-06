@@ -104,12 +104,9 @@ Releases use [release-please](https://github.com/googleapis/release-please-actio
    that bumps the version in `package.json` + `.release-please-manifest.json` and
    updates [`CHANGELOG.md`](CHANGELOG.md).
 2. Merging that release PR tags the version and creates a GitHub Release.
-3. The `publish` job then builds and publishes to npm **if** an `NPM_TOKEN` repository
-   secret is configured. Until then, publishing is skipped (a no-op) and releases are
-   GitHub-only.
-
-Maintainers: to enable npm publishing, add a repository secret `NPM_TOKEN` (an npm
-automation token with publish rights). No manual version edits are ever needed.
+3. The `publish` job then builds and publishes to npm via **Trusted Publishing** (OIDC with `--provenance`), or falls back to an optional `NPM_TOKEN` secret.
+ 
+Maintainers: to enable automated npm publishing with zero secrets, configure a **Trusted Publisher** on [npmjs.com](https://www.npmjs.com) for package `murmr` linked to GitHub Actions (`CalebJebadurai/murmur`, workflow `release.yml`). No manual version edits or long-lived static tokens are needed.
 
 ## Code of conduct
 

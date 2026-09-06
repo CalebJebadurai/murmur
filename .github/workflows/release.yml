@@ -35,12 +35,13 @@ jobs:
           bun-version: latest
       - run: bun install
       - run: bun run build
-      # Publishing to npm requires an NPM_TOKEN repository secret. The step is a
-      # no-op (skipped) until the secret is configured — see CONTRIBUTING.md.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+      # Supports npm Trusted Publishing (OIDC via id-token: write) with automatic provenance attestation,
+      # and falls back to NPM_TOKEN if provided.
       - name: Publish to npm
-        if: ${{ env.NPM_TOKEN != '' }}
+        run: npm publish --access public --provenance
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-          npm publish --access public
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
