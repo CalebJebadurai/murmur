@@ -4,6 +4,36 @@ All notable changes to Murmuration are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the project adheres to
 semantic versioning.
 
+## [1.1.0](https://github.com/CalebJebadurai/murmur/compare/murmr-v1.0.0...murmr-v1.1.0) (2026-09-06)
+
+
+### Features
+
+* add curator knowledge-keeper agent and dogfood the agent pack ([90bd3de](https://github.com/CalebJebadurai/murmur/commit/90bd3deb51b48fe69355c21b65617331702ec2d5))
+* **ci:** enable npm Trusted Publishing with OIDC and provenance ([ae8035a](https://github.com/CalebJebadurai/murmur/commit/ae8035ad331e55fe3435f6d40ca934c5cb292d50))
+* **cli:** add watch daemon, git pre-commit hook, tool discovery, and run UI ([f8ceb5b](https://github.com/CalebJebadurai/murmur/commit/f8ceb5bbd1f376a47ce5c15da0591bdf94d54816))
+* **compiler:** add antigravity adapter and doctor --fix self-healing ([dadb677](https://github.com/CalebJebadurai/murmur/commit/dadb67746249079fc6009fa4694b55444c5de31d))
+* **compiler:** add claude, cursor adapters and murmr classify task router ([43c506a](https://github.com/CalebJebadurai/murmur/commit/43c506a81ee1e25fe0822ce4858621b239ff916e))
+* **compiler:** add Tool IR, MCP config generator, and docs portal compiler ([924fa45](https://github.com/CalebJebadurai/murmur/commit/924fa452b46a6a3b2cb9ec0a93f77a4efbffd5ef))
+* **compiler:** release v0.7.0 with ACP adapter, cloud sandbox dispatch, and 6-target dogfooding ([dc9da87](https://github.com/CalebJebadurai/murmur/commit/dc9da8756c25171054b4c6b15b4ce5ccebeb79fd))
+* **core:** release v1.0.0 The Full Union ([b794cb9](https://github.com/CalebJebadurai/murmur/commit/b794cb92b9e6381ebfe21ad77742ccc689ddabd1))
+* orchestration layer — pipeline IR, run driver, rubrics, score (v0.2/v0.3) ([c7a7e28](https://github.com/CalebJebadurai/murmur/commit/c7a7e28e25753368d245f8a5bbfde42568091480))
+* **plugin:** add library entrypoint and example third-party plugin ([5b7edb4](https://github.com/CalebJebadurai/murmur/commit/5b7edb44846f1396caf2ce70a45b92636eeee7f1))
+* **run:** release v0.5.0 with worker pool concurrency engine, neverParallel exclusion, and retries ([61a1361](https://github.com/CalebJebadurai/murmur/commit/61a1361fd21b7ff8d7d13892e41d2f380de624f6))
+* **schema:** release v0.4.0 with selective dispatch, domain-critic rosters, and 5-target dogfooding ([90188c6](https://github.com/CalebJebadurai/murmur/commit/90188c64944f3c69ecf4c2bc0ba66dffe182d5ec))
+
+
+### Bug Fixes
+
+* **cli:** exit with 0 on --help flag ([e16ca7e](https://github.com/CalebJebadurai/murmur/commit/e16ca7eec07dbe334acf5370773f135c688a83dd))
+
+
+### Documentation
+
+* add architect pipeline docs relocated from workspace root ([b66e30a](https://github.com/CalebJebadurai/murmur/commit/b66e30aa2c5003e2ef06d8a09889a922d32c8c75))
+* add roadmap, contributing, automated versioning ([7f5338f](https://github.com/CalebJebadurai/murmur/commit/7f5338fcca3c947e82048c51de30395293e31ccb))
+* **release:** sync CHANGELOG and release manifest for v1.0.0 ([9917255](https://github.com/CalebJebadurai/murmur/commit/9917255865178cb1d82fc3ca94f84947574b5b65))
+
 ## [1.0.0] — 2026-09-06
 
 The Full Union: Murmuration moves from an abstract agent definition compiler to a complete, portable engine for **governed multi-agent orchestration** across 6 native targets with zero runtime dependencies.
