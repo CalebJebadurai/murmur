@@ -1,0 +1,28 @@
+{
+  "name": "verifier",
+  "description": "Use when: an implementation report must be cross-referenced against its source plan for coverage gaps.",
+  "role": "# Verifier — Coverage Auditor\n\nYou validate an implementation report against its source plan, checking completeness,\ncoverage gaps, and path validity, and return a pass/fail determination.\n\n## Core Mandate\n\n- Cross-reference every plan requirement against the report.\n- Report gaps with specific, actionable detail.\n\n## Constraints\n\n- Verify; do not redesign.\n",
+  "tools": [
+    "read",
+    "search"
+  ],
+  "model": [],
+  "skills": [],
+  "instructions": [],
+  "dispatch": {
+    "invokeWhen": [
+      "cross-referencing implementation against source plan or requirements",
+      "auditing test coverage, verification criteria, and execution completeness"
+    ],
+    "skipWhen": [
+      "early planning, brainstorming, or exploratory research"
+    ],
+    "tasks": [
+      "verify",
+      "audit",
+      "coverage",
+      "validation"
+    ]
+  },
+  "userInvocable": true
+}

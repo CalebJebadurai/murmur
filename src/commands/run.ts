@@ -4,6 +4,8 @@ import { loadIR } from "../schema/load.ts";
 import { runDoctor } from "./doctor.ts";
 import { loadConfig } from "../util/loadConfig.ts";
 import { makeHostDispatcher } from "./hostDispatch.ts";
+import { makeSandboxDispatcher } from "./sandboxDispatch.ts";
+import type { SandboxConfig } from "../schema/config.ts";
 import { runWorkerPool } from "../util/workerPool.ts";
 import type {
   BranchDefinition,
@@ -51,6 +53,16 @@ export type RunOptions = {
   retries?: number;
   /** Initial retry delay in ms. */
   retryDelayMs?: number;
+  /** Cloud sandbox runner type: "docker" | "remote". */
+  sandbox?: string;
+  /** Docker image for sandbox runner. */
+  sandboxImage?: string;
+  /** Remote sandbox endpoint URL. */
+  sandboxUrl?: string;
+  /** Remote sandbox auth token. */
+  sandboxToken?: string;
+  /** Sandbox timeout in ms. */
+  sandboxTimeoutMs?: number;
   /** Test seam: override the dispatcher. */
   dispatcher?: Dispatcher;
 };
@@ -269,23 +281,42 @@ export async function runCommand(projectRoot: string, opts: RunOptions): Promise
 
   // Dispatcher selection:
   //  - an explicit test dispatcher always wins;
+  //  - else, with --allow-run AND sandbox options/config, delegate to cloud sandbox runner;
   //  - else, with --allow-run AND a configured host argv, delegate to the host CLI
   //    (net-new, experimental — see docs/probes/goose-drivability.md);
   //  - else, the deterministic stub + compile-and-instruct degradation.
   let dispatch: Dispatcher = stubDispatcher;
   let usingStub = true;
   let degraded = false;
+  let activeSandbox: string | undefined;
+
   if (opts.dispatcher) {
     dispatch = opts.dispatcher;
     usingStub = false;
   } else if (opts.allowRun) {
     const config = await loadConfig(projectRoot, { allowConfigExec: opts.allowConfigExec });
-    const hostArgv = config.run?.host ?? [];
-    if (hostArgv.length > 0) {
-      dispatch = makeHostDispatcher({ argv: hostArgv });
+    const sandboxType = (opts.sandbox || config.run?.sandbox?.type) as "docker" | "remote" | undefined;
+
+    if (sandboxType) {
+      const sandboxConfig: SandboxConfig = {
+        type: sandboxType,
+        image: opts.sandboxImage || config.run?.sandbox?.image,
+        endpoint: opts.sandboxUrl || config.run?.sandbox?.endpoint,
+        token: opts.sandboxToken || config.run?.sandbox?.token,
+        timeoutMs: opts.sandboxTimeoutMs || config.run?.sandbox?.timeoutMs,
+        env: config.run?.sandbox?.env,
+      };
+      dispatch = makeSandboxDispatcher(sandboxConfig, projectRoot);
       usingStub = false;
+      activeSandbox = sandboxType;
     } else {
-      degraded = true; // --allow-run but no host configured
+      const hostArgv = config.run?.host ?? [];
+      if (hostArgv.length > 0) {
+        dispatch = makeHostDispatcher({ argv: hostArgv });
+        usingStub = false;
+      } else {
+        degraded = true; // --allow-run but neither sandbox nor host configured
+      }
     }
   }
 
@@ -293,11 +324,18 @@ export async function runCommand(projectRoot: string, opts: RunOptions): Promise
   const showBanner = !opts.dryRun || opts.verbose;
 
   if (showBanner || isTTY) {
+    const modeDesc = opts.dryRun
+      ? "dry-run (simulation)"
+      : activeSandbox
+        ? `cloud sandbox dispatch (${activeSandbox})`
+        : opts.allowRun
+          ? "live host dispatch"
+          : "deterministic stub";
     console.log(`\n┌─ murmr run ───────────────────────────────────────────────────`);
     console.log(`│ Pipeline : ${pipeline.name}`);
     console.log(`│ Branch   : ${sel.name}`);
     console.log(`│ Tier     : ${tier}`);
-    console.log(`│ Mode     : ${opts.dryRun ? "dry-run (simulation)" : opts.allowRun ? "live host dispatch" : "deterministic stub"}`);
+    console.log(`│ Mode     : ${modeDesc}`);
     console.log(`└───────────────────────────────────────────────────────────────\n`);
   }
 

@@ -1,0 +1,5 @@
+{
+  "name": "typescript-conventions",
+  "applyTo": "**/*.ts",
+  "rules": "# TypeScript Conventions\n\n> Placeholder authored for the Murmuration base library. `murmr init` regenerates\n> the real conventions from tsconfig.json and observed code style.\n\n- Use ESM imports with explicit module specifiers.\n- Prefer `type` imports for type-only references.\n- Keep functions small and validate only at system boundaries.\n"
+}

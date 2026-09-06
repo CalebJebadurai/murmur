@@ -4,6 +4,7 @@ import { GooseAdapter } from "./adapters/goose.ts";
 import { AntigravityAdapter } from "./adapters/antigravity.ts";
 import { ClaudeAdapter } from "./adapters/claude.ts";
 import { CursorAdapter } from "./adapters/cursor.ts";
+import { AcpAdapter } from "./adapters/acp.ts";
 
 /** Built-in adapter registry. Adding a runtime = register its adapter here. */
 const adapters = new Map<string, () => RuntimeCompiler>([
@@ -14,6 +15,7 @@ const adapters = new Map<string, () => RuntimeCompiler>([
   ["claude", () => new ClaudeAdapter()],
   ["claude-code", () => new ClaudeAdapter()],
   ["cursor", () => new CursorAdapter()],
+  ["acp", () => new AcpAdapter()],
 ]);
 
 export function getAdapter(id: string): RuntimeCompiler | undefined {

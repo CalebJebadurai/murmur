@@ -89,7 +89,7 @@ Agents, skills, and instructions are authored once in an abstract format and **c
 | goose (AAIF) | `recipes/*.yaml`, root-level `skills/`, `.goosehints`, `AGENTS.md` |
 | Claude Code | `.claude/agents/*.md`, `CLAUDE.md`, `.claude/skills/`, `.claude/rules/` |
 | Cursor | `.cursor/rules/*.mdc`, `.cursor/agents/*.md`, `.cursor/skills/`, `AGENTS.md` |
-| ACP-compatible editors | via the [Agent Client Protocol](https://agentclientprotocol.com/) (north-star target) |
+| ACP (Agent Client Protocol) | `.acp/manifest.json`, `.acp/agents/*.json`, `.acp/server.ts` ([agentclientprotocol.com](https://agentclientprotocol.com/)) |
 
 `AGENTS.md` is treated as the universal lowest-common-denominator manifest.
 
@@ -100,12 +100,13 @@ Agents, skills, and instructions are authored once in an abstract format and **c
 | Capability | Single-Agent Extensions (Copilot) | Local Runtimes (Claude Code, Goose) | Cloud VM Fleets (Devin, Macroscope) | **Murmuration (`murmr`)** |
 |---|---|---|---|---|
 | **Architecture layer** | IDE extension | CLI process | Cloud infrastructure / VMs | **Universal Compiler & IR** |
-| **Multi-runtime portability** | ❌ (VS Code only) | ⚠️ (Single host) | ❌ (Proprietary cloud) | ✅ (Compiles to 5+ runtimes) |
+| **Multi-runtime portability** | ❌ (VS Code only) | ⚠️ (Single host) | ❌ (Proprietary cloud) | ✅ (Compiles to 6 runtimes: Copilot, Goose, Antigravity, Claude, Cursor, ACP) |
 | **Subagents with isolated context** | ❌ | ⚠️ (Tool-limited) | ✅ (Per-VM) | ✅ (Native schema & compiler) |
 | **On-demand subagent spawning** | ❌ | ❌ | ❌ | ✅ (Master-agent spawn loop) |
 | **Enforced knowledge externalization** | ❌ | ⚠️ | ❌ | ✅ (Automated CI gate) |
 | **Governed pipelines & rubrics** | ❌ | ⚠️ (Basic scripts) | ⚠️ (Server workflows) | ✅ (`murmr run` & `murmr score`) |
 | **Selective dispatch & task classification** | ❌ | ❌ | ⚠️ | ✅ (`murmr classify` + dispatch tables) |
+| **Execution isolation** | Local process | Local process | Proprietary cloud VMs | ✅ Local worker pool + Docker / Remote Cloud Sandbox (`murmr run --sandbox`) |
 | **Cost & infrastructure footprint** | Low ($10–20/mo) | Direct API usage | High ($500+/mo cloud VMs) | **Free, open-source & local** |
 
 ---

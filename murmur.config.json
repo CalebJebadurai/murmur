@@ -1,5 +1,5 @@
 {
-  "targets": ["copilot", "goose", "antigravity", "claude", "cursor"],
+  "targets": ["copilot", "goose", "antigravity", "claude", "cursor", "acp"],
   "project": {
     "name": "murmur",
     "description": "Murmuration's own dogfooded agent pack."

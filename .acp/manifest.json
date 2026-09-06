@@ -1,0 +1,463 @@
+{
+  "acpVersion": "2.0",
+  "protocol": "agent-client-protocol",
+  "server": {
+    "name": "murmur",
+    "description": "Murmuration's own dogfooded agent pack.",
+    "version": "2.0.0"
+  },
+  "capabilities": {
+    "sessions": true,
+    "tools": true,
+    "prompts": true,
+    "streaming": true,
+    "cancel": true
+  },
+  "agents": [
+    {
+      "name": "analyst",
+      "description": "Use when: deep codebase or domain analysis is needed before planning.",
+      "isSubagent": false,
+      "tools": [
+        "read",
+        "search"
+      ],
+      "dispatch": {
+        "invokeWhen": [
+          "deep codebase, architecture, or domain analysis is needed before planning",
+          "mapping dependencies, system constraints, or technical approaches"
+        ],
+        "skipWhen": [
+          "final execution phase, mechanical code edits, or straightforward patch application"
+        ],
+        "tasks": [
+          "analysis",
+          "investigate",
+          "architecture",
+          "dependencies",
+          "exploration"
+        ]
+      }
+    },
+    {
+      "name": "architect",
+      "description": "Use when: a task needs strategic analysis and a phased, multi-section plan before implementation begins.",
+      "isSubagent": false,
+      "tools": [
+        "read",
+        "search",
+        "edit",
+        "new"
+      ],
+      "dispatch": {
+        "invokeWhen": [
+          "a task needs strategic analysis and a phased, multi-section plan before implementation",
+          "orchestrating specialist agents across multi-phase workflows"
+        ],
+        "skipWhen": [
+          "trivial single-file edits, quick questions, or minor typos"
+        ],
+        "tasks": [
+          "plan",
+          "strategy",
+          "architecture",
+          "design"
+        ]
+      }
+    },
+    {
+      "name": "business-critic",
+      "description": "Use when: a plan must be evaluated for business viability, unit economics, and go-to-market strategy.",
+      "isSubagent": false,
+      "tools": [
+        "read",
+        "search"
+      ],
+      "dispatch": {
+        "invokeWhen": [
+          "evaluating commercial viability, business models, monetization, or market strategy",
+          "pricing, unit economics, go-to-market, or competitive moat is analyzed"
+        ],
+        "skipWhen": [
+          "pure technical refactoring, syntax fixes, or local script changes"
+        ],
+        "tasks": [
+          "business",
+          "pricing",
+          "economics",
+          "strategy",
+          "gtm",
+          "commercial"
+        ]
+      }
+    },
+    {
+      "name": "critic",
+      "description": "Use when: a plan, design, or implementation needs critical review to surface weaknesses, gaps, and unstated assumptions.",
+      "isSubagent": false,
+      "tools": [
+        "read",
+        "search"
+      ],
+      "dispatch": {
+        "invokeWhen": [
+          "a plan, design, or implementation needs critical review",
+          "identifying weaknesses, gaps, unstated assumptions, or missing edge cases"
+        ],
+        "skipWhen": [
+          "mechanical formatting, simple lint fixes, or trivial typos"
+        ],
+        "tasks": [
+          "review",
+          "critique",
+          "risk",
+          "evaluate",
+          "audit"
+        ]
+      }
+    },
+    {
+      "name": "curator",
+      "description": "Use when: the project's knowledge base must be initialized, reconciled, or kept current — after any task that changes architecture, structure, dependencies, build, deployment, or environments.",
+      "isSubagent": false,
+      "tools": [
+        "read",
+        "search",
+        "edit",
+        "new"
+      ],
+      "dispatch": {
+        "invokeWhen": [
+          "the project's knowledge base, skills, or instructions must be updated or reconciled",
+          "documenting architecture, build system, or dependencies after code changes"
+        ],
+        "skipWhen": [
+          "pure implementation without changes to architecture or knowledge base"
+        ],
+        "tasks": [
+          "curate",
+          "knowledge",
+          "documentation",
+          "skills",
+          "inventory"
+        ]
+      }
+    },
+    {
+      "name": "data-critic",
+      "description": "Use when: verifying statistical claims, auditing data science methodology, checking mathematical correctness, or stress-testing quantitative results.",
+      "isSubagent": false,
+      "tools": [
+        "read",
+        "search"
+      ],
+      "dispatch": {
+        "invokeWhen": [
+          "statistical claims, data science methodology, or quantitative verification is needed",
+          "benchmarks, metrics, regression, or numerical models are evaluated"
+        ],
+        "skipWhen": [
+          "pure frontend layout, documentation, or non-quantitative refactor"
+        ],
+        "tasks": [
+          "data",
+          "analytics",
+          "statistics",
+          "ml",
+          "metrics",
+          "benchmarks"
+        ]
+      }
+    },
+    {
+      "name": "fact-checker",
+      "description": "Use when: specific factual claims in a document must be verified against primary sources.",
+      "isSubagent": false,
+      "tools": [
+        "read",
+        "search"
+      ],
+      "dispatch": {
+        "invokeWhen": [
+          "verifying factual claims, citations, numbers, or external references",
+          "cross-referencing statements against primary sources"
+        ],
+        "skipWhen": [
+          "pure architectural design or abstract task decomposition"
+        ],
+        "tasks": [
+          "fact-check",
+          "verification",
+          "citations",
+          "claims"
+        ]
+      }
+    },
+    {
+      "name": "implementer",
+      "description": "Use when: a finalized plan must be translated into concrete, step-by-step changes grounded in the target stack.",
+      "isSubagent": false,
+      "tools": [
+        "read",
+        "search",
+        "edit",
+        "new"
+      ],
+      "dispatch": {
+        "invokeWhen": [
+          "translating a finalized plan into concrete code changes or step-by-step implementation",
+          "building features, writing code, fixing bugs, or executing implementation tasks"
+        ],
+        "skipWhen": [
+          "early strategic analysis, academic literature reviews, or pure policy planning"
+        ],
+        "tasks": [
+          "implement",
+          "code",
+          "build",
+          "fix",
+          "refactor"
+        ]
+      }
+    },
+    {
+      "name": "master",
+      "description": "Use when: a task needs decomposition and coordination across multiple specialists, or when no existing specialist fits and a new one must be spawned.",
+      "isSubagent": false,
+      "tools": [
+        "read",
+        "search",
+        "edit",
+        "new",
+        "agent"
+      ],
+      "dispatch": {
+        "invokeWhen": [
+          "a task needs decomposition and coordination across multiple specialists",
+          "no existing specialist fits and an on-demand subagent must be spawned"
+        ],
+        "skipWhen": [
+          "narrow, single-step tasks that map directly to an individual specialist"
+        ],
+        "tasks": [
+          "orchestrate",
+          "coordinate",
+          "spawn",
+          "decompose"
+        ]
+      }
+    },
+    {
+      "name": "planner",
+      "description": "Use when: research findings and critic feedback must be synthesized into a stronger, refined plan.",
+      "isSubagent": false,
+      "tools": [
+        "read",
+        "search",
+        "edit"
+      ],
+      "dispatch": {
+        "invokeWhen": [
+          "synthesizing research findings and critic feedback into an improved plan",
+          "resolving critic findings, refining roadmap phases, or structuring documents"
+        ],
+        "skipWhen": [
+          "raw exploratory research before an initial plan exists"
+        ],
+        "tasks": [
+          "plan",
+          "refine",
+          "synthesize",
+          "roadmap"
+        ]
+      }
+    },
+    {
+      "name": "prompt-engineer",
+      "description": "Use when: a rough or naive user prompt must be refined into a structured, precise brief before strategic work begins.",
+      "isSubagent": false,
+      "tools": [
+        "read",
+        "search"
+      ],
+      "dispatch": {
+        "invokeWhen": [
+          "refining an underspecified prompt or naive user request into a structured brief",
+          "clarifying project requirements, scope boundaries, and success criteria"
+        ],
+        "skipWhen": [
+          "well-defined implementation plans or direct, explicit instructions"
+        ],
+        "tasks": [
+          "prompt",
+          "brief",
+          "clarify",
+          "requirements"
+        ]
+      }
+    },
+    {
+      "name": "research-critic",
+      "description": "Use when: research quality must be audited against academic rigor and methodological standards.",
+      "isSubagent": false,
+      "tools": [
+        "read",
+        "search"
+      ],
+      "dispatch": {
+        "invokeWhen": [
+          "auditing research papers, literature reviews, or academic methodology",
+          "evaluating evidence sufficiency, source quality, and citations"
+        ],
+        "skipWhen": [
+          "pure software implementation, bug fixes, or unit tests"
+        ],
+        "tasks": [
+          "research",
+          "literature",
+          "academic",
+          "citations",
+          "methodology"
+        ]
+      }
+    },
+    {
+      "name": "researcher",
+      "description": "Use when: a question needs information gathered and synthesized from sources, docs, or the codebase.",
+      "isSubagent": false,
+      "tools": [
+        "read",
+        "search"
+      ],
+      "dispatch": {
+        "invokeWhen": [
+          "a question needs information gathered and synthesized from external sources, documentation, or the codebase",
+          "exploratory research, literature gathering, or market investigations"
+        ],
+        "skipWhen": [
+          "code implementation, mechanical editing, or running test suites"
+        ],
+        "tasks": [
+          "research",
+          "investigate",
+          "information",
+          "sources",
+          "literature"
+        ]
+      }
+    },
+    {
+      "name": "social-critic",
+      "description": "Use when: evaluating a plan, feature, or architecture from a social impact, user welfare, accessibility, and equity perspective.",
+      "isSubagent": false,
+      "tools": [
+        "read",
+        "search"
+      ],
+      "dispatch": {
+        "invokeWhen": [
+          "user welfare, accessibility, privacy, or ethical implications are evaluated",
+          "features affecting underserved communities, digital divide, or user inclusion are reviewed"
+        ],
+        "skipWhen": [
+          "internal compiler passes, low-level binary tools, or devops automation"
+        ],
+        "tasks": [
+          "accessibility",
+          "ethics",
+          "social-impact",
+          "privacy",
+          "equity",
+          "inclusion"
+        ]
+      }
+    },
+    {
+      "name": "verifier",
+      "description": "Use when: an implementation report must be cross-referenced against its source plan for coverage gaps.",
+      "isSubagent": false,
+      "tools": [
+        "read",
+        "search"
+      ],
+      "dispatch": {
+        "invokeWhen": [
+          "cross-referencing implementation against source plan or requirements",
+          "auditing test coverage, verification criteria, and execution completeness"
+        ],
+        "skipWhen": [
+          "early planning, brainstorming, or exploratory research"
+        ],
+        "tasks": [
+          "verify",
+          "audit",
+          "coverage",
+          "validation"
+        ]
+      }
+    },
+    {
+      "name": "example-specialist",
+      "description": "Use when: the master agent needs an example specialist to demonstrate the spawn-and-dispatch loop.",
+      "isSubagent": true,
+      "tools": [
+        "read"
+      ]
+    }
+  ],
+  "tools": [],
+  "skills": [
+    {
+      "name": "build-system",
+      "description": "How this project is built, tested, and run — package manager, scripts, bundler."
+    },
+    {
+      "name": "compiler-architecture",
+      "description": "How the compiler turns the abstract IR into each runtime's native files via the RuntimeCompiler adapter interface."
+    },
+    {
+      "name": "knowledge-curation",
+      "description": "The procedure the curator agent follows to inventory, initialize, and keep a project's knowledge base (skills + instructions) current as the single source of truth."
+    },
+    {
+      "name": "project-structure",
+      "description": "How this project's directories, modules, and entry points are organized."
+    },
+    {
+      "name": "project-tools",
+      "description": "Discovered operational development tools and scripts for agent execution."
+    },
+    {
+      "name": "schema-and-ir",
+      "description": "The shape of the abstract IR — the murmur/ directory, its six definition kinds, and how loadIR parses and validates them."
+    },
+    {
+      "name": "subagent-authoring",
+      "description": "Rules the master agent follows to author a scoped subagent on demand."
+    }
+  ],
+  "instructions": [
+    {
+      "name": "adapter-conventions",
+      "applyTo": "src/compiler/adapters/**/*.ts"
+    },
+    {
+      "name": "knowledge-maintenance",
+      "applyTo": "**"
+    },
+    {
+      "name": "typescript-conventions",
+      "applyTo": "**/*.ts"
+    }
+  ],
+  "pipelines": [
+    {
+      "name": "architect",
+      "description": "Use when: planning, analyzing, or designing implementation strategies through a governed multi-phase pipeline with selective dispatch, scoring, and refinement loops.",
+      "branches": [
+        "coding",
+        "research"
+      ]
+    }
+  ]
+}

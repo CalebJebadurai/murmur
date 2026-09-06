@@ -190,6 +190,36 @@ describe("cursor adapter golden output", () => {
   });
 });
 
+describe("acp adapter golden output", () => {
+  test("emits .acp/manifest.json, agents, skills, and server.ts", async () => {
+    const res = await loadIR(MURMUR_DIR);
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    const ctx: CompileContext = {
+      config: { ...DEFAULT_CONFIG, project: { name: "acp-demo" } },
+      ir: res.value,
+    };
+    const out = await freshOut();
+    try {
+      const adapter = getAdapter("acp");
+      expect(adapter).toBeDefined();
+      await compileTarget(adapter!, ctx, out);
+
+      const manifest = await Bun.file(join(out, ".acp/manifest.json")).json();
+      expect(manifest.acpVersion).toBe("2.0");
+      expect(manifest.protocol).toBe("agent-client-protocol");
+
+      const master = await Bun.file(join(out, ".acp/agents/master.json")).json();
+      expect(master.name).toBe("master");
+
+      const server = await Bun.file(join(out, ".acp/server.ts")).text();
+      expect(server).toContain("Agent Client Protocol");
+    } finally {
+      await rm(out, { recursive: true, force: true });
+    }
+  });
+});
+
 describe("atomic compile", () => {
   test("a mid-compile adapter failure leaves the output tree untouched", async () => {
     const res = await loadIR(MURMUR_DIR);

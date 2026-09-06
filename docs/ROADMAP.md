@@ -53,30 +53,29 @@ murmr run <pipeline>    # execute a governed pipeline locally, with a RUN-LOG
 - **Retry with exponential backoff:** automatic retry with configurable delays for soft-failure agent turns.
 - **Parallel phase execution in `murmr run`:** `--concurrency <n>` and `--retries <n>` CLI flags, with peak concurrency tracking.
 
-### Multi-Runtime Adapters & DX Hardening
-- **5 Supported Compilation Targets**: VS Code Copilot, Goose (AAIF), Google Antigravity, Claude Code, Cursor.
-- **Tool IR & Auto-Discovery**: `murmr tool discover` scanning package scripts and emitting MCP schemas.
-- **Interactive Documentation Portal**: `murmr docs` compiling a self-contained HTML guide with live preview.
-- **Real-Time Watcher**: `murmr watch` daemon with debounced change detection.
-- **Git Pre-Commit Hook**: `murmr hook install` verifying IR validity and externalization pre-commit.
+### v0.7 — ACP & Cloud Sandbox Dispatch
+- **Agent Client Protocol (ACP) adapter:** protocol-level portability target conforming to [agentclientprotocol.com](https://agentclientprotocol.com/), emitting `.acp/manifest.json`, `.acp/agents/*.json`, `.acp/pipelines/*.json`, and a standalone JSON-RPC 2.0 stdio server (`.acp/server.ts`).
+- **Cloud Sandbox Dispatch Adapter:** `makeSandboxDispatcher` allowing `murmr run` to dispatch tasks to remote isolated sandbox runners via Docker containers (`--sandbox docker`) or remote HTTP/JSON-RPC endpoints (`--sandbox remote`), maintaining `murmr` as the local, git-tracked authoring authority.
+- **6 Supported Compilation Targets:** VS Code Copilot, Goose (AAIF), Google Antigravity, Claude Code, Cursor, ACP.
+- **Tool IR & Auto-Discovery:** `murmr tool discover` scanning package scripts and emitting MCP schemas.
+- **Interactive Documentation Portal:** `murmr docs` compiling a self-contained HTML guide with live preview.
+- **Real-Time Watcher:** `murmr watch` daemon with debounced change detection.
+- **Git Pre-Commit Hook:** `murmr hook install` verifying IR validity and externalization pre-commit.
 
 ---
 
 ## The Next Horizons
 
-### v0.7 — ACP & Cloud Sandbox Dispatch (Active Priority)
+### v1.0 — The Full Union (Active Priority)
 
-- **Agent Client Protocol (ACP) adapter** — protocol-level portability target (JSON-RPC / stdio conforming to [agentclientprotocol.com](https://agentclientprotocol.com/)).
-- **Cloud Sandbox Dispatch Adapter** — interface allowing `murmr run` to dispatch tasks to remote isolated sandbox runners (e.g. cloud VMs / Docker containers) for long-running workflows, maintaining `murmr` as the local, git-tracked authoring authority.
-- **npm-package plugin model** — adapters shippable as `murmr-plugin-*` with auto-discovery.
-- **Skill assets** — directory-structured skills with per-runtime asset resolution.
-
-### v1.0 — The Full Union
-
-ACP portability + cross-runtime spawning proven by the hot-load probe + semantic init
-+ tool generation + the orchestration/scoring/dispatch layer = a system that doesn't
+ACP protocol portability + cross-runtime spawning proven by the hot-load probe + semantic init
++ tool generation + the orchestration/scoring/dispatch layer + cloud sandboxing = a system that doesn't
 just *define* agents but **runs governed multi-agent pipelines portably** — the union
 no competitor (goose, Claude Code, ECC.tools, cloud VM fleet platforms) offers together.
+
+- **npm-package plugin model** — adapters shippable as `murmr-plugin-*` with auto-discovery.
+- **Skill assets** — directory-structured skills with per-runtime asset resolution.
+- **End-to-End Orchestration Probe** — cross-runtime multi-agent evaluation test harness.
 
 ---
 
@@ -89,8 +88,8 @@ no competitor (goose, Claude Code, ECC.tools, cloud VM fleet platforms) offers t
 5. ~~Tool generation / auto MCP (v0.6)~~ — ✅ Shipped.
 6. ~~Claude Code + Cursor + Antigravity adapters (v0.7)~~ — ✅ Shipped.
 7. ~~Git hooks, docs compiler (v0.8)~~ — ✅ Shipped.
-8. **ACP adapter + Cloud Sandbox dispatch (v0.7 / v0.9)** — Next priority.
-9. **The Full Union (v1.0)**.
+8. ~~ACP adapter + Cloud Sandbox dispatch (v0.7 / v0.9)~~ — ✅ Shipped.
+9. **The Full Union (v1.0)** — Next priority.
 
 ## Release & versioning
 

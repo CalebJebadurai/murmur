@@ -13,7 +13,7 @@ import { hookCommand, type HookAction } from "./commands/hook.ts";
 import { toolCommand } from "./commands/tool.ts";
 import { docsCommand } from "./commands/docs.ts";
 
-const VERSION = "0.5.0";
+const VERSION = "0.7.0";
 
 type Flags = { positionals: string[]; flags: Record<string, string | boolean> };
 
@@ -156,6 +156,11 @@ async function main(): Promise<number> {
         out: typeof flags["out"] === "string" ? flags["out"] : undefined,
         concurrency: Number.isFinite(concurrency) ? concurrency : undefined,
         retries: Number.isFinite(retries) ? retries : undefined,
+        sandbox: typeof flags["sandbox"] === "string" ? flags["sandbox"] : undefined,
+        sandboxImage: typeof flags["sandbox-image"] === "string" ? flags["sandbox-image"] : undefined,
+        sandboxUrl: typeof flags["sandbox-url"] === "string" ? flags["sandbox-url"] : undefined,
+        sandboxToken: typeof flags["sandbox-token"] === "string" ? flags["sandbox-token"] : undefined,
+        sandboxTimeoutMs: typeof flags["sandbox-timeout"] === "string" ? parseInt(flags["sandbox-timeout"], 10) : undefined,
       });
     }
     case "doctor":

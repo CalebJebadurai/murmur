@@ -1,0 +1,319 @@
+{
+  "name": "architect",
+  "description": "Use when: planning, analyzing, or designing implementation strategies through a governed multi-phase pipeline with selective dispatch, scoring, and refinement loops.",
+  "version": "1.0.0",
+  "classifications": [
+    "CODING",
+    "RESEARCH",
+    "HYBRID"
+  ],
+  "routing": {
+    "at": "0b",
+    "map": {
+      "CODING": "coding",
+      "RESEARCH": "research",
+      "HYBRID": "coding"
+    }
+  },
+  "branches": {
+    "coding": {
+      "phases": [
+        {
+          "id": "0",
+          "agents": [
+            {
+              "name": "prompt-engineer",
+              "dispatch": {
+                "invokeWhen": [
+                  "prompt is ambiguous, multi-faceted, or underspecified"
+                ],
+                "skipWhen": [
+                  "prompt is already precise and well-scoped"
+                ]
+              }
+            }
+          ],
+          "label": "Prompt Refinement"
+        },
+        {
+          "id": "0b",
+          "agents": [
+            {
+              "name": "architect"
+            }
+          ],
+          "label": "Task Classification"
+        },
+        {
+          "id": "1",
+          "agents": [
+            {
+              "name": "Explore",
+              "builtin": true,
+              "dispatch": {
+                "invokeWhen": [
+                  "task involves existing codebase changes"
+                ],
+                "skipWhen": [
+                  "greenfield project or pure research"
+                ]
+              }
+            },
+            {
+              "name": "analyst",
+              "dispatch": {
+                "invokeWhen": [
+                  "task requires deep codebase architecture understanding"
+                ],
+                "skipWhen": [
+                  "simple feature or non-code task"
+                ]
+              }
+            }
+          ],
+          "label": "Research"
+        },
+        {
+          "id": "2",
+          "agents": [
+            {
+              "name": "architect"
+            }
+          ],
+          "label": "Draft"
+        },
+        {
+          "id": "3",
+          "agents": [
+            {
+              "name": "critic"
+            },
+            {
+              "name": "business-critic",
+              "dispatch": {
+                "invokeWhen": [
+                  "task has revenue, cost, or market implications"
+                ],
+                "skipWhen": [
+                  "pure internal refactor"
+                ]
+              }
+            },
+            {
+              "name": "planner"
+            }
+          ],
+          "label": "Critic-Planner Loop"
+        },
+        {
+          "id": "4",
+          "agents": [
+            {
+              "name": "architect"
+            }
+          ],
+          "label": "Final Output"
+        },
+        {
+          "id": "5",
+          "agents": [
+            {
+              "name": "implementer"
+            }
+          ],
+          "label": "Implementation Report"
+        },
+        {
+          "id": "5b",
+          "agents": [
+            {
+              "name": "verifier"
+            }
+          ],
+          "label": "Verification"
+        },
+        {
+          "id": "5c",
+          "agents": [
+            {
+              "name": "implementer"
+            }
+          ],
+          "label": "Gap Resolution"
+        }
+      ],
+      "loops": [
+        {
+          "name": "critic-planner",
+          "from": "3",
+          "to": "3",
+          "min": 1,
+          "max": 3,
+          "earlyExit": "all dimensions >= 4, combined score non-decreasing"
+        }
+      ],
+      "parallel": {
+        "maxConcurrent": 3,
+        "neverParallel": [
+          [
+            "critic",
+            "planner"
+          ]
+        ],
+        "perPatternCaps": {
+          "explore": 3
+        }
+      },
+      "tiers": [
+        {
+          "name": "lightweight",
+          "phases": [
+            "0",
+            "1",
+            "2",
+            "5"
+          ]
+        },
+        {
+          "name": "standard",
+          "phases": [
+            "0",
+            "0b",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "5b"
+          ]
+        },
+        {
+          "name": "extended",
+          "phases": [
+            "0",
+            "0b",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "5b",
+            "5c"
+          ],
+          "iterationOverrides": {
+            "critic-planner": {
+              "min": 2,
+              "max": 3
+            }
+          }
+        }
+      ]
+    },
+    "research": {
+      "phases": [
+        {
+          "id": "0",
+          "agents": [
+            {
+              "name": "prompt-engineer"
+            }
+          ],
+          "label": "Prompt Refinement"
+        },
+        {
+          "id": "R1",
+          "agents": [
+            {
+              "name": "researcher"
+            }
+          ],
+          "label": "Research and Evidence"
+        },
+        {
+          "id": "R2",
+          "agents": [
+            {
+              "name": "planner"
+            }
+          ],
+          "label": "Structure Drafting"
+        },
+        {
+          "id": "R3",
+          "agents": [
+            {
+              "name": "research-critic"
+            },
+            {
+              "name": "planner"
+            }
+          ],
+          "label": "Research-Critic Loop"
+        },
+        {
+          "id": "R4",
+          "agents": [
+            {
+              "name": "planner"
+            }
+          ],
+          "label": "Final Structure"
+        },
+        {
+          "id": "R5",
+          "agents": [
+            {
+              "name": "researcher"
+            }
+          ],
+          "label": "Research Writing"
+        },
+        {
+          "id": "R5b",
+          "agents": [
+            {
+              "name": "research-critic"
+            },
+            {
+              "name": "fact-checker"
+            }
+          ],
+          "label": "Final Validation"
+        }
+      ],
+      "loops": [
+        {
+          "name": "research-critic-planner",
+          "from": "R3",
+          "to": "R3",
+          "min": 1,
+          "max": 2,
+          "earlyExit": "all structure dimensions >= 4, no critical weaknesses"
+        }
+      ],
+      "parallel": {
+        "maxConcurrent": 2,
+        "neverParallel": [
+          [
+            "research-critic",
+            "planner"
+          ]
+        ]
+      },
+      "tiers": [
+        {
+          "name": "standard",
+          "phases": [
+            "0",
+            "R1",
+            "R2",
+            "R3",
+            "R4",
+            "R5",
+            "R5b"
+          ]
+        }
+      ]
+    }
+  }
+}

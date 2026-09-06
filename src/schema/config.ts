@@ -16,10 +16,28 @@ export type ProjectConfig = {
   description?: string;
 };
 
+/** Cloud sandbox runner configuration. */
+export type SandboxConfig = {
+  /** Sandbox provider type: "docker" | "remote" | "process" */
+  type: "docker" | "remote" | "process";
+  /** Docker image name when type is "docker" (e.g. "murmr/sandbox:latest"). */
+  image?: string;
+  /** Remote HTTP URL when type is "remote" (e.g. "https://sandbox.example.com/dispatch"). */
+  endpoint?: string;
+  /** Bearer token for remote authorization. */
+  token?: string;
+  /** Turn execution timeout in ms (default: 60000). */
+  timeoutMs?: number;
+  /** Environment variables passed into sandbox execution. */
+  env?: Record<string, string>;
+};
+
 /** Run-driver host-CLI configuration. */
 export type RunConfig = {
   /** Base argv for the host agent CLI, e.g. ["goose", "run"]. NEVER a shell string. */
   host?: string[];
+  /** Optional cloud sandbox runner configuration. */
+  sandbox?: SandboxConfig;
 };
 
 /** The murmur.config.{ts,json} shape. */
