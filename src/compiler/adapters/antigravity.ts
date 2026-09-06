@@ -43,6 +43,13 @@ export class AntigravityAdapter implements RuntimeCompiler {
     if (agent.tools.length) fm["tools"] = agent.tools;
     if (agent.agents.length) fm["agents"] = agent.agents;
     if (agent.model && agent.model.length) fm["model"] = agent.model;
+    if (agent.dispatch) {
+      fm["dispatch"] = {
+        "invoke-when": agent.dispatch.invokeWhen,
+        "skip-when": agent.dispatch.skipWhen,
+        tasks: agent.dispatch.tasks,
+      };
+    }
     return { ...fm, ...(opts.extra ?? {}) };
   }
 

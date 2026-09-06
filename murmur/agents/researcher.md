@@ -4,6 +4,13 @@ tools: [read, search]
 skills: []
 instructions: []
 agents: []
+dispatch:
+  invoke-when:
+    - "a question needs information gathered and synthesized from external sources, documentation, or the codebase"
+    - "exploratory research, literature gathering, or market investigations"
+  skip-when:
+    - "code implementation, mechanical editing, or running test suites"
+  tasks: [research, investigate, information, sources, literature]
 ---
 
 # Researcher — Investigator

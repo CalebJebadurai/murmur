@@ -20,3 +20,17 @@ instructions: |
 available_tools:
   - read
   - search
+annotations:
+  murmur_dispatch:
+    invoke_when:
+      - evaluating commercial viability, business models, monetization, or market strategy
+      - pricing, unit economics, go-to-market, or competitive moat is analyzed
+    skip_when:
+      - pure technical refactoring, syntax fixes, or local script changes
+    tasks:
+      - business
+      - pricing
+      - economics
+      - strategy
+      - gtm
+      - commercial

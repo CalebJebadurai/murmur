@@ -20,3 +20,15 @@ instructions: |
 available_tools:
   - read
   - search
+annotations:
+  murmur_dispatch:
+    invoke_when:
+      - refining an underspecified prompt or naive user request into a structured brief
+      - clarifying project requirements, scope boundaries, and success criteria
+    skip_when:
+      - well-defined implementation plans or direct, explicit instructions
+    tasks:
+      - prompt
+      - brief
+      - clarify
+      - requirements

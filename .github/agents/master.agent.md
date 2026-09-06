@@ -9,6 +9,17 @@ tools:
 agents:
   - curator
 user-invocable: true
+dispatch:
+  invoke-when:
+    - a task needs decomposition and coordination across multiple specialists
+    - no existing specialist fits and an on-demand subagent must be spawned
+  skip-when:
+    - narrow, single-step tasks that map directly to an individual specialist
+  tasks:
+    - orchestrate
+    - coordinate
+    - spawn
+    - decompose
 ---
 
 # Master — Orchestrator

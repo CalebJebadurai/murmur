@@ -4,6 +4,13 @@ tools: [read, search]
 skills: []
 instructions: []
 agents: []
+dispatch:
+  invoke-when:
+    - "verifying factual claims, citations, numbers, or external references"
+    - "cross-referencing statements against primary sources"
+  skip-when:
+    - "pure architectural design or abstract task decomposition"
+  tasks: [fact-check, verification, citations, claims]
 ---
 
 # Fact Checker — Claim Verifier

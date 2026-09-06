@@ -4,6 +4,13 @@ tools: [read, search]
 skills: []
 instructions: []
 agents: []
+dispatch:
+  invoke-when:
+    - "cross-referencing implementation against source plan or requirements"
+    - "auditing test coverage, verification criteria, and execution completeness"
+  skip-when:
+    - "early planning, brainstorming, or exploratory research"
+  tasks: [verify, audit, coverage, validation]
 ---
 
 # Verifier — Coverage Auditor

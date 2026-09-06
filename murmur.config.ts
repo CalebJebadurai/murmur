@@ -1,7 +1,7 @@
 import type { MurmurConfig } from "./src/schema/config.ts";
 
 const config: MurmurConfig = {
-  targets: ["copilot", "goose"],
+  targets: ["copilot", "goose", "antigravity", "claude", "cursor"],
   project: {
     name: "murmur",
     description: "Murmuration's own dogfooded agent pack.",

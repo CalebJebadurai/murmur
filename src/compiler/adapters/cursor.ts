@@ -29,6 +29,13 @@ export class CursorAdapter implements RuntimeCompiler {
       description: agent.description,
     };
     if (agent.tools.length) fm["tools"] = agent.tools;
+    if (agent.dispatch) {
+      fm["dispatch"] = {
+        "invoke-when": agent.dispatch.invokeWhen,
+        "skip-when": agent.dispatch.skipWhen,
+        tasks: agent.dispatch.tasks,
+      };
+    }
     return [
       {
         path: `.cursor/agents/${agent.name}.md`,
@@ -43,6 +50,13 @@ export class CursorAdapter implements RuntimeCompiler {
       description: sub.description,
       "spawn-trigger": sub.spawn.trigger,
     };
+    if (sub.dispatch) {
+      fm["dispatch"] = {
+        "invoke-when": sub.dispatch.invokeWhen,
+        "skip-when": sub.dispatch.skipWhen,
+        tasks: sub.dispatch.tasks,
+      };
+    }
     return [
       {
         path: `.cursor/agents/${sub.name}.md`,

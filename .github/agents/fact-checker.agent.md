@@ -3,6 +3,17 @@ description: "Use when: specific factual claims in a document must be verified a
 tools:
   - read
   - search
+dispatch:
+  invoke-when:
+    - verifying factual claims, citations, numbers, or external references
+    - cross-referencing statements against primary sources
+  skip-when:
+    - pure architectural design or abstract task decomposition
+  tasks:
+    - fact-check
+    - verification
+    - citations
+    - claims
 ---
 
 # Fact Checker — Claim Verifier

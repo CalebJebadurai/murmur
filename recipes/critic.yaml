@@ -22,3 +22,16 @@ instructions: |
 available_tools:
   - read
   - search
+annotations:
+  murmur_dispatch:
+    invoke_when:
+      - a plan, design, or implementation needs critical review
+      - identifying weaknesses, gaps, unstated assumptions, or missing edge cases
+    skip_when:
+      - mechanical formatting, simple lint fixes, or trivial typos
+    tasks:
+      - review
+      - critique
+      - risk
+      - evaluate
+      - audit

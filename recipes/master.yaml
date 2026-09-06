@@ -47,3 +47,15 @@ available_tools:
 sub_recipes:
   - name: curator
     path: recipes/curator.yaml
+annotations:
+  murmur_dispatch:
+    invoke_when:
+      - a task needs decomposition and coordination across multiple specialists
+      - no existing specialist fits and an on-demand subagent must be spawned
+    skip_when:
+      - narrow, single-step tasks that map directly to an individual specialist
+    tasks:
+      - orchestrate
+      - coordinate
+      - spawn
+      - decompose

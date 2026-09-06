@@ -24,3 +24,16 @@ available_tools:
   - search
   - edit
   - new
+annotations:
+  murmur_dispatch:
+    invoke_when:
+      - translating a finalized plan into concrete code changes or step-by-step implementation
+      - building features, writing code, fixing bugs, or executing implementation tasks
+    skip_when:
+      - early strategic analysis, academic literature reviews, or pure policy planning
+    tasks:
+      - implement
+      - code
+      - build
+      - fix
+      - refactor

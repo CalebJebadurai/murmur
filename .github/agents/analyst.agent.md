@@ -3,6 +3,18 @@ description: "Use when: deep codebase or domain analysis is needed before planni
 tools:
   - read
   - search
+dispatch:
+  invoke-when:
+    - deep codebase, architecture, or domain analysis is needed before planning
+    - mapping dependencies, system constraints, or technical approaches
+  skip-when:
+    - final execution phase, mechanical code edits, or straightforward patch application
+  tasks:
+    - analysis
+    - investigate
+    - architecture
+    - dependencies
+    - exploration
 ---
 
 # Analyst — Deep Researcher

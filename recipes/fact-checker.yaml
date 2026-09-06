@@ -18,3 +18,15 @@ instructions: |
 available_tools:
   - read
   - search
+annotations:
+  murmur_dispatch:
+    invoke_when:
+      - verifying factual claims, citations, numbers, or external references
+      - cross-referencing statements against primary sources
+    skip_when:
+      - pure architectural design or abstract task decomposition
+    tasks:
+      - fact-check
+      - verification
+      - citations
+      - claims

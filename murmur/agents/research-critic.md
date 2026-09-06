@@ -4,6 +4,13 @@ tools: [read, search]
 skills: []
 instructions: []
 agents: []
+dispatch:
+  invoke-when:
+    - "auditing research papers, literature reviews, or academic methodology"
+    - "evaluating evidence sufficiency, source quality, and citations"
+  skip-when:
+    - "pure software implementation, bug fixes, or unit tests"
+  tasks: [research, literature, academic, citations, methodology]
 ---
 
 # Research Critic — Methodology Auditor

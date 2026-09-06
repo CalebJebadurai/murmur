@@ -4,6 +4,13 @@ tools: [read, search]
 skills: []
 instructions: []
 agents: []
+dispatch:
+  invoke-when:
+    - "a plan, design, or implementation needs critical review"
+    - "identifying weaknesses, gaps, unstated assumptions, or missing edge cases"
+  skip-when:
+    - "mechanical formatting, simple lint fixes, or trivial typos"
+  tasks: [review, critique, risk, evaluate, audit]
 ---
 
 # Critic — Reviewer

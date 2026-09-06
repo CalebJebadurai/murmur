@@ -3,6 +3,17 @@ description: "Use when: an implementation report must be cross-referenced agains
 tools:
   - read
   - search
+dispatch:
+  invoke-when:
+    - cross-referencing implementation against source plan or requirements
+    - auditing test coverage, verification criteria, and execution completeness
+  skip-when:
+    - early planning, brainstorming, or exploratory research
+  tasks:
+    - verify
+    - audit
+    - coverage
+    - validation
 ---
 
 # Verifier — Coverage Auditor

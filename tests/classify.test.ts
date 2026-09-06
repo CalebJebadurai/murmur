@@ -74,4 +74,59 @@ describe("task classifier", () => {
     );
     expect(exitCode).toBe(0);
   });
+
+  test("matches data-critic for statistical and metric evaluation queries", async () => {
+    const loaded = await loadIR(BASE_MURMUR);
+    expect(loaded.ok).toBe(true);
+    if (!loaded.ok) return;
+
+    const result = classifyTask(
+      "evaluate machine learning model metrics and audit statistical regression benchmarks",
+      loaded.value,
+    );
+
+    const agentNames = result.matchedAgents.map((a) => a.name);
+    expect(agentNames).toContain("data-critic");
+    const dataCritic = result.matchedAgents.find((a) => a.name === "data-critic");
+    expect(dataCritic).toBeDefined();
+    expect(dataCritic?.score).toBeGreaterThan(0.2);
+  });
+
+  test("matches social-critic for accessibility and ethical impact queries", async () => {
+    const loaded = await loadIR(BASE_MURMUR);
+    expect(loaded.ok).toBe(true);
+    if (!loaded.ok) return;
+
+    const result = classifyTask(
+      "audit user accessibility compliance and ethical implications of onboarding flow",
+      loaded.value,
+    );
+
+    const agentNames = result.matchedAgents.map((a) => a.name);
+    expect(agentNames).toContain("social-critic");
+    const socialCritic = result.matchedAgents.find((a) => a.name === "social-critic");
+    expect(socialCritic).toBeDefined();
+    expect(socialCritic?.score).toBeGreaterThan(0.2);
+  });
+
+  test("suppresses agents when query triggers skip-when condition", async () => {
+    const loaded = await loadIR(BASE_MURMUR);
+    expect(loaded.ok).toBe(true);
+    if (!loaded.ok) return;
+
+    // implementer has skip-when: "early strategic analysis, academic literature reviews, or pure policy planning"
+    const result = classifyTask(
+      "academic literature review of clean energy policy and strategic analysis",
+      loaded.value,
+    );
+
+    const implementer = result.matchedAgents.find((a) => a.name === "implementer");
+    // Implementer should either be absent or score lower than researcher/analyst
+    const researcher = result.matchedAgents.find((a) => a.name === "researcher");
+    expect(researcher).toBeDefined();
+    if (implementer) {
+      expect((researcher?.score ?? 0) > implementer.score).toBe(true);
+    }
+  });
 });
+

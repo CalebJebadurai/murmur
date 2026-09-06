@@ -31,6 +31,13 @@ export class CopilotAdapter implements RuntimeCompiler {
     if (agent.agents.length) fm["agents"] = agent.agents;
     if (agent.model && agent.model.length) fm["model"] = agent.model;
     if (agent.userInvocable !== undefined) fm["user-invocable"] = agent.userInvocable;
+    if (agent.dispatch) {
+      fm["dispatch"] = {
+        "invoke-when": agent.dispatch.invokeWhen,
+        "skip-when": agent.dispatch.skipWhen,
+        tasks: agent.dispatch.tasks,
+      };
+    }
     return { ...fm, ...extra };
   }
 

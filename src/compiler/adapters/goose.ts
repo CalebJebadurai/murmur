@@ -48,6 +48,15 @@ export class GooseAdapter implements RuntimeCompiler {
     const settings: Record<string, YamlValue> = {};
     if (agent.model && agent.model.length) settings["goose_model"] = agent.model[0]!;
     if (Object.keys(settings).length) recipe["settings"] = settings;
+    if (agent.dispatch) {
+      recipe["annotations"] = {
+        murmur_dispatch: {
+          invoke_when: agent.dispatch.invokeWhen,
+          skip_when: agent.dispatch.skipWhen,
+          tasks: agent.dispatch.tasks,
+        },
+      };
+    }
     return recipe;
   }
 

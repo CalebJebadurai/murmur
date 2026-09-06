@@ -5,6 +5,18 @@ tools:
   - search
   - edit
   - new
+dispatch:
+  invoke-when:
+    - translating a finalized plan into concrete code changes or step-by-step implementation
+    - building features, writing code, fixing bugs, or executing implementation tasks
+  skip-when:
+    - early strategic analysis, academic literature reviews, or pure policy planning
+  tasks:
+    - implement
+    - code
+    - build
+    - fix
+    - refactor
 ---
 
 # Implementer — Builder

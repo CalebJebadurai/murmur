@@ -4,6 +4,13 @@ tools: [read, search, edit]
 skills: []
 instructions: []
 agents: []
+dispatch:
+  invoke-when:
+    - "synthesizing research findings and critic feedback into an improved plan"
+    - "resolving critic findings, refining roadmap phases, or structuring documents"
+  skip-when:
+    - "raw exploratory research before an initial plan exists"
+  tasks: [plan, refine, synthesize, roadmap]
 ---
 
 # Planner — Plan Refiner

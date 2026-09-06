@@ -4,6 +4,13 @@ tools: [read, search]
 skills: []
 instructions: []
 agents: []
+dispatch:
+  invoke-when:
+    - "refining an underspecified prompt or naive user request into a structured brief"
+    - "clarifying project requirements, scope boundaries, and success criteria"
+  skip-when:
+    - "well-defined implementation plans or direct, explicit instructions"
+  tasks: [prompt, brief, clarify, requirements]
 ---
 
 # Prompt Engineer — Brief Refiner

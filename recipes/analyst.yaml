@@ -19,3 +19,16 @@ instructions: |
 available_tools:
   - read
   - search
+annotations:
+  murmur_dispatch:
+    invoke_when:
+      - deep codebase, architecture, or domain analysis is needed before planning
+      - mapping dependencies, system constraints, or technical approaches
+    skip_when:
+      - final execution phase, mechanical code edits, or straightforward patch application
+    tasks:
+      - analysis
+      - investigate
+      - architecture
+      - dependencies
+      - exploration

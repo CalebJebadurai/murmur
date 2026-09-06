@@ -1,6 +1,6 @@
 {
   "name": "murmr",
-  "version": "0.2.1",
+  "version": "0.4.0",
   "author": "calebjebadurai",
   "repository": {
     "type": "git",
@@ -55,7 +55,7 @@
     "test": "bun test",
     "typecheck": "tsc --noEmit",
     "externalization": "bun run scripts/check-externalization.ts",
-    "agents": "bun run src/cli.ts compile --target copilot && bun run src/cli.ts compile --target goose",
+    "agents": "bun run src/cli.ts compile",
     "agents:check": "bun run src/cli.ts doctor",
     "prepare": "lefthook install || true",
     "prepublishOnly": "bun run build"

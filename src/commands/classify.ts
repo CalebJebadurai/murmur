@@ -198,6 +198,53 @@ const AGENT_INTENT_MAP: Record<string, string[]> = {
     "source",
   ],
   "prompt-engineer": ["prompt", "refine", "brief", "clarify"],
+  "business-critic": [
+    "business",
+    "pricing",
+    "commercial",
+    "economics",
+    "monetization",
+    "market",
+    "gtm",
+    "competitor",
+    "strategy",
+  ],
+  "fact-checker": [
+    "fact",
+    "facts",
+    "claim",
+    "claims",
+    "cite",
+    "citation",
+    "citations",
+    "verify",
+    "source",
+    "sources",
+  ],
+  "data-critic": [
+    "data",
+    "statistics",
+    "statistical",
+    "metrics",
+    "regression",
+    "quantitative",
+    "leakage",
+    "ml",
+    "benchmark",
+    "benchmarks",
+  ],
+  "social-critic": [
+    "accessibility",
+    "a11y",
+    "wcag",
+    "ethics",
+    "ethical",
+    "welfare",
+    "equity",
+    "privacy",
+    "social",
+    "inclusion",
+  ],
 };
 
 /**
@@ -301,6 +348,44 @@ export function classifyTask(query: string, ir: IRSet): ClassificationResult {
       }
       if (intentHits > 0) {
         reasons.push(`${intentHits} domain intent match(es)`);
+      }
+    }
+
+    // Frontmatter selective dispatch rules
+    if (agent.dispatch) {
+      // 1. Task category match
+      if (agent.dispatch.tasks?.length) {
+        for (const task of agent.dispatch.tasks) {
+          const taskTokens = tokenize(task);
+          if (taskTokens.some((t) => tokenSet.has(t))) {
+            score += 3.0;
+            reasons.push(`matches dispatch task category: "${task}"`);
+          }
+        }
+      }
+
+      // 2. Invoke-when condition match
+      if (agent.dispatch.invokeWhen?.length) {
+        for (const invokeRule of agent.dispatch.invokeWhen) {
+          const ruleTokens = tokenize(invokeRule);
+          const hitCount = ruleTokens.filter((t) => tokenSet.has(t)).length;
+          if (hitCount >= 2 || (ruleTokens.length <= 2 && hitCount >= 1)) {
+            score += 2.5;
+            reasons.push(`matches dispatch condition: "${invokeRule}"`);
+          }
+        }
+      }
+
+      // 3. Skip-when condition match
+      if (agent.dispatch.skipWhen?.length) {
+        for (const skipRule of agent.dispatch.skipWhen) {
+          const ruleTokens = tokenize(skipRule);
+          const hitCount = ruleTokens.filter((t) => tokenSet.has(t)).length;
+          if (hitCount >= 2 || (ruleTokens.length <= 2 && hitCount >= 1)) {
+            score -= 4.0;
+            reasons.push(`suppressed by skip condition: "${skipRule}"`);
+          }
+        }
       }
     }
 

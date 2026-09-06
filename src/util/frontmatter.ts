@@ -136,9 +136,10 @@ export function parseFrontmatter(content: string): ParsedDocument {
   return { frontmatter: fm, body: body.trimStart() };
 }
 
-/** Coerce a frontmatter value to a string array (tolerant of scalars). */
-export function asStringArray(v: FrontmatterValue | undefined): string[] {
-  if (v === undefined) return [];
+/** Coerce a frontmatter value to a string array (tolerant of scalars and unknown values). */
+export function asStringArray(v: unknown): string[] {
+  if (v === undefined || v === null) return [];
   if (Array.isArray(v)) return v.map((x) => String(x));
   return [String(v)];
 }
+

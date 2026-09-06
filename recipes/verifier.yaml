@@ -19,3 +19,15 @@ instructions: |
 available_tools:
   - read
   - search
+annotations:
+  murmur_dispatch:
+    invoke_when:
+      - cross-referencing implementation against source plan or requirements
+      - auditing test coverage, verification criteria, and execution completeness
+    skip_when:
+      - early planning, brainstorming, or exploratory research
+    tasks:
+      - verify
+      - audit
+      - coverage
+      - validation

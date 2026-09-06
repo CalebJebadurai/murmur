@@ -21,3 +21,16 @@ instructions: |
 available_tools:
   - read
   - search
+annotations:
+  murmur_dispatch:
+    invoke_when:
+      - a question needs information gathered and synthesized from external sources, documentation, or the codebase
+      - exploratory research, literature gathering, or market investigations
+    skip_when:
+      - code implementation, mechanical editing, or running test suites
+    tasks:
+      - research
+      - investigate
+      - information
+      - sources
+      - literature

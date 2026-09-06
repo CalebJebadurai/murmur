@@ -3,6 +3,19 @@ description: "Use when: a plan must be evaluated for business viability, unit ec
 tools:
   - read
   - search
+dispatch:
+  invoke-when:
+    - evaluating commercial viability, business models, monetization, or market strategy
+    - pricing, unit economics, go-to-market, or competitive moat is analyzed
+  skip-when:
+    - pure technical refactoring, syntax fixes, or local script changes
+  tasks:
+    - business
+    - pricing
+    - economics
+    - strategy
+    - gtm
+    - commercial
 ---
 
 # Business Critic — Commercial Reviewer

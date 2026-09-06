@@ -1,4 +1,4 @@
-export type { AgentDefinition } from "./agent.ts";
+export type { AgentDefinition, AgentDispatchRule } from "./agent.ts";
 export type { SubagentDefinition, SpawnMeta } from "./subagent.ts";
 export type { SkillDefinition } from "./skill.ts";
 export type { InstructionDefinition, OutputSection } from "./instruction.ts";

@@ -8,6 +8,7 @@ import { isValidGlob } from "../util/glob.ts";
 import { extractYamlBlock, parsePipelineYaml } from "../util/pipelineYaml.ts";
 import type {
   AgentDefinition,
+  AgentDispatchRule,
   InstructionDefinition,
   OutputSection,
   SkillDefinition,
@@ -18,6 +19,40 @@ import type {
 
 function stem(file: string): string {
   return basename(file).replace(/\.(md|markdown)$/i, "");
+}
+
+function parseDispatch(fm: Frontmatter): AgentDispatchRule | undefined {
+  const rawDispatch = fm["dispatch"];
+  let invokeWhen: string[] = [];
+  let skipWhen: string[] = [];
+  let tasks: string[] = [];
+
+  if (rawDispatch && typeof rawDispatch === "object" && !Array.isArray(rawDispatch)) {
+    const d = rawDispatch as Record<string, unknown>;
+    invokeWhen = asStringArray(d["invoke-when"] ?? d["invokeWhen"]);
+    skipWhen = asStringArray(d["skip-when"] ?? d["skipWhen"]);
+    tasks = asStringArray(d["tasks"]);
+  }
+
+  if (fm["invoke-when"] || fm["invokeWhen"]) {
+    invokeWhen = [...invokeWhen, ...asStringArray(fm["invoke-when"] ?? fm["invokeWhen"])];
+  }
+  if (fm["skip-when"] || fm["skipWhen"]) {
+    skipWhen = [...skipWhen, ...asStringArray(fm["skip-when"] ?? fm["skipWhen"])];
+  }
+  if (fm["dispatch-tasks"] || fm["tasks"]) {
+    tasks = [...tasks, ...asStringArray(fm["dispatch-tasks"] ?? fm["tasks"])];
+  }
+
+  if (invokeWhen.length === 0 && skipWhen.length === 0 && tasks.length === 0) {
+    return undefined;
+  }
+
+  return {
+    invokeWhen: Array.from(new Set(invokeWhen)),
+    skipWhen: Array.from(new Set(skipWhen)),
+    tasks: Array.from(new Set(tasks)),
+  };
 }
 
 function requireString(
@@ -60,6 +95,7 @@ export function validateAgent(
         typeof fm["user-invocable"] === "boolean"
           ? (fm["user-invocable"] as boolean)
           : undefined,
+      dispatch: parseDispatch(fm),
     },
   };
 }

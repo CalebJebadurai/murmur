@@ -23,4 +23,16 @@ export type AgentDefinition = {
   model?: string[];
   /** Whether a human can invoke this agent directly. */
   userInvocable?: boolean;
+  /** Machine-readable selective dispatch rules for task routing. */
+  dispatch?: AgentDispatchRule;
+};
+
+/** Machine-readable selective dispatch rules for task routing. */
+export type AgentDispatchRule = {
+  /** Condition phrases or keywords indicating when this agent should be dispatched. */
+  invokeWhen: string[];
+  /** Condition phrases or keywords indicating when this agent should NOT be dispatched. */
+  skipWhen: string[];
+  /** Domain/task category tags (e.g. ["data", "analytics", "security"]). */
+  tasks: string[];
 };

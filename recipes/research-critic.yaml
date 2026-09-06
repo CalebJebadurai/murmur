@@ -19,3 +19,16 @@ instructions: |
 available_tools:
   - read
   - search
+annotations:
+  murmur_dispatch:
+    invoke_when:
+      - auditing research papers, literature reviews, or academic methodology
+      - evaluating evidence sufficiency, source quality, and citations
+    skip_when:
+      - pure software implementation, bug fixes, or unit tests
+    tasks:
+      - research
+      - literature
+      - academic
+      - citations
+      - methodology

@@ -5,6 +5,13 @@ skills: [knowledge-curation]
 instructions: []
 agents: []
 user-invocable: true
+dispatch:
+  invoke-when:
+    - "the project's knowledge base, skills, or instructions must be updated or reconciled"
+    - "documenting architecture, build system, or dependencies after code changes"
+  skip-when:
+    - "pure implementation without changes to architecture or knowledge base"
+  tasks: [curate, knowledge, documentation, skills, inventory]
 ---
 
 # Curator — Knowledge Keeper
