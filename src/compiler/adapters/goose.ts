@@ -92,12 +92,21 @@ export class GooseAdapter implements RuntimeCompiler {
 
   compileSkill(skill: SkillDefinition): EmittedFile[] {
     const header = `---\nname: ${skill.name}\ndescription: ${JSON.stringify(skill.description)}\n---\n\n`;
-    return [
+    const files: EmittedFile[] = [
       {
         path: `skills/${skill.name}/SKILL.md`,
         contents: `${header}${skill.body.trim()}\n`,
       },
     ];
+    if (skill.assets) {
+      for (const a of skill.assets) {
+        files.push({
+          path: `skills/${skill.name}/${a.relativePath}`,
+          contents: a.contents ?? "",
+        });
+      }
+    }
+    return files;
   }
 
   compileInstruction(instruction: InstructionDefinition): EmittedFile[] {

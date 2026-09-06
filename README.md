@@ -5,7 +5,7 @@
 
 A *murmuration* is thousands of starlings moving as a single, coordinated intelligence — **no central controller, emergent behavior from simple shared rules.** That's the design philosophy: a small set of generic agents, a master agent that spawns specialized subagents on demand, and a shared substrate of skills/instructions that gives them context.
 
-> **Status:** ✅ v0.4 shipped. Defines and compiles agents/subagents/skills/instructions/tools/pipelines, with selective dispatch tables (`invokeWhen`/`skipWhen`), full domain-critic roster, multi-target compilation (GitHub Copilot, goose, Google Antigravity, Claude Code, Cursor), `watch`, `hook`, `tool`, `docs`, `doctor --fix`, `classify`, and a defense-in-depth `publish` scrubber.
+> **Status:** ✅ v1.0 shipped (**The Full Union**). Defines and compiles agents/subagents/skills/instructions/tools/pipelines across 6 native runtimes (GitHub Copilot, goose, Google Antigravity, Claude Code, Cursor, ACP), with directory skill assets, npm plugin auto-discovery, selective dispatch tables, full domain-critic roster, worker pool concurrency, cloud sandbox dispatch, and end-to-end orchestration validation.
 
 ---
 
@@ -172,17 +172,19 @@ Before this repo (or any derived agent pack) is published, **all codebase-specif
 ---
 
 ## Roadmap
+ 
+`murmr` has grown from an initial agent definition compiler into a portable engine for **governed multi-agent pipelines** with automatic context, tool generation, and cross-runtime execution:
 
-v0.1.0 defines and compiles agents. The roadmap grows murmur into a portable engine for **governed multi-agent pipelines** with automatic context and tool generation:
-
-- **v0.2** — Orchestration IR (`pipeline`/`workflow`) + `murmr run` + `RUN-LOG`
-- **v0.3** — Scoring rubrics + output-section contracts (`murmr score`)
-- **v0.4** — Selective-dispatch tables + task classifier + critic rosters
-- **v0.5** — Concurrency engine (worker pool + rpm/tpm budgets)
-- **v0.6** — Tool generation (auto MCP / tool stubs)
-- **v0.7** — Claude Code → Cursor → ACP adapters + plugin model
-- **v0.8** — Git hooks, schema-driven plugin validation, docs compiler
-- **v1.0** — The full union: portable governed agent swarms
+- ✅ **v0.1** — Core IR & Multi-Compiler (Copilot, goose, Antigravity)
+- ✅ **v0.2** — Orchestration IR (`pipeline`/`workflow`) + `murmr run` + `RUN-LOG`
+- ✅ **v0.3** — Scoring rubrics + output-section contracts (`murmr score`)
+- ✅ **v0.4** — Selective-dispatch tables + task classifier (`murmr classify`) + domain-critic rosters
+- ✅ **v0.5** — Concurrency engine (worker pool + budgeting + retries)
+- ✅ **v0.6** — Tool generation (auto-discovery & MCP schema generation)
+- ✅ **v0.7** — Multi-target expansion (Claude Code, Cursor) + real-time watcher & dev server
+- ✅ **v0.8** — Git pre-commit hooks + interactive documentation portal (`murmr docs`)
+- ✅ **v0.9** — ACP protocol portability + Cloud Sandbox dispatch (Docker & remote runners)
+- ✅ **v1.0** — **The Full Union**: npm plugin discovery, directory skill assets, and cross-runtime e2e probe
 
 Full detail in [`docs/ROADMAP.md`](docs/ROADMAP.md).
 

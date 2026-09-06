@@ -1,6 +1,6 @@
 import { Glob } from "bun";
 import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { basename, dirname, join, relative } from "node:path";
 import type {
   IRSet,
   ValidationError,
@@ -58,15 +58,43 @@ export async function loadIR(murmurDir: string): Promise<LoadResult> {
     else errors.push(...res.errors);
   }
 
-  // skills: support both flat skills/<name>.md and skills/<name>/SKILL.md
+  // skills: support both flat skills/<name>.md and directory skills/<name>/SKILL.md (with assets)
   const skillFiles = [
     ...(await readFiles(join(murmurDir, "skills"), "*.md")),
     ...(await readFiles(join(murmurDir, "skills"), "*/SKILL.md")),
   ].sort();
   for (const f of skillFiles) {
     const res = validateSkill(await Bun.file(f).text(), f);
-    if (res.ok) set.skills.push(res.value);
-    else errors.push(...res.errors);
+    if (res.ok) {
+      if (basename(f).toLowerCase() === "skill.md") {
+        const skillDir = dirname(f);
+        const subFiles = await readFiles(skillDir, "**/*");
+        const assets: import("./skill.ts").SkillAsset[] = [];
+        for (const sf of subFiles) {
+          if (basename(sf).toLowerCase() === "skill.md" || basename(sf).startsWith(".")) continue;
+          const rel = relative(skillDir, sf);
+          try {
+            const contents = await Bun.file(sf).text();
+            assets.push({
+              relativePath: rel,
+              absolutePath: sf,
+              contents,
+            });
+          } catch {
+            assets.push({
+              relativePath: rel,
+              absolutePath: sf,
+            });
+          }
+        }
+        if (assets.length) {
+          res.value.assets = assets;
+        }
+      }
+      set.skills.push(res.value);
+    } else {
+      errors.push(...res.errors);
+    }
   }
 
   const instrFiles = await readFiles(join(murmurDir, "instructions"), "*.md");

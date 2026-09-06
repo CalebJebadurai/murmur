@@ -1,5 +1,6 @@
-import { join } from "node:path";
+import { isAbsolute, join } from "node:path";
 import { existsSync } from "node:fs";
+import { mkdir } from "node:fs/promises";
 import { loadIR } from "../schema/load.ts";
 import { runDoctor } from "./doctor.ts";
 import { loadConfig } from "../util/loadConfig.ts";
@@ -365,9 +366,14 @@ export async function runCommand(projectRoot: string, opts: RunOptions): Promise
   const date = new Date().toISOString().slice(0, 10);
   const log = formatRunLog(runReport, date);
 
-  const outDir = join(projectRoot, opts.out ?? "_architect");
+  const outDir = opts.out
+    ? isAbsolute(opts.out)
+      ? opts.out
+      : join(projectRoot, opts.out)
+    : join(projectRoot, "_architect");
   const logPath = join(outDir, "RUN-LOG.md");
   if (!opts.dryRun) {
+    await mkdir(outDir, { recursive: true });
     await Bun.write(logPath, log);
   }
 

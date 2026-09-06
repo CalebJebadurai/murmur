@@ -2,7 +2,7 @@ import { join } from "node:path";
 import { existsSync } from "node:fs";
 import { loadIR } from "../schema/load.ts";
 import { compileTarget } from "../compiler/compile.ts";
-import { availableTargets, getAdapter } from "../compiler/registry.ts";
+import { availableTargets, getAdapter, resolveAdapters } from "../compiler/registry.ts";
 import type { CompileContext } from "../compiler/RuntimeCompiler.ts";
 import { loadConfig } from "../util/loadConfig.ts";
 import { runDoctor } from "./doctor.ts";
@@ -40,6 +40,16 @@ export async function compileCommand(
   const config = await loadConfig(projectRoot, {
     allowConfigExec: opts.allowConfigExec,
   });
+
+  try {
+    await resolveAdapters(config, projectRoot, {
+      allowConfigExec: opts.allowConfigExec,
+    });
+  } catch (err) {
+    console.error(`Plugin error: ${(err as Error).message}`);
+    return 1;
+  }
+
   const targets = opts.target ? [opts.target] : config.targets;
   const outRoot = opts.out ? join(projectRoot, opts.out) : projectRoot;
 

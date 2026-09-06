@@ -70,12 +70,21 @@ export class ClaudeAdapter implements RuntimeCompiler {
       name: skill.name,
       description: skill.description,
     };
-    return [
+    const files: EmittedFile[] = [
       {
         path: `.claude/skills/${skill.name}/SKILL.md`,
         contents: emitFrontmatterDoc(fm, skill.body),
       },
     ];
+    if (skill.assets) {
+      for (const a of skill.assets) {
+        files.push({
+          path: `.claude/skills/${skill.name}/${a.relativePath}`,
+          contents: a.contents ?? "",
+        });
+      }
+    }
+    return files;
   }
 
   compileInstruction(instruction: InstructionDefinition): EmittedFile[] {

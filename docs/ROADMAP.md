@@ -66,16 +66,13 @@ murmr run <pipeline>    # execute a governed pipeline locally, with a RUN-LOG
 
 ## The Next Horizons
 
-### v1.0 — The Full Union (Active Priority)
-
-ACP protocol portability + cross-runtime spawning proven by the hot-load probe + semantic init
-+ tool generation + the orchestration/scoring/dispatch layer + cloud sandboxing = a system that doesn't
-just *define* agents but **runs governed multi-agent pipelines portably** — the union
-no competitor (goose, Claude Code, ECC.tools, cloud VM fleet platforms) offers together.
-
-- **npm-package plugin model** — adapters shippable as `murmr-plugin-*` with auto-discovery.
-- **Skill assets** — directory-structured skills with per-runtime asset resolution.
-- **End-to-End Orchestration Probe** — cross-runtime multi-agent evaluation test harness.
+### v1.0 — The Full Union (Shipped)
+- **Agent Client Protocol (ACP) adapter:** protocol-level portability target conforming to [agentclientprotocol.com](https://agentclientprotocol.com/), emitting `.acp/manifest.json`, `.acp/agents/*.json`, `.acp/pipelines/*.json`, and a standalone JSON-RPC 2.0 stdio server (`.acp/server.ts`).
+- **Cloud Sandbox Dispatch Adapter:** `makeSandboxDispatcher` allowing `murmr run` to dispatch tasks to remote isolated sandbox runners via Docker containers (`--sandbox docker`) or remote HTTP/JSON-RPC endpoints (`--sandbox remote`).
+- **Directory-Structured Skill Assets:** Full companion asset support (`SkillAsset` in schema, discovery in loader, emission into native paths across all 6 compiler targets).
+- **npm Plugin Architecture:** `murmr-plugin-*` auto-discovery from local or project `package.json`, `defineAdapter` typed helper for plugin authors, and dynamic compilation target registration.
+- **End-to-End Cross-Runtime Orchestration Probe:** Comprehensive automated integration harness (`tests/e2eProbe.test.ts`) validating schema loading, 6-runtime compilation, ACP server JSON-RPC protocol, concurrent worker pool execution, cloud sandbox dispatch, and quantitative rubric scoring.
+- **Zero-Dependency Runtime Guarantee:** Entire compilation, execution, scoring, and plugin framework runs with zero external runtime dependencies on Bun core.
 
 ---
 
@@ -88,8 +85,8 @@ no competitor (goose, Claude Code, ECC.tools, cloud VM fleet platforms) offers t
 5. ~~Tool generation / auto MCP (v0.6)~~ — ✅ Shipped.
 6. ~~Claude Code + Cursor + Antigravity adapters (v0.7)~~ — ✅ Shipped.
 7. ~~Git hooks, docs compiler (v0.8)~~ — ✅ Shipped.
-8. ~~ACP adapter + Cloud Sandbox dispatch (v0.7 / v0.9)~~ — ✅ Shipped.
-9. **The Full Union (v1.0)** — Next priority.
+8. ~~ACP adapter + Cloud Sandbox dispatch (v0.9)~~ — ✅ Shipped.
+9. ~~The Full Union (v1.0)~~ — ✅ Shipped.
 
 ## Release & versioning
 
