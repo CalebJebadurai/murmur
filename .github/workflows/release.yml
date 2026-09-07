@@ -38,7 +38,9 @@ jobs:
       - run: bun run build
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+      - name: Upgrade npm for OIDC Trusted Publishing support
+        run: npm install -g npm@latest
       # Publishes to npm via Trusted Publishing (OIDC via id-token: write) with provenance attestation
       - name: Publish to npm
         run: npm publish --access public --provenance
