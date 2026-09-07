@@ -13,7 +13,7 @@ import { hookCommand, type HookAction } from "./commands/hook.ts";
 import { toolCommand } from "./commands/tool.ts";
 import { docsCommand } from "./commands/docs.ts";
 
-const VERSION = "1.0.0";
+const VERSION = "1.1.0";
 
 type Flags = { positionals: string[]; flags: Record<string, string | boolean> };
 
