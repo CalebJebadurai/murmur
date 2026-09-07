@@ -4,6 +4,14 @@ All notable changes to Murmuration are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the project adheres to
 semantic versioning.
 
+## [1.1.1](https://github.com/CalebJebadurai/murmur/compare/murmr-v1.1.0...murmr-v1.1.1) (2026-09-07)
+
+
+### Bug Fixes
+
+* **ci:** remove registry-url to enable pure OIDC Trusted Publishing and add workflow_dispatch ([202c539](https://github.com/CalebJebadurai/murmur/commit/202c539ad5b3e788614cf185d4547ce4c2352b12))
+* **ci:** upgrade to Node 22 and npm latest for OIDC Trusted Publishing ([9f41533](https://github.com/CalebJebadurai/murmur/commit/9f415330a4e6792218d53dd54ed4fc684fc4d8a1))
+
 ## [1.1.0](https://github.com/CalebJebadurai/murmur/compare/murmr-v1.0.0...murmr-v1.1.0) (2026-09-06)
 
 
