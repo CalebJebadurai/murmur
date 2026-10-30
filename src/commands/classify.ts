@@ -1,6 +1,7 @@
 import { join } from "node:path";
 import { loadIR } from "../schema/load.ts";
 import type { IRSet, PipelineDefinition, SubagentDefinition } from "../schema/index.ts";
+import { classifyWithJev } from "../jev/router.ts";
 
 export type MatchedAgent = {
   name: string;
@@ -23,6 +24,8 @@ export type ClassificationResult = {
 
 export type ClassifyOptions = {
   json?: boolean;
+  engine?: "heuristic" | "jev";
+  forceMock?: boolean;
 };
 
 const STOP_WORDS = new Set([
@@ -456,7 +459,10 @@ export async function classifyCommand(
     return 1;
   }
 
-  const result = classifyTask(query, loaded.value);
+  const result =
+    opts?.engine === "jev"
+      ? await classifyWithJev(query, loaded.value, { forceMock: opts.forceMock })
+      : classifyTask(query, loaded.value);
 
   if (opts?.json) {
     console.log(JSON.stringify(result, null, 2));
