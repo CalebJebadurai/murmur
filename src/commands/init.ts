@@ -5,6 +5,9 @@ import { analyzeStructural, renderStructuralSkills } from "../analyzer/structura
 
 import { discoverTools, renderToolsSkill } from "./tool.ts";
 
+import { ProviderClient } from "../providers/client.ts";
+import type { IProviderClient, ProviderName } from "../providers/types.ts";
+
 export type InitMode = "merge" | "overwrite" | "cancel";
 
 export type InitOptions = {
@@ -12,6 +15,14 @@ export type InitOptions = {
   mode?: InitMode;
   /** Discover and write project tools skill. */
   tools?: boolean;
+  /** Enable semantic LLM-driven codebase analysis pass. */
+  semantic?: boolean;
+  /** Inference provider to use (default: "openrouter"). */
+  provider?: ProviderName;
+  /** Target model name or tier selector (default: auto). */
+  model?: string;
+  /** Injected provider client for testing. */
+  client?: IProviderClient;
 };
 
 async function copyDir(from: string, to: string, overwrite: boolean): Promise<number> {
@@ -27,11 +38,11 @@ async function copyDir(from: string, to: string, overwrite: boolean): Promise<nu
 }
 
 /**
- * `murmr init` — deterministic structural pass.
+ * `murmr init` — deterministic structural pass + optional semantic enrichment.
  *
  * Copies the generic base library (agents, subagents, the subagent-authoring skill),
- * then overlays codebase-derived structural skills/instructions. No LLM, no network.
- * The semantic pass is a separate agent-invoked step (templates/agents/murmur-init.md).
+ * overlays codebase-derived structural skills/instructions, and optionally synthesizes
+ * domain-specific semantic skills via OpenRouter/MeshAPI.
  */
 export async function initCommand(
   projectRoot: string,
@@ -73,11 +84,76 @@ export async function initCommand(
     }
   }
 
+  // 4. Optional semantic enrichment pass via pluggable model provider
+  if (opts.semantic) {
+    try {
+      const client =
+        opts.client ??
+        new ProviderClient({
+          provider: opts.provider ?? "openrouter",
+          defaultModel: opts.model,
+        });
+
+      const prompt = `Analyze this codebase and generate a domain-overview skill for AI agents working in this project.
+Project Name: ${facts.projectName}
+Package Manager: ${facts.packageManager}
+Languages: ${facts.languages.join(", ")}
+Top-level directories: ${facts.topLevelDirs.join(", ")}
+Key Dependencies: ${facts.dependencies.slice(0, 15).join(", ")}
+Scripts: ${Object.keys(facts.scripts).join(", ")}
+
+Generate a SKILL.md file with YAML frontmatter:
+---
+name: domain-overview
+description: High-level domain architectural overview and engineering conventions for ${facts.projectName}
+---
+# Domain Overview: ${facts.projectName}
+`;
+      console.log(
+        `init: running semantic enrichment via ${opts.provider ?? "openrouter"}...`,
+      );
+      const resp = await client.complete({
+        messages: [{ role: "user", content: prompt }],
+        tier: "reasoning",
+        model: opts.model,
+      });
+
+      if (resp.content) {
+        let content = resp.content.trim();
+        // Extract markdown if wrapped in ```markdown ... ```
+        if (content.startsWith("```markdown")) {
+          content = content.slice(11).replace(/```$/, "").trim();
+        } else if (content.startsWith("```md")) {
+          content = content.slice(5).replace(/```$/, "").trim();
+        } else if (content.startsWith("```")) {
+          content = content.slice(3).replace(/```$/, "").trim();
+        }
+
+        if (!content.startsWith("---")) {
+          content = `---\nname: domain-overview\ndescription: Domain overview for ${facts.projectName}\n---\n\n${content}`;
+        }
+
+        const skillDest = join(murmurDir, "skills", "domain-overview", "SKILL.md");
+        await Bun.write(skillDest, content);
+        written++;
+        console.log(
+          `init: synthesized semantic skill domain-overview using ${resp.model} (${resp.tier} tier)`,
+        );
+      }
+    } catch (err) {
+      console.warn(
+        `init: semantic pass failed (${err instanceof Error ? err.message : String(err)}); structural init retained.`,
+      );
+    }
+  }
+
   console.log(
-    `init: ${exists ? `${mode} into` : "created"} murmur/ — ${copied} base file(s), ${written} structural file(s).`,
+    `init: ${exists ? `${mode} into` : "created"} murmur/ — ${copied} base file(s), ${written} generated file(s).`,
   );
-  console.log(
-    "For semantic enrichment, run the `murmur-init` agent inside your host agent (Copilot/Claude/goose).",
-  );
+  if (!opts.semantic) {
+    console.log(
+      "For semantic enrichment, run `murmr init --semantic` or use host agent.",
+    );
+  }
   return 0;
 }

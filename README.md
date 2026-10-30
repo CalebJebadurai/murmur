@@ -157,7 +157,8 @@ murmr tool discover [--write]      # auto-discover package scripts/tools & gener
 murmr docs [--out <dir>] [--serve] # compile interactive HTML documentation portal with live preview
 murmr run <pipeline> [--tier T]    # walk a pipeline with interactive progress UI; emits RUN-LOG
 murmr score <doc> --rubric <name>  # score a document against quantitative rubrics
-murmr classify "<task description>" # classify task & select agent roster
+murmr classify "<task>" [--engine jev] # sub-10ms routing via TypeSafe Jev System One
+murmr evolve "<task>" [--k N]       # recursive harness evolution via Google Harness²
 murmr doctor [--fix]               # validate & self-heal missing references
 murmr list                         # inventory the murmur/ IR
 murmr publish [--dry-run] [--strict] # strip codebase-specific context for sharing
@@ -185,6 +186,7 @@ Before this repo (or any derived agent pack) is published, **all codebase-specif
 - ✅ **v0.8** — Git pre-commit hooks + interactive documentation portal (`murmr docs`)
 - ✅ **v0.9** — ACP protocol portability + Cloud Sandbox dispatch (Docker & remote runners)
 - ✅ **v1.0** — **The Full Union**: npm plugin discovery, directory skill assets, and cross-runtime e2e probe
+- ✅ **v1.1** — **System 1 & System 2 Synthesis**: TypeSafe Jev System One Decisions (`Choice`/`Score`/`Noul`) for sub-10ms agent routing + Google Harness² recursive self-improvement engine (`murmr evolve`)
 
 Full detail in [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
