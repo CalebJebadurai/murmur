@@ -4,6 +4,35 @@ All notable changes to Murmuration are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the project adheres to
 semantic versioning.
 
+## [1.2.0](https://github.com/CalebJebadurai/murmur/compare/murmr-v1.1.0...murmr-v1.2.0) (2026-10-31)
+
+
+### Features
+
+* add v2 providers, Codex and OpenCode targets, and optional Jev routing ([e9324a8](https://github.com/CalebJebadurai/murmur/commit/e9324a83c415d420d702610d4309d124153ef870))
+* **cli:** add evolve command, semantic init and jev engine flag ([119d73c](https://github.com/CalebJebadurai/murmur/commit/119d73c5604503415a10a0aed6722121adf4190c))
+* **compiler:** add codex and opencode targets ([2c4b540](https://github.com/CalebJebadurai/murmur/commit/2c4b540d0b0b835ba91424e1c8c08541d40cd314))
+* **harness2:** add evolution engine and experience tiers ([4f134ce](https://github.com/CalebJebadurai/murmur/commit/4f134ce4830e5a291e43cf2a01dc8bba242b953c))
+* **jev:** add Jev routing engine to classify ([3554e9a](https://github.com/CalebJebadurai/murmur/commit/3554e9ad30c1fd80d50b583fb19de6bad5ea7932))
+* **providers:** add model provider client and keychain secret lookup ([fcc8fe9](https://github.com/CalebJebadurai/murmur/commit/fcc8fe93451b38243a128efc417c3baf0bb76ea4))
+* **website:** add redesigned landing page and Railway deployment ([4f51f9f](https://github.com/CalebJebadurai/murmur/commit/4f51f9fecf64b36006845a77ee359d2d93ff9267))
+* **website:** redesign layout, add logo, fix install commands ([9089050](https://github.com/CalebJebadurai/murmur/commit/9089050f1bc21877568c07b910daff86b0945d46))
+
+
+### Bug Fixes
+
+* **ci:** remove registry-url to enable pure OIDC Trusted Publishing and add workflow_dispatch ([202c539](https://github.com/CalebJebadurai/murmur/commit/202c539ad5b3e788614cf185d4547ce4c2352b12))
+* **ci:** upgrade to Node 22 and npm latest for OIDC Trusted Publishing ([9f41533](https://github.com/CalebJebadurai/murmur/commit/9f415330a4e6792218d53dd54ed4fc684fc4d8a1))
+* **website:** replace unsupported claims with the real workflow ([06d9a4f](https://github.com/CalebJebadurai/murmur/commit/06d9a4f1d16b672e0d8092cc4b04634cbdb1e3da))
+
+
+### Documentation
+
+* add murmur vision ([fec4738](https://github.com/CalebJebadurai/murmur/commit/fec47389ab11144a0cbd0561e2ae85a0cc6384cb))
+* add v2 plans and record new modules ([4eea6e4](https://github.com/CalebJebadurai/murmur/commit/4eea6e44ebac14f8b3b00c1141e970a23cf2d42a))
+* correct claims and regenerate target files ([a1ab737](https://github.com/CalebJebadurai/murmur/commit/a1ab737b7c30235c742bd01be17dbf4d2f22fe1f))
+* **skills:** record website deployment ([a972ce0](https://github.com/CalebJebadurai/murmur/commit/a972ce029dd40d7139436fdceceaa8d2e6439832))
+
 ## [1.1.0](https://github.com/CalebJebadurai/murmur/compare/murmr-v1.0.0...murmr-v1.1.0) (2026-09-06)
 
 
