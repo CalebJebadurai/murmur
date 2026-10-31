@@ -114,28 +114,27 @@ Dedicated execution agent for:
 }
 
 /**
- * 2. PROBE STEP: Simulates / tests candidate execution to gather contrastive behavioral traces.
+ * 2. PROBE STEP: Structural checks only. Candidates are never executed, so the score says
+ * a candidate is well formed, not that it improves agent behavior.
  */
 export async function probeCandidate(
   candidate: HarnessCandidate,
   task: string,
 ): Promise<ProbeTrace> {
-  // Verify structural coherence
-  const hasValidFrontmatter = candidate.content.startsWith("---\n") && candidate.content.includes("\n---\n");
-  const hasName = candidate.content.includes("name:");
-  const isCoherent = hasValidFrontmatter && hasName && candidate.content.length > 50;
-
-  let score = 0.7;
-  if (candidate.kind === "skill") score = 0.95; // Skills provide the highest procedural leverage in Murmur
-  else if (candidate.kind === "instruction") score = 0.85;
-  else if (candidate.kind === "subagent") score = 0.8;
+  const checks = [
+    candidate.content.startsWith("---\n") && candidate.content.includes("\n---\n"),
+    /^(name|applyTo):/m.test(candidate.content),
+    candidate.content.length > 50,
+    candidate.content.includes(task),
+  ];
+  const passed = checks.filter(Boolean).length;
+  const score = passed / checks.length;
 
   return {
     candidateId: candidate.id,
-    success: isCoherent,
+    success: passed === checks.length,
     score,
-    outputSummary: `Candidate ${candidate.id} (${candidate.kind}): validated schema contracts, estimated score: ${score.toFixed(2)}`,
-    divergenceNotes: `High procedural resolution for ${task}`,
+    outputSummary: `Structural checks for candidate ${candidate.id} (${candidate.kind}): ${passed}/${checks.length} passed. Behavior not tested.`,
   };
 }
 
@@ -150,7 +149,7 @@ export async function composeHarness(
   murmurDir: string,
   dryRun = false,
 ): Promise<{ selectedCandidate: HarnessCandidate; writtenPath?: string; experience: string }> {
-  // Pick highest scoring probe
+  // Pick the highest structural score; ties keep the earliest candidate.
   let bestProbe = probes[0]!;
   for (const p of probes) {
     if ((p.score ?? 0) > (bestProbe.score ?? 0)) {
@@ -188,13 +187,13 @@ export async function composeHarness(
       {
         candidate: `${selectedCandidate.kind}:${selectedCandidate.targetName}`,
         score: bestProbe.score ?? 1.0,
-        lesson: "Synthesized specialized procedural guidance to resolve task ambiguity without model weight modification.",
+        lesson: "Added a template candidate that passed structural checks. Its effect on agent behavior was not tested.",
       },
       projectRoot,
     );
   }
 
-  const experience = `Adopted ${selectedCandidate.kind} "${selectedCandidate.targetName}" based on probe contrast (score: ${bestProbe.score?.toFixed(2)})`;
+  const experience = `Adopted ${selectedCandidate.kind} "${selectedCandidate.targetName}" after structural checks (score: ${bestProbe.score?.toFixed(2)}); behavior not tested`;
 
   return {
     selectedCandidate,
@@ -222,7 +221,13 @@ export async function evolveTask(
 
   const k = opts?.k ?? 3;
   // 1. Propose with 3-tier experience cascade context
-  const candidates = proposeCandidates(task, loaded.value, k, expPrompt);
+  const proposed = proposeCandidates(task, loaded.value, k, expPrompt);
+  const candidates = opts?.targetKind
+    ? proposed.filter((c) => c.kind === opts.targetKind)
+    : proposed;
+  if (candidates.length === 0) {
+    throw new Error(`No candidate of kind "${opts?.targetKind}" within k=${k}. Raise --k.`);
+  }
 
   // 2. Probe
   const probes: ProbeTrace[] = [];

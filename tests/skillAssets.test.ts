@@ -63,7 +63,7 @@ describe("Directory Skill Assets", () => {
       };
 
       // Test each adapter
-      const targets = ["copilot", "goose", "antigravity", "claude", "cursor", "acp"];
+      const targets = ["copilot", "goose", "antigravity", "claude", "cursor", "acp", "codex", "opencode"];
       for (const t of targets) {
         const adapter = getAdapter(t);
         expect(adapter).toBeDefined();

@@ -1,5 +1,5 @@
 /**
- * Type definitions for Google Harness² (Recursive Agent Harnessing).
+ * Type definitions for the experimental `murmr evolve` command, inspired by Harness².
  * Maps the 8 editable harness components to Murmuration IR.
  */
 

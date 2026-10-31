@@ -59,6 +59,10 @@ describe("TypeSafe Jev System One Client & Primitives", () => {
     expect(res.confidence).toBeGreaterThan(0.8);
   });
 
+  test("createJevClient refuses to fall back to the mock without a key", () => {
+    expect(() => createJevClient({ apiKey: "" })).toThrow("No Jev API key");
+  });
+
   test("createJevClient with forceMock returns deterministic mock client", () => {
     const factoryClient = createJevClient({ forceMock: true });
     expect(factoryClient).toBeInstanceOf(MockJevClient);

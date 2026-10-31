@@ -2,7 +2,7 @@
  * Unified Model Provider Client for OpenRouter, MeshAPI, and custom inference gateways.
  */
 
-import { getSecret } from "../util/keychain.js";
+import { getSecret } from "../util/keychain.ts";
 import type {
   IProviderClient,
   ModelSelection,
@@ -11,7 +11,7 @@ import type {
   ProviderName,
   ProviderRequest,
   ProviderResponse,
-} from "./types.js";
+} from "./types.ts";
 
 const DEFAULT_ENDPOINTS: Record<ProviderName, string> = {
   openrouter: "https://openrouter.ai/api/v1",

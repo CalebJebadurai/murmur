@@ -208,7 +208,7 @@ export class MockJevClient implements JevClient {
 /**
  * Factory function to instantiate the Jev client:
  * 1. Checks OPENROUTER_API_KEY / TYPESAFE_API_KEY in Keychain or env.
- * 2. Falls back to MockJevClient if forceMock is true or no key is configured.
+ * 2. Uses MockJevClient only when forceMock is true; a missing key is an error.
  */
 export function createJevClient(opts?: { forceMock?: boolean; apiKey?: string }): JevClient {
   if (opts?.forceMock) {
@@ -220,5 +220,7 @@ export function createJevClient(opts?: { forceMock?: boolean; apiKey?: string })
     return new OpenRouterJevClient(key);
   }
 
-  return new MockJevClient();
+  throw new Error(
+    "No Jev API key found. Set OPENROUTER_API_KEY or TYPESAFE_API_KEY, or pass --mock for offline test output.",
+  );
 }

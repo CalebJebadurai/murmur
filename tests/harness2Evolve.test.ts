@@ -1,6 +1,6 @@
-import { describe, expect, test } from "bun:test";
+import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { join } from "node:path";
-import { mkdtemp, rm } from "node:fs/promises";
+import { cp, mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { loadIR } from "../src/schema/load.ts";
 import {
@@ -11,9 +11,19 @@ import {
 } from "../src/harness2/engine.ts";
 import { evolveCommand } from "../src/commands/evolve.ts";
 
-describe("Google Harness² Recursive Evolution Engine", () => {
-  const root = process.cwd();
-  const murmurDir = join(root, "murmur");
+describe("Experimental evolve engine", () => {
+  let root: string;
+  let murmurDir: string;
+
+  beforeAll(async () => {
+    root = await mkdtemp(join(tmpdir(), "murmr-evolve-"));
+    murmurDir = join(root, "murmur");
+    await cp(join(process.cwd(), "murmur"), murmurDir, { recursive: true });
+  });
+
+  afterAll(async () => {
+    await rm(root, { recursive: true, force: true });
+  });
 
   test("proposeCandidates generates k distinct harness mutations", async () => {
     const loaded = await loadIR(murmurDir);
@@ -27,6 +37,27 @@ describe("Google Harness² Recursive Evolution Engine", () => {
     expect(kinds).toContain("skill");
     expect(kinds).toContain("instruction");
     expect(kinds).toContain("subagent");
+  });
+
+  test("probeCandidate scores structure the same for every candidate kind", async () => {
+    const loaded = await loadIR(murmurDir);
+    expect(loaded.ok).toBe(true);
+    if (!loaded.ok) return;
+
+    const task = "add a job queue";
+    const probes = await Promise.all(
+      proposeCandidates(task, loaded.value, 3).map((c) => probeCandidate(c, task)),
+    );
+    expect(new Set(probes.map((p) => p.score)).size).toBe(1);
+    expect(probes[0]!.outputSummary).toContain("Behavior not tested");
+  });
+
+  test("evolveTask writes only into the given project and honors targetKind", async () => {
+    const res = await evolveTask("add a job queue", root, { k: 3, targetKind: "instruction" });
+    expect(res.selectedCandidate?.kind).toBe("instruction");
+    expect(res.composedFilePath?.startsWith(root)).toBe(true);
+    const experience = await readFile(join(murmurDir, "EXPERIENCE.md"), "utf8");
+    expect(experience).toContain("not tested");
   });
 
   test("probeCandidate returns valid score and trace", async () => {
@@ -65,7 +96,7 @@ describe("Google Harness² Recursive Evolution Engine", () => {
     expect(res.candidatesProposed).toBe(3);
     expect(res.probesRun).toBe(3);
     expect(res.selectedCandidate).toBeDefined();
-    expect(res.experienceSummary).toContain("Adopted");
+    expect(res.experienceSummary).toContain("behavior not tested");
     expect(res.doctorPassed).toBe(true);
   });
 

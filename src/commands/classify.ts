@@ -459,10 +459,20 @@ export async function classifyCommand(
     return 1;
   }
 
-  const result =
-    opts?.engine === "jev"
-      ? await classifyWithJev(query, loaded.value, { forceMock: opts.forceMock })
-      : classifyTask(query, loaded.value);
+  if (opts?.engine === "jev" && opts.forceMock) {
+    console.error("classify: using the offline Jev mock. Results are not from a real model.");
+  }
+
+  let result: ClassificationResult;
+  try {
+    result =
+      opts?.engine === "jev"
+        ? await classifyWithJev(query, loaded.value, { forceMock: opts.forceMock })
+        : classifyTask(query, loaded.value);
+  } catch (err) {
+    console.error(`classify: ${(err as Error).message}`);
+    return 1;
+  }
 
   if (opts?.json) {
     console.log(JSON.stringify(result, null, 2));

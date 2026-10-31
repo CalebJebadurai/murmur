@@ -113,7 +113,7 @@ describe("antigravity adapter golden output", () => {
       expect(rule).toContain("applyTo:");
 
       const agentsMd = await Bun.file(join(out, "AGENTS.md")).text();
-      expect(agentsMd).toContain("## Main Agents");
+      expect(agentsMd).toContain("## Agents");
     } finally {
       await rm(out, { recursive: true, force: true });
     }

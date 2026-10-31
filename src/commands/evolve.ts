@@ -3,7 +3,7 @@ import type { EvolveOptions } from "../harness2/types.ts";
 
 /**
  * CLI command entry point: murmr evolve "<task description>"
- * Executes Google Harness² Propose–Probe–Compose loop on the Murmur IR.
+ * Experimental: writes a template skill, instruction or subagent after structural checks.
  */
 export async function evolveCommand(
   projectRoot: string,
@@ -11,9 +11,10 @@ export async function evolveCommand(
   opts?: EvolveOptions,
 ): Promise<number> {
   try {
-    console.log(`\n┌─ murmr evolve (Harness² Engine) ──────────────────────────────`);
+    console.log(`\n┌─ murmr evolve (experimental) ────────────────────────────────`);
     console.log(`│ Task : "${task}"`);
-    console.log(`│ Mode : Propose–Probe–Compose (k=${opts?.k ?? 3})`);
+    console.log(`│ Mode : Template candidates with structural checks (k=${opts?.k ?? 3})`);
+    console.log(`│ Note : Experimental. Candidates are not run against an agent.`);
     console.log(`└───────────────────────────────────────────────────────────────\n`);
 
     const result = await evolveTask(task, projectRoot, opts);
@@ -24,7 +25,7 @@ export async function evolveCommand(
     }
 
     console.log(`✓ Proposed : ${result.candidatesProposed} candidate harness modification(s)`);
-    console.log(`✓ Probed   : ${result.probesRun} candidate trajectory probe(s)`);
+    console.log(`✓ Checked  : ${result.probesRun} candidate(s), structure only`);
 
     if (result.selectedCandidate) {
       console.log(`✓ Composed : ${result.selectedCandidate.kind} "${result.selectedCandidate.targetName}"`);

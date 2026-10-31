@@ -23,7 +23,7 @@ async function freshDir(name: string): Promise<string> {
 }
 
 describe("v1.0 End-to-End Cross-Runtime Orchestration Probe", () => {
-  test("validates schema, compiles across all 6 targets, and proves governed execution", async () => {
+  test("validates schema, compiles across all 8 targets, and proves governed execution", async () => {
     // 1. Doctor & IR Loading
     const doctorReport = await runDoctor(MURMUR_DIR);
     expect(doctorReport.ok).toBe(true);
@@ -47,7 +47,7 @@ describe("v1.0 End-to-End Cross-Runtime Orchestration Probe", () => {
     const outDir = await freshDir("compile-out");
     try {
       // 2. Multi-Target Compilation across all 6 runtimes
-      const targets = ["copilot", "goose", "antigravity", "claude", "cursor", "acp"];
+      const targets = ["copilot", "goose", "antigravity", "claude", "cursor", "acp", "codex", "opencode"];
       const emittedByTarget: Record<string, string[]> = {};
 
       for (const t of targets) {

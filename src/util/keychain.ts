@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 
 /**
  * Service name mapping for macOS Keychain items.
@@ -11,6 +11,13 @@ const DEFAULT_SERVICE_MAPPING: Record<string, string> = {
   ANTHROPIC_API_KEY: "anthropic-api-key",
   OPENAI_API_KEY: "openai-api-key",
 };
+
+function readKeychain(selector: string[]): string {
+  return execFileSync("/usr/bin/security", ["find-generic-password", ...selector, "-w"], {
+    encoding: "utf8",
+    stdio: ["pipe", "pipe", "ignore"],
+  });
+}
 
 /**
  * Resolve a secret from process.env or macOS Keychain without exposing plaintext in history.
@@ -29,8 +36,7 @@ export function getSecret(keyName: string, serviceName?: string): string | null 
 
     if (user) {
       try {
-        const cmd = `/usr/bin/security find-generic-password -a "${user}" -s "${service}" -w`;
-        const res = execSync(cmd, { encoding: "utf8", stdio: ["pipe", "pipe", "ignore"] });
+        const res = readKeychain(["-a", user, "-s", service]);
         if (res.trim()) return res.trim();
       } catch {
         // Fallback without user flag
@@ -38,8 +44,7 @@ export function getSecret(keyName: string, serviceName?: string): string | null 
     }
 
     try {
-      const cmd = `/usr/bin/security find-generic-password -s "${service}" -w`;
-      const res = execSync(cmd, { encoding: "utf8", stdio: ["pipe", "pipe", "ignore"] });
+      const res = readKeychain(["-s", service]);
       if (res.trim()) return res.trim();
     } catch {
       // Ignored
