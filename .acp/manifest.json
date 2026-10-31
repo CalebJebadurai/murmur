@@ -434,6 +434,10 @@
     {
       "name": "subagent-authoring",
       "description": "Rules the master agent follows to author a scoped subagent on demand."
+    },
+    {
+      "name": "test-conventions",
+      "description": "Test runner and conventions for murmr."
     }
   ],
   "instructions": [
