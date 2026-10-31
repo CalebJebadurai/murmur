@@ -43,6 +43,7 @@ import type { InstructionDefinition } from "./instruction.ts";
 import type { PipelineDefinition } from "./pipeline.ts";
 import type { RubricDefinition } from "./rubric.ts";
 import type { ToolDefinition } from "./tool.ts";
+import type { TraitDefinition } from "./trait.ts";
 
 /** The full set of IR definitions loaded from a murmur/ directory. */
 export type IRSet = {
@@ -53,4 +54,8 @@ export type IRSet = {
   pipelines: PipelineDefinition[];
   rubrics: RubricDefinition[];
   tools: ToolDefinition[];
+  /** Reusable expertise blocks. Already applied to agents after loading. */
+  traits?: TraitDefinition[];
+  /** Library definitions ignored because the project has its own version. */
+  shadowed?: string[];
 };

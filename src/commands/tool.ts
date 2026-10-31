@@ -1,3 +1,4 @@
+import { backupFile, backupStamp } from "../util/backup.ts";
 import { join } from "node:path";
 import { existsSync } from "node:fs";
 
@@ -271,7 +272,13 @@ export async function toolCommand(
     }
     const skillDir = join(murmurDir, "skills", "project-tools");
     const skillPath = join(skillDir, "SKILL.md");
-    await Bun.write(skillPath, renderToolsSkill(tools));
+    const skill = renderToolsSkill(tools);
+    if (existsSync(skillPath) && (await Bun.file(skillPath).text()) !== skill) {
+      const relativePath = join("murmur", "skills", "project-tools", "SKILL.md");
+      const backup = await backupFile(projectRoot, relativePath, backupStamp());
+      console.log(`\ntool: saved the previous skill to ${backup}`);
+    }
+    await Bun.write(skillPath, skill);
     console.log(`\ntool: wrote skill definition to murmur/skills/project-tools/SKILL.md`);
   }
 

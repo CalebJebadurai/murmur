@@ -13,7 +13,9 @@ import {
   validateRubric,
   validateSkill,
   validateSubagent,
+  validateTrait,
 } from "./validate.ts";
+import { resolveInheritance } from "./inheritance.ts";
 import { validateTool } from "./tool.ts";
 
 export type LoadResult = ValidationResult<IRSet>;
@@ -28,13 +30,8 @@ async function readFiles(dir: string, pattern: string): Promise<string[]> {
   return out.sort();
 }
 
-/**
- * Load and validate a murmur/ IR directory into an IRSet.
- * Returns aggregated validation errors if any file is malformed.
- */
-export async function loadIR(murmurDir: string): Promise<LoadResult> {
-  const errors: ValidationError[] = [];
-  const set: IRSet = {
+function emptySet(): IRSet {
+  return {
     agents: [],
     subagents: [],
     skills: [],
@@ -42,8 +39,15 @@ export async function loadIR(murmurDir: string): Promise<LoadResult> {
     pipelines: [],
     rubrics: [],
     tools: [],
+    traits: [],
   };
+}
 
+async function loadInto(
+  murmurDir: string,
+  set: IRSet,
+  errors: ValidationError[],
+): Promise<void> {
   const agentFiles = await readFiles(join(murmurDir, "agents"), "*.md");
   for (const f of agentFiles) {
     const res = validateAgent(await Bun.file(f).text(), f);
@@ -125,6 +129,48 @@ export async function loadIR(murmurDir: string): Promise<LoadResult> {
     else errors.push(...res.errors);
   }
 
+  const traitFiles = await readFiles(join(murmurDir, "traits"), "*.md");
+  for (const f of traitFiles) {
+    const res = validateTrait(await Bun.file(f).text(), f);
+    if (res.ok) set.traits!.push(res.value);
+    else errors.push(...res.errors);
+  }
+}
+
+/** Add library definitions to a project. The project's own version always wins. */
+function mergeLibrary(set: IRSet, library: IRSet): void {
+  const shadowed: string[] = [];
+  const add = <T extends { name: string }>(own: T[], incoming: T[], kind: string): void => {
+    for (const item of incoming) {
+      if (own.some((o) => o.name === item.name)) shadowed.push(`${kind}/${item.name}`);
+      else own.push(item);
+    }
+  };
+  add(set.agents, library.agents, "agents");
+  add(set.subagents, library.subagents, "subagents");
+  add(set.skills, library.skills, "skills");
+  add(set.instructions, library.instructions, "instructions");
+  add(set.traits!, library.traits!, "traits");
+  if (shadowed.length) set.shadowed = shadowed;
+}
+
+/**
+ * Load and validate a murmur/ IR directory into an IRSet, including any library
+ * definitions in murmur/.library/, with `extends` and `traits` flattened.
+ * Returns aggregated validation errors if any file is malformed.
+ */
+export async function loadIR(murmurDir: string): Promise<LoadResult> {
+  const errors: ValidationError[] = [];
+  const set = emptySet();
+  await loadInto(murmurDir, set, errors);
+
+  const library = emptySet();
+  await loadInto(join(murmurDir, ".library"), library, errors);
+  const libraryAgents = [...library.agents, ...library.subagents];
+  mergeLibrary(set, library);
+
+  if (errors.length) return { ok: false, errors };
+  resolveInheritance(set, libraryAgents, errors);
   if (errors.length) return { ok: false, errors };
   return { ok: true, value: set };
 }

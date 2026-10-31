@@ -25,6 +25,12 @@ export type AgentDefinition = {
   userInvocable?: boolean;
   /** Machine-readable selective dispatch rules for task routing. */
   dispatch?: AgentDispatchRule;
+  /** Parent agent. Resolved at load time; `library:<name>` picks the library version. */
+  extends?: string;
+  /** Reusable expertise blocks mixed in at load time. */
+  traits?: string[];
+  /** Exists only to be extended, and is never compiled. */
+  abstract?: boolean;
 };
 
 /** Machine-readable selective dispatch rules for task routing. */

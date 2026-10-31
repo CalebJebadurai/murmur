@@ -1,5 +1,8 @@
 import { Glob } from "bun";
-import { join } from "node:path";
+import { existsSync } from "node:fs";
+import { readdir } from "node:fs/promises";
+import { join, relative } from "node:path";
+import { backupFile, backupStamp } from "../util/backup.ts";
 import { templatesDir } from "../util/templates.ts";
 import { analyzeStructural, renderStructuralSkills } from "../analyzer/structural.ts";
 
@@ -57,18 +60,37 @@ export async function initCommand(
     return 0;
   }
   const overwrite = mode === "overwrite";
-
-  // 1. Lay down the generic base library.
   const base = join(templatesDir(), "base");
-  const copied = await copyDir(base, murmurDir, overwrite);
 
-  // 2. Overlay codebase-derived structural skills & instructions.
-  //    These always reflect the current codebase, so they overwrite the base
-  //    placeholders even in merge mode.
+  // Overwrite mode still keeps a copy of everything it replaces.
+  if (overwrite && existsSync(murmurDir)) {
+    const stamp = backupStamp();
+    const entries = await readdir(murmurDir, { recursive: true, withFileTypes: true });
+    for (const e of entries.filter((entry) => entry.isFile())) {
+      await backupFile(projectRoot, relative(projectRoot, join(e.parentPath, e.name)), stamp);
+    }
+    console.log(`init: backed up existing murmur/ under .murmur/backups/${stamp}/`);
+  }
+
+  // Note what already exists first, so base placeholders never count as the user's files.
   const facts = await analyzeStructural(projectRoot);
   const structural = renderStructuralSkills(facts);
+  const isYours = (path: string): boolean => !overwrite && existsSync(join(murmurDir, path));
+  const yours = new Set(structural.map((f) => f.path).filter(isYours));
+  const toolsAreYours = isYours(join("skills", "project-tools", "SKILL.md"));
+  const overviewIsYours = isYours(join("skills", "domain-overview", "SKILL.md"));
+
+  // 1. Lay down the generic base library. Existing agents and skills are skipped.
+  const copied = await copyDir(base, murmurDir, overwrite);
+
+  // 2. Overlay codebase-derived structural skills & instructions, replacing the
+  //    base placeholders but never a file that was already there.
   let written = 0;
   for (const f of structural) {
+    if (yours.has(f.path)) {
+      console.log(`init: kept your existing ${f.path}`);
+      continue;
+    }
     const dest = join(murmurDir, f.path);
     await Bun.write(dest, f.contents);
     written++;
@@ -77,7 +99,7 @@ export async function initCommand(
   // 3. If tools requested, discover and write project-tools skill
   if (opts.tools) {
     const tools = await discoverTools(projectRoot);
-    if (tools.length > 0) {
+    if (tools.length > 0 && !toolsAreYours) {
       const dest = join(murmurDir, "skills", "project-tools", "SKILL.md");
       await Bun.write(dest, renderToolsSkill(tools));
       written++;
@@ -85,7 +107,9 @@ export async function initCommand(
   }
 
   // 4. Optional semantic enrichment pass via pluggable model provider
-  if (opts.semantic) {
+  if (opts.semantic && overviewIsYours) {
+    console.log("init: kept your existing skills/domain-overview/SKILL.md");
+  } else if (opts.semantic) {
     try {
       const client =
         opts.client ??
