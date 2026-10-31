@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#05060a" />
   <title>Murmuration (murmr) — Universal Multi-Agent Specification &amp; Compiler</title>
-  <meta name="description" content="Write your AI agents, skills, and instructions once in clean Markdown &amp; YAML. Compile deterministically to GitHub Copilot, Claude Code, Antigravity, Goose, Cursor, and ACP in under 15ms." />
+  <meta name="description" content="Write your AI agents, skills, and instructions once in clean Markdown &amp; YAML. Compile to Claude Code, Codex, OpenCode, Cursor, GitHub Copilot, Antigravity, goose and ACP." />
 
   <!-- Preconnect & Modern Developer Typography -->
   <link rel="icon" href="logo.svg" type="image/svg+xml" />
@@ -37,9 +37,9 @@
       <nav class="nav-links" id="navLinks" aria-label="Primary Navigation">
         <a href="#pipeline" class="nav-link">Architecture</a>
         <a href="#playground" class="nav-link">Compiler IDE</a>
-        <a href="#cognition" class="nav-link">System 1 &amp; 2</a>
+        <a href="#workflow" class="nav-link">Workflow</a>
         <a href="#cascade" class="nav-link">3-Tier Memory</a>
-        <a href="#comparison" class="nav-link">Benchmarks</a>
+        <a href="#comparison" class="nav-link">Compare</a>
         <a href="#quickstart" class="nav-link">CLI</a>
       </nav>
 
@@ -63,8 +63,8 @@
       <div class="container hero-container">
         <div class="announcement-pill">
           <span class="status-dot"></span>
-          <span>Introducing <strong>Jev System 1</strong> (&lt;10ms routing) + <strong>Google Harness²</strong> self-evolution</span>
-          <a href="#cognition" class="announcement-link">Explore Engine →</a>
+          <span>New: <strong>Codex</strong> and <strong>OpenCode</strong> targets</span>
+          <a href="#playground" class="announcement-link">See the output →</a>
         </div>
 
         <h1 class="hero-title">
@@ -73,7 +73,7 @@
         </h1>
 
         <p class="hero-subtitle">
-          Stop maintaining fragmented prompt files across six different IDEs. Define your autonomous agents, procedural skills, and security invariants in a single Git-tracked <code>murmur/</code> IR—compiled deterministically to <strong>GitHub Copilot</strong>, <strong>Claude Code</strong>, <strong>Antigravity</strong>, <strong>Goose</strong>, <strong>Cursor</strong>, and <strong>ACP</strong>.
+          Stop maintaining fragmented prompt files across different coding tools. Define your autonomous agents, procedural skills, and security invariants in a single Git-tracked <code>murmur/</code> IR—compiled deterministically to <strong>GitHub Copilot</strong>, <strong>Claude Code</strong>, <strong>Antigravity</strong>, <strong>Codex</strong>, <strong>OpenCode</strong>, <strong>goose</strong>, <strong>Cursor</strong>, and <strong>ACP</strong>.
         </p>
 
         <!-- Interactive Install Command Bar & CTAs -->
@@ -105,7 +105,7 @@
                 <path d="M3.5 8h9M8.5 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </a>
-            <a href="#cognition" class="btn btn-lg btn-secondary">Test Jev Routing</a>
+            <a href="#workflow" class="btn btn-lg btn-secondary">See the Workflow</a>
           </div>
         </div>
 
@@ -121,26 +121,26 @@
 
           <div class="telemetry-item" role="listitem">
             <div class="telemetry-top">
-              <span class="telemetry-val">&lt; 10ms</span>
-              <span class="telemetry-tag tag-cyan">0 LLM Tokens</span>
+              <span class="telemetry-val">Git-Native</span>
+              <span class="telemetry-tag tag-cyan">Plain Text</span>
             </div>
-            <p class="telemetry-lbl">Sub-symbolic prompt &amp; vector routing via TypeSafe Jev System 1.</p>
+            <p class="telemetry-lbl">Review agent changes in pull requests, like any other code.</p>
           </div>
 
           <div class="telemetry-item" role="listitem">
             <div class="telemetry-top">
-              <span class="telemetry-val">6 Targets</span>
-              <span class="telemetry-tag tag-violet">Idempotent AST</span>
+              <span class="telemetry-val">8 Targets</span>
+              <span class="telemetry-tag tag-violet">Deterministic</span>
             </div>
-            <p class="telemetry-lbl">Byte-accurate emission for Copilot, Claude, AGY, Goose, Cursor &amp; ACP.</p>
+            <p class="telemetry-lbl">Native files for Copilot, Claude, Codex, OpenCode, Cursor, Antigravity, goose &amp; ACP.</p>
           </div>
 
           <div class="telemetry-item" role="listitem">
             <div class="telemetry-top">
-              <span class="telemetry-val">Harness²</span>
-              <span class="telemetry-tag tag-purple">Self-Evolving</span>
+              <span class="telemetry-val">Doctor</span>
+              <span class="telemetry-tag tag-purple">Validated</span>
             </div>
-            <p class="telemetry-lbl">Propose-Probe-Compose loops synthesize &amp; verify new skills automatically.</p>
+            <p class="telemetry-lbl">Catch broken references and missing files before they reach your team.</p>
           </div>
         </div>
       </div>
@@ -154,7 +154,7 @@
             <span class="eyebrow-num">01</span>
             <span>Deterministic Compilation Pipeline</span>
           </div>
-          <h2 class="section-title">One Abstract IR. Zero Vendor Divergence.</h2>
+          <h2 class="section-title">One Source. Every Coding Agent.</h2>
           <p class="section-desc">
             Decouple your institutional engineering knowledge from proprietary IDE extensions. Inspect each compiler pass below to see how <code>murmur/</code> validates, self-heals, and emits native artifacts.
           </p>
@@ -207,10 +207,9 @@
             <div class="pipe-column pipe-engine">
               <div class="pipe-col-header">
                 <span class="pipe-step-badge badge-accent">Stage 02 • Bun Native Engine</span>
-                <span class="pipe-timing">~11ms Total</span>
               </div>
               <h3 class="pipe-col-title">4-Pass Verification &amp; Lowering</h3>
-              <p class="pipe-col-sub">Click any compiler pass to inspect its invariants and telemetry:</p>
+              <p class="pipe-col-sub">Click any compiler pass to inspect what it does:</p>
 
               <div class="engine-pass-list" role="tablist" aria-label="Compiler Passes">
                 <button type="button" class="engine-pass active" role="tab" aria-selected="true" data-pass="schema">
@@ -218,7 +217,6 @@
                   <div class="pass-body">
                     <div class="pass-title-row">
                       <strong>Schema &amp; DAG Loader</strong>
-                      <span class="pass-time">2.1ms</span>
                     </div>
                     <span>Parses YAML frontmatter and verifies an acyclic reference graph.</span>
                   </div>
@@ -229,7 +227,6 @@
                   <div class="pass-body">
                     <div class="pass-title-row">
                       <strong>Self-Healing Doctor Linter</strong>
-                      <span class="pass-time">1.8ms</span>
                     </div>
                     <span>Detects orphan skills, repairs broken paths, and enforces secret policies.</span>
                   </div>
@@ -239,10 +236,9 @@
                   <span class="pass-idx">03</span>
                   <div class="pass-body">
                     <div class="pass-title-row">
-                      <strong>Cognitive Indexing (Jev + Harness²)</strong>
-                      <span class="pass-time">4.2ms</span>
+                      <strong>Shared Instructions</strong>
                     </div>
-                    <span>Builds sub-symbolic routing vectors and merges 3-tier experience cascade.</span>
+                    <span>Gathers skills and instructions so every target gets the same guidance.</span>
                   </div>
                 </button>
 
@@ -251,9 +247,8 @@
                   <div class="pass-body">
                     <div class="pass-title-row">
                       <strong>Deterministic Adapter Emission</strong>
-                      <span class="pass-time">2.9ms</span>
                     </div>
-                    <span>Lowers abstract IR into byte-accurate host runtime formats.</span>
+                    <span>Writes each tool&apos;s native files from the same source.</span>
                   </div>
                 </button>
               </div>
@@ -263,7 +258,7 @@
                   <span class="inspector-title" id="inspectorTitle">Pass 01: Acyclic Dependency &amp; Frontmatter Validator</span>
                   <span class="inspector-badge" id="inspectorBadge">AST Verified</span>
                 </div>
-                <code class="inspector-code" id="inspectorCode">murmr validate --strict → 28 nodes, 0 cycles, SHA-256 graph lock verified</code>
+                <code class="inspector-code" id="inspectorCode">murmr doctor → validates frontmatter and references across murmur/</code>
               </div>
             </div>
 
@@ -273,7 +268,7 @@
                 <span class="pipe-step-badge">Stage 03 • Native Artifacts</span>
                 <span class="pipe-timing">Idempotent</span>
               </div>
-              <h3 class="pipe-col-title">6 Target Runtimes</h3>
+              <h3 class="pipe-col-title">8 Native Targets</h3>
               <p class="pipe-col-sub">Click any target to preview its compiled output in the IDE below:</p>
 
               <div class="target-runtime-list">
@@ -312,7 +307,23 @@
                 <button type="button" class="runtime-card-btn" data-jump-target="cursor">
                   <div class="runtime-info">
                     <strong>Cursor AI Rules</strong>
-                    <code>.cursorrules</code>
+                    <code>.cursor/rules/*.mdc</code>
+                  </div>
+                  <span class="runtime-arrow">→</span>
+                </button>
+
+                <button type="button" class="runtime-card-btn" data-jump-target="codex">
+                  <div class="runtime-info">
+                    <strong>Codex</strong>
+                    <code>.codex/agents/*.toml</code>
+                  </div>
+                  <span class="runtime-arrow">→</span>
+                </button>
+
+                <button type="button" class="runtime-card-btn" data-jump-target="opencode">
+                  <div class="runtime-info">
+                    <strong>OpenCode</strong>
+                    <code>.opencode/agents/*.md</code>
                   </div>
                   <span class="runtime-arrow">→</span>
                 </button>
@@ -375,7 +386,7 @@
             <div class="ide-telemetry">
               <span class="compiler-stat-badge" id="compilerStatBadge">
                 <span class="pulse-dot"></span>
-                <span>Compiled in 11ms</span>
+                <span>Illustrative output</span>
               </span>
             </div>
           </div>
@@ -389,6 +400,8 @@
               <button type="button" class="target-btn" role="tab" aria-selected="false" data-target="agy">Antigravity IDE</button>
               <button type="button" class="target-btn" role="tab" aria-selected="false" data-target="goose">Goose YAML</button>
               <button type="button" class="target-btn" role="tab" aria-selected="false" data-target="cursor">Cursor Rules</button>
+              <button type="button" class="target-btn" role="tab" aria-selected="false" data-target="codex">Codex</button>
+              <button type="button" class="target-btn" role="tab" aria-selected="false" data-target="opencode">OpenCode</button>
               <button type="button" class="target-btn" role="tab" aria-selected="false" data-target="acp">ACP JSON</button>
             </div>
           </div>
@@ -440,160 +453,50 @@
       </div>
     </section>
 
-    <!-- Section 4: Dual-System Cognitive Architecture (System 1 vs System 2) -->
-    <section class="section" id="cognition">
+    <!-- Section 4: Developer Workflow -->
+    <section class="section" id="workflow">
       <div class="container">
         <div class="section-header">
           <div class="eyebrow">
             <span class="eyebrow-num">03</span>
-            <span>Dual-System Cognitive Architecture</span>
+            <span>Where It Fits</span>
           </div>
-          <h2 class="section-title">Sub-10ms Reflex Routing Meets Recursive Evolution</h2>
+          <h2 class="section-title">Your Setup Follows You</h2>
           <p class="section-desc">
-            Inspired by Kahneman’s dual-process theory: <strong>TypeSafe Jev System One</strong> dispatches routine tasks in single-digit milliseconds with zero token burn, while <strong>Google Harness² System Two</strong> evolves new skills through empirical Propose-Probe-Compose loops.
+            Agents, skills and rules live in your repository. Murmur compiles them for the tools your team uses, so changing tools does not mean starting over.
           </p>
         </div>
 
-        <div class="cognition-workbench">
-          <!-- Interactive Task Input Bar -->
-          <div class="workbench-controls">
-            <div class="workbench-top-row">
-              <label for="taskInput" class="input-label">Simulate any engineering prompt (or press <kbd>/</kbd> to focus):</label>
-              <div class="preset-queries" role="group" aria-label="Preset engineering queries">
-                <button type="button" class="preset-chip active" data-preset="Investigate memory leak in WebSocket connection pool">WebSocket Leak</button>
-                <button type="button" class="preset-chip" data-preset="Synthesize Redis caching skill with exponential backoff">Redis Backoff</button>
-                <button type="button" class="preset-chip" data-preset="Perform critical security audit of OAuth2 token rotation">OAuth2 Security Audit</button>
-                <button type="button" class="preset-chip" data-preset="Optimize PostgreSQL query plan for multi-tenant partitioning">Postgres Query Plan</button>
-                <button type="button" class="preset-chip" data-preset="Research market adoption trends for Agent Client Protocol">ACP Market Study</button>
-              </div>
+        <div class="cascade-grid">
+          <article class="cascade-card tier-project">
+            <div class="tier-header">
+              <span class="tier-pill tier-pill-1">Step 1</span>
+              <span class="tier-scope-tag">Once per repo</span>
             </div>
+            <h3>Define it once</h3>
+            <div class="tier-path"><code>murmr init</code></div>
+            <p>Create a <code>murmur/</code> folder from your codebase, then review it like any other code.</p>
+          </article>
 
-            <div class="tester-input-bar">
-              <span class="tester-icon" aria-hidden="true">
-                <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M11 2L4 11h6l-1 7 7-9h-6l1-7z" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </span>
-              <input
-                type="text"
-                id="taskInput"
-                value="Investigate memory leak in WebSocket connection pool"
-                placeholder="Type any engineering task prompt to run live Jev + Harness² simulation..."
-                autocomplete="off"
-                spellcheck="false"
-              />
-              <button type="button" class="btn btn-primary" id="runCognitionBtn">Route &amp; Evolve</button>
+          <article class="cascade-card tier-user">
+            <div class="tier-header">
+              <span class="tier-pill tier-pill-2">Step 2</span>
+              <span class="tier-scope-tag">Any tool</span>
             </div>
-          </div>
+            <h3>Compile it everywhere</h3>
+            <div class="tier-path"><code>murmr compile</code></div>
+            <p>Each configured tool gets native files, so your whole team shares the same knowledge and rules.</p>
+          </article>
 
-          <div class="cognition-grid" aria-live="polite">
-            <!-- System 1: TypeSafe Jev -->
-            <article class="cognition-card sys1-card" id="sys1Card">
-              <div class="cog-header">
-                <div>
-                  <span class="cog-pill pill-cyan">System 1 • Fast Sub-Symbolic Reflex</span>
-                  <h3>TypeSafe Jev Classifier</h3>
-                </div>
-                <div class="cog-gauge-wrap">
-                  <div class="latency-pill" id="sys1Latency">6.4 ms</div>
-                  <span class="gauge-sub">0 LLM Tokens</span>
-                </div>
-              </div>
-
-              <p class="cog-desc">
-                Deterministic n-gram &amp; feature vector classification that selects the optimal execution pipeline, specialist agent, and decision primitive before touching an LLM.
-              </p>
-
-              <div class="cog-result-box" id="sys1ResultBox">
-                <div class="res-row">
-                  <span class="res-label">Matched Pipeline</span>
-                  <span class="res-value" id="sys1Pipeline">architect (diagnostic-mode)</span>
-                </div>
-                <div class="res-row">
-                  <span class="res-label">Dispatched Specialist</span>
-                  <span class="res-value highlight-cyan" id="sys1Specialist">analyst (92% confidence)</span>
-                </div>
-                <div class="res-row">
-                  <span class="res-label">TypeSafe Primitive</span>
-                  <span class="res-value" id="sys1Primitive">Choice[Analyst, Implementer, Critic]</span>
-                </div>
-                <div class="res-row">
-                  <span class="res-label">Extracted Feature Tokens</span>
-                  <span class="res-value" id="sys1Tokens">["websocket", "memory", "leak", "pool"]</span>
-                </div>
-                <div class="res-row">
-                  <span class="res-label">Execution Cost</span>
-                  <span class="res-value highlight-green" id="sys1Clock">$0.0000 • 6.4ms local vector pass</span>
-                </div>
-              </div>
-            </article>
-
-            <!-- System 2: Google Harness² -->
-            <article class="cognition-card sys2-card" id="sys2Card">
-              <div class="cog-header">
-                <div>
-                  <span class="cog-pill pill-purple">System 2 • Recursive Deliberation</span>
-                  <h3>Google Harness² Evolution Engine</h3>
-                </div>
-                <div class="cog-gauge-wrap">
-                  <span class="harness-badge-active" id="sys2Status">Loop Verified</span>
-                </div>
-              </div>
-
-              <p class="cog-desc">
-                When a novel domain gap is detected, Harness² synthesizes candidate skill mutations, runs contrastive empirical probes, and commits winning artifacts to the IR.
-              </p>
-
-              <div class="harness-stages" id="harnessStages">
-                <div class="stage-item" id="stagePropose">
-                  <div class="stage-num">1</div>
-                  <div class="stage-content">
-                    <div class="stage-top">
-                      <strong>Propose (Candidate Synthesis)</strong>
-                      <span class="stage-badge">k=3 mutations</span>
-                    </div>
-                    <span class="stage-sub" id="proposeSub">Synthesized skill-websocket-leak, rule-connection-invariants, specialist subagent</span>
-                  </div>
-                </div>
-
-                <div class="stage-item" id="stageProbe">
-                  <div class="stage-num">2</div>
-                  <div class="stage-content">
-                    <div class="stage-top">
-                      <strong>Probe (Contrastive Benchmark)</strong>
-                      <span class="stage-badge highlight-green" id="probeScore">Score: 0.94 vs 0.42 baseline</span>
-                    </div>
-                    <div class="contrast-bar-wrap" role="progressbar" aria-label="Candidate probe score" aria-valuemin="0" aria-valuemax="100" aria-valuenow="94">
-                      <div class="contrast-bar" id="contrastBar" style="width: 94%;"></div>
-                    </div>
-                    <span class="stage-sub" id="probeSub">Winning candidate passed adversarial stress assertions with +124% gain.</span>
-                  </div>
-                </div>
-
-                <div class="stage-item" id="stageCompose">
-                  <div class="stage-num">3</div>
-                  <div class="stage-content">
-                    <div class="stage-top">
-                      <strong>Compose &amp; Doctor Verification</strong>
-                      <span class="stage-badge">Acyclic DAG</span>
-                    </div>
-                    <span class="stage-sub" id="composeSub">Emitted <code>murmur/skills/websocket-leak/SKILL.md</code> • Doctor check: PASSED.</span>
-                  </div>
-                </div>
-
-                <div class="stage-item" id="stageExperience">
-                  <div class="stage-num">4</div>
-                  <div class="stage-content">
-                    <div class="stage-top">
-                      <strong>3-Tier Experience Commit</strong>
-                      <span class="stage-badge highlight-cyan">Scoped Memory</span>
-                    </div>
-                    <span class="stage-sub" id="experienceSub">Appended invariant to <code>murmur/EXPERIENCE.md</code> with zero cross-repo leakage.</span>
-                  </div>
-                </div>
-              </div>
-            </article>
-          </div>
+          <article class="cascade-card tier-eco">
+            <div class="tier-header">
+              <span class="tier-pill tier-pill-3">Step 3</span>
+              <span class="tier-scope-tag">Every change</span>
+            </div>
+            <h3>Improve it in one place</h3>
+            <div class="tier-path"><code>murmr doctor</code></div>
+            <p>Fix an agent mistake once in a pull request, validate it, and every tool gets the fix.</p>
+          </article>
         </div>
       </div>
     </section>
@@ -621,7 +524,7 @@
             <h3>Project Experience</h3>
             <div class="tier-path"><code>./murmur/EXPERIENCE.md</code></div>
             <p>
-              Strictly bound to the project repository. Captures verified Harness² lessons, service architecture quirks, and repo-specific invariants. Never leaks to other projects.
+              Strictly bound to the project repository. Captures project lessons, service architecture quirks, and repo-specific invariants. Never leaks to other projects.
             </p>
             <div class="tier-example">
               <span class="ex-lbl">Active Override Directive</span>
@@ -692,7 +595,7 @@
         <div class="section-header">
           <div class="eyebrow">
             <span class="eyebrow-num">05</span>
-            <span>Ecosystem Benchmark Matrix</span>
+            <span>How It Compares</span>
           </div>
           <h2 class="section-title">Why Engineering Teams Standardize on Murmur</h2>
           <p class="section-desc">
@@ -726,24 +629,24 @@
               </tr>
               <tr>
                 <th scope="row">Target Portability</th>
-                <td class="col-highlight"><span class="check-pill">✓ 6 Runtimes (100% Idempotent)</span></td>
+                <td class="col-highlight"><span class="check-pill">✓ 8 Targets (Deterministic)</span></td>
                 <td>0% (Vendor Locked)</td>
                 <td>Anthropic CLI Only</td>
                 <td>Single Editor Locked</td>
               </tr>
               <tr>
-                <th scope="row">System 1 Reflex Routing</th>
-                <td class="col-highlight"><span class="check-pill">✓ &lt; 10ms TypeSafe Jev (0 Tokens)</span></td>
-                <td>Slow LLM Router (2–5s)</td>
-                <td>None (Full Context Turn)</td>
-                <td>None</td>
+                <th scope="row">Setup Validation</th>
+                <td class="col-highlight"><span class="check-pill">✓ <code>murmr doctor</code></span></td>
+                <td>Vendor Managed</td>
+                <td>Manual Review</td>
+                <td>Manual Review</td>
               </tr>
               <tr>
-                <th scope="row">Self-Evolving Capabilities</th>
-                <td class="col-highlight"><span class="check-pill">✓ Google Harness² Propose-Probe</span></td>
-                <td>Opaque Closed Weights</td>
-                <td>Manual Prompt Edits</td>
-                <td>Manual Rule Edits</td>
+                <th scope="row">Team Change Review</th>
+                <td class="col-highlight"><span class="check-pill">✓ Pull Requests on Plain Text</span></td>
+                <td>Vendor Dashboard</td>
+                <td>Pull Requests</td>
+                <td>Per-User Settings</td>
               </tr>
               <tr>
                 <th scope="row">Cascading Memory Isolation</th>
@@ -808,7 +711,7 @@
           <div class="terminal-nav" id="terminalTabs" role="tablist" aria-label="CLI Lifecycle Commands">
             <button type="button" class="term-tab active" role="tab" aria-selected="true" data-tab="init">1. murmr init</button>
             <button type="button" class="term-tab" role="tab" aria-selected="false" data-tab="classify">2. murmr classify</button>
-            <button type="button" class="term-tab" role="tab" aria-selected="false" data-tab="evolve">3. murmr evolve</button>
+            <button type="button" class="term-tab" role="tab" aria-selected="false" data-tab="evolve">3. murmr evolve (experimental)</button>
             <button type="button" class="term-tab" role="tab" aria-selected="false" data-tab="compile">4. murmr compile</button>
             <button type="button" class="term-tab" role="tab" aria-selected="false" data-tab="doctor">5. murmr doctor</button>
           </div>
@@ -830,7 +733,7 @@
           <span class="brand-name">murmur<span class="brand-sub">ation</span></span>
         </a>
         <p class="footer-tagline">
-          The open-source universal multi-agent specification, sub-10ms cognitive router, and deterministic multi-runtime compiler.
+          The open-source specification and compiler that keeps your AI engineering setup portable across coding agents.
         </p>
         <p class="footer-copy">MIT License • Engineered with Bun &amp; TypeScript • 100% Local-First</p>
       </div>
@@ -840,8 +743,7 @@
           <h4>Architecture</h4>
           <a href="#pipeline">Compilation Pipeline</a>
           <a href="#playground">IR Specification</a>
-          <a href="#cognition">TypeSafe Jev System 1</a>
-          <a href="#cognition">Google Harness² Engine</a>
+          <a href="#workflow">Developer Workflow</a>
           <a href="#cascade">3-Tier Memory Cascade</a>
         </div>
         <div class="footer-col">
@@ -850,11 +752,12 @@
           <a href="#playground" data-jump-target="claude">Claude Code</a>
           <a href="#playground" data-jump-target="agy">Google Antigravity</a>
           <a href="#playground" data-jump-target="goose">Goose YAML Recipes</a>
+          <a href="#playground" data-jump-target="codex">Codex</a>
+          <a href="#playground" data-jump-target="opencode">OpenCode</a>
           <a href="#playground" data-jump-target="cursor">Cursor Rules</a>
         </div>
         <div class="footer-col">
           <h4>Ecosystem</h4>
-          <a href="https://github.com/google-research/harness2" target="_blank" rel="noopener noreferrer">Google Harness²</a>
           <a href="https://agentclientprotocol.org" target="_blank" rel="noopener noreferrer">Agent Client Protocol</a>
           <a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer">OpenRouter Synthesis</a>
           <a href="https://bun.sh" target="_blank" rel="noopener noreferrer">Bun Runtime</a>

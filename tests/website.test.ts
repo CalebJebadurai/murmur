@@ -23,7 +23,7 @@ describe("Murmuration Public Web Foundry", () => {
     const html = await Bun.file(join(webDir, "index.html")).text();
 
     expect(html).toContain("Universal Multi-Agent Specification");
-    expect(html).toContain("One Abstract IR. Zero Vendor Divergence.");
+    expect(html).toContain("One Source. Every Coding Agent.");
     expect(html).toContain("bun install -g murmr");
     expect(html).not.toContain("-g murmuration");
     expect(html).toContain("data-target=\"copilot\"");
@@ -35,13 +35,16 @@ describe("Murmuration Public Web Foundry", () => {
     expect(html).toContain("id=\"starlingCanvas\"");
     expect(html).toContain("id=\"pipeline\"");
     expect(html).toContain("id=\"cascade\"");
-    expect(html).toContain("TypeSafe Jev System One");
-    expect(html).toContain("Google Harness² Evolution Engine");
+    expect(html).toContain("id=\"workflow\"");
+    expect(html).toContain("data-target=\"codex\"");
+    expect(html).toContain("data-target=\"opencode\"");
+    expect(html).not.toMatch(/10ms|Harness²|LLM Tokens/);
     expect(html).toContain("Why Engineering Teams Standardize on Murmur");
   });
 
   it("verifies interactive flocking and syntax engine in app.js", async () => {
     const js = await Bun.file(join(webDir, "app.js")).text();
+    expect(js).not.toMatch(/Sub-10ms|Harness²|latencyMs/);
     expect(js).toContain("StarlingBoid");
     expect(js).toContain("SOURCE_DOCS");
     expect(js).toContain("TARGET_OUTPUTS");
