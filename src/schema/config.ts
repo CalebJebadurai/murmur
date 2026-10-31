@@ -40,6 +40,17 @@ export type RunConfig = {
   sandbox?: SandboxConfig;
 };
 
+/** One library entry: a name, or a name kept under a different local name. */
+export type LibraryItem = string | { name: string; as?: string };
+
+/** Shared agent library imported into this project. */
+export type LibraryConfig = {
+  /** Local path, or a git URL with an optional #ref. */
+  source: string;
+  /** What this project uses. Dependencies come along automatically. */
+  use: LibraryItem[];
+};
+
 /** The murmur.config.{ts,json} shape. */
 export type MurmurConfig = {
   /** Enabled compile-target identifiers, e.g. ["copilot", "goose"]. */
@@ -49,6 +60,7 @@ export type MurmurConfig = {
   plugins?: string[];
   publish?: PublishConfig;
   run?: RunConfig;
+  library?: LibraryConfig;
 };
 
 export const DEFAULT_CONFIG: MurmurConfig = {

@@ -38,3 +38,9 @@ All YAML frontmatter is emitted through `util/yaml.ts` (`emitFrontmatterDoc`).
 emit it unchanged, so compile order cannot change the file. It carries instruction bodies because Codex and
 OpenCode have no scoped rule files in this output. Codex custom agents are `.codex/agents/*.toml`; read-only
 agents get a written restriction because custom agent files do not set the sandbox.
+
+## File ownership
+
+`compileTarget` records what it writes in `.murmur/manifest.json`, with a sha256 per path. It only replaces a
+file that is missing, or unchanged since Murmur wrote it. Anything else is reported and kept. `--replace`
+backs files up to `.murmur/backups/` first. Murmur never deletes generated files.

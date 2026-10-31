@@ -16,6 +16,12 @@ import type {
   ProbeTrace,
 } from "./types.ts";
 
+function refuseExisting(path: string): void {
+  if (existsSync(path)) {
+    throw new Error(`Refusing to overwrite existing file: ${path}`);
+  }
+}
+
 function slugify(text: string): string {
   return text
     .toLowerCase()
@@ -166,16 +172,19 @@ export async function composeHarness(
       const skillDir = join(murmurDir, "skills", selectedCandidate.targetName);
       await mkdir(skillDir, { recursive: true });
       writtenPath = join(skillDir, "SKILL.md");
+      refuseExisting(writtenPath);
       await writeFile(writtenPath, selectedCandidate.content, "utf8");
     } else if (selectedCandidate.kind === "instruction") {
       const instrDir = join(murmurDir, "instructions");
       await mkdir(instrDir, { recursive: true });
       writtenPath = join(instrDir, `${selectedCandidate.targetName}.md`);
+      refuseExisting(writtenPath);
       await writeFile(writtenPath, selectedCandidate.content, "utf8");
     } else if (selectedCandidate.kind === "subagent") {
       const subDir = join(murmurDir, "subagents");
       await mkdir(subDir, { recursive: true });
       writtenPath = join(subDir, `${selectedCandidate.targetName}.md`);
+      refuseExisting(writtenPath);
       await writeFile(writtenPath, selectedCandidate.content, "utf8");
     }
 

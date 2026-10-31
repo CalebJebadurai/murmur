@@ -64,6 +64,8 @@ A new tool or model arrives. The team adds a target, recompiles and tests. Their
 | **Setups do not travel** | One source compiled to 8 targets, including Claude Code, Codex and OpenCode | Available |
 | **Team drift** | The setup lives in git and changes through review | Available |
 | **Broken configuration** | `murmr doctor` validates references and can fix missing ones | Available |
+| **Copies across many repos** | One git library, chosen per project, pinned by a lockfile, with inheritance and traits | Available |
+| **Overwriting your work** | Compile keeps any file it did not write, and replacing needs a flag and makes a backup | Available |
 | **Publishing private details** | `murmr publish` scrubs project facts and secrets from shareable packs | Available |
 | **Inconsistent reviews** | A shared pipeline writes, reviews with a pass limit, then stops for approval | Planned |
 | **Unproven "done"** | Pipeline gates require evidence such as test output or screenshots | Planned |

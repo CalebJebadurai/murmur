@@ -31,3 +31,11 @@ The intermediate representation (IR) is the runtime-neutral source of truth: fro
 
 Agent bodies stay generic — enforced by `scripts/check-externalization.ts`. **Skills and instructions are the home for codebase-specific knowledge**, like this skill.
 
+## Library, traits and inheritance
+
+`loadIR` also reads `murmur/.library/` and `murmur/traits/`. A project definition always wins over a library
+one with the same name, and the loser is listed in `shadowed`. `src/schema/inheritance.ts` flattens `extends`
+and `traits` during load and removes `abstract` agents, so adapters never see inheritance. `library:<name>`
+reaches a shadowed library agent. `src/library/sync.ts` writes only inside `murmur/.library/` and the
+lockfile. User guide: `docs/LIBRARY.md`.
+

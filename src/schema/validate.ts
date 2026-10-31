@@ -1,3 +1,4 @@
+import type { TraitDefinition } from "./trait.ts";
 import { basename } from "node:path";
 import {
   asStringArray,
@@ -75,8 +76,16 @@ export function validateAgent(
 ): ValidationResult<AgentDefinition> {
   const errors: ValidationError[] = [];
   const { frontmatter: fm, body } = parseFrontmatter(content);
-  const description = requireString(fm, "description", file, errors);
-  if (body.trim() === "") {
+  const parent = typeof fm["extends"] === "string" ? fm["extends"].trim() : "";
+  const traits = asStringArray(fm["traits"]);
+  const inherits = parent !== "" || traits.length > 0;
+  // Inherited agents may leave these empty; resolveInheritance checks the merged result.
+  const description = inherits
+    ? typeof fm["description"] === "string"
+      ? fm["description"]
+      : ""
+    : requireString(fm, "description", file, errors);
+  if (!inherits && body.trim() === "") {
     errors.push({ message: "agent body (role) is empty", file, field: "role" });
   }
   if (errors.length) return { ok: false, errors };
@@ -96,6 +105,25 @@ export function validateAgent(
           ? (fm["user-invocable"] as boolean)
           : undefined,
       dispatch: parseDispatch(fm),
+      ...(parent ? { extends: parent } : {}),
+      ...(traits.length ? { traits } : {}),
+      ...(fm["abstract"] === true ? { abstract: true } : {}),
+    },
+  };
+}
+
+export function validateTrait(content: string, file: string): ValidationResult<TraitDefinition> {
+  const { frontmatter: fm, body } = parseFrontmatter(content);
+  if (body.trim() === "") {
+    return { ok: false, errors: [{ message: "trait body is empty", file, field: "body" }] };
+  }
+  return {
+    ok: true,
+    value: {
+      name: stem(file),
+      body,
+      skills: asStringArray(fm["skills"]),
+      instructions: asStringArray(fm["instructions"]),
     },
   };
 }

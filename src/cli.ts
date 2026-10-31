@@ -13,6 +13,7 @@ import { hookCommand, type HookAction } from "./commands/hook.ts";
 import { toolCommand } from "./commands/tool.ts";
 import { docsCommand } from "./commands/docs.ts";
 import { evolveCommand } from "./commands/evolve.ts";
+import { libraryCommand } from "./commands/library.ts";
 import type { HarnessTargetKind } from "./harness2/types.ts";
 import type { ProviderName } from "./providers/types.ts";
 
@@ -49,6 +50,7 @@ Commands:
   init                       Generate murmur/ (structural or --semantic via model providers)
   add <kind> <name>          Scaffold an agent|subagent|skill|instruction|tool
   compile [--target <id>]    Compile murmur/ to a runtime (copilot, goose, agy, claude, cursor, codex, opencode, acp)
+  library <sync|status>      Import shared agents from your library (never touches murmur/ files)
   watch [--target <id>]      Watch murmur/ for changes and recompile automatically
   hook <install|uninstall|status> Manage Git pre-commit verification hook
   tool [discover|list]       Auto-discover codebase tools and generate tool skills
@@ -131,6 +133,7 @@ async function main(): Promise<number> {
         target: typeof flags["target"] === "string" ? flags["target"] : undefined,
         out: typeof flags["out"] === "string" ? flags["out"] : undefined,
         allowConfigExec: flags["allow-config-exec"] === true,
+        replace: flags["replace"] === true,
       });
     case "watch":
       return watchCommand(root, {
@@ -139,6 +142,18 @@ async function main(): Promise<number> {
         allowConfigExec: flags["allow-config-exec"] === true,
         once: flags["once"] === true,
       });
+    case "library": {
+      const action = positionals[1];
+      if (action !== "sync" && action !== "status") {
+        console.error("Usage: murmr library <sync|status> [--update] [--force]");
+        return 1;
+      }
+      return libraryCommand(root, action, {
+        update: flags["update"] === true,
+        force: flags["force"] === true,
+        allowConfigExec: flags["allow-config-exec"] === true,
+      });
+    }
     case "hook": {
       const action = (positionals[1] as HookAction) || "install";
       return hookCommand(root, action);
