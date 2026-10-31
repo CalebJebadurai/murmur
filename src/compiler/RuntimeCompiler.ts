@@ -59,8 +59,20 @@ export function emitAll(
   for (const skill of ctx.ir.skills) files.push(...adapter.compileSkill(skill, ctx));
   for (const instr of ctx.ir.instructions)
     files.push(...adapter.compileInstruction(instr, ctx));
-  if (adapter.compilePipeline)
-    for (const p of ctx.ir.pipelines) files.push(...adapter.compilePipeline(p, ctx));
+  if (adapter.compilePipeline) {
+    // Several targets emit pipelines as agents. If one would take an agent's file,
+    // the agent keeps it and the pipeline moves.
+    const taken = new Set(files.map((f) => f.path));
+    for (const p of ctx.ir.pipelines) {
+      const emitted = adapter.compilePipeline(p, ctx);
+      const collides = emitted.some((f) => taken.has(f.path));
+      files.push(
+        ...(collides
+          ? adapter.compilePipeline({ ...p, name: `${p.name}-pipeline` }, ctx)
+          : emitted),
+      );
+    }
+  }
   if (adapter.finalize) files.push(...adapter.finalize(ctx));
   return files;
 }

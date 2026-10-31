@@ -23,7 +23,7 @@ describe("Copilot pipeline compilation", () => {
     const out = await freshOut();
     try {
       await compileTarget(getAdapter("copilot")!, ctx, out);
-      const md = await Bun.file(join(out, ".github/agents/architect.agent.md")).text();
+      const md = await Bun.file(join(out, ".github/agents/architect-pipeline.agent.md")).text();
       // union roster present in frontmatter
       expect(md).toContain("agents:");
       expect(md).toContain("planner");
@@ -50,8 +50,8 @@ describe("goose pipeline compilation", () => {
     const out = await freshOut();
     try {
       await compileTarget(getAdapter("goose")!, ctx, out);
-      const yaml = await Bun.file(join(out, "recipes/architect.yaml")).text();
-      expect(yaml).toContain("title: architect");
+      const yaml = await Bun.file(join(out, "recipes/architect-pipeline.yaml")).text();
+      expect(yaml).toContain("title: architect-pipeline");
       expect(yaml).toContain("sub_recipes:");
       expect(yaml).toContain("- name: planner");
       // declared degradation: advisory, not enforced

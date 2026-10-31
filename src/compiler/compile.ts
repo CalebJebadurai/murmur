@@ -34,7 +34,10 @@ export async function compileTarget(
   opts: CompileTargetOptions = {},
 ): Promise<CompileResult> {
   // Collect first — any adapter throw aborts before we touch the output tree.
-  const emitted: EmittedFile[] = emitAll(adapter, ctx);
+  // If two definitions share a path, the later one wins, once.
+  const emitted: EmittedFile[] = [
+    ...new Map(emitAll(adapter, ctx).map((file) => [file.path, file])).values(),
+  ];
   const manifest = await readManifest(outputRoot);
   const stamp = opts.stamp ?? backupStamp();
 
@@ -44,6 +47,10 @@ export async function compileTarget(
   const kept: string[] = [];
   for (const file of emitted) {
     const decision = await decideWrite(outputRoot, file.path, file.contents, manifest);
+    if (decision === "symlink") {
+      kept.push(file.path);
+      continue;
+    }
     if (decision === "yours" || decision === "edited") {
       if (!opts.replace) {
         kept.push(file.path);

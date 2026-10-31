@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
+import { crossesSymlink } from "../util/safePath.ts";
 
 const MANIFEST_PATH = join(".murmur", "manifest.json");
 
@@ -10,7 +11,7 @@ export type OwnershipManifest = {
   files: Record<string, string>;
 };
 
-export type WriteDecision = "write" | "unchanged" | "yours" | "edited";
+export type WriteDecision = "write" | "unchanged" | "yours" | "edited" | "symlink";
 
 export function hashContents(contents: string | Uint8Array): string {
   return new Bun.CryptoHasher("sha256").update(contents).digest("hex");
@@ -19,13 +20,22 @@ export function hashContents(contents: string | Uint8Array): string {
 export async function readManifest(root: string): Promise<OwnershipManifest> {
   const file = Bun.file(join(root, MANIFEST_PATH));
   if (!(await file.exists())) return { version: 1, files: {} };
-  return (await file.json()) as OwnershipManifest;
+  try {
+    return (await file.json()) as OwnershipManifest;
+  } catch {
+    // Without a readable record, every existing file is treated as the user's.
+    console.warn(`Could not read ${MANIFEST_PATH}. Existing files will be kept.`);
+    return { version: 1, files: {} };
+  }
 }
 
 export async function writeManifest(root: string, manifest: OwnershipManifest): Promise<void> {
   const files = Object.fromEntries(
     Object.entries(manifest.files).sort(([a], [b]) => a.localeCompare(b)),
   );
+  if (await crossesSymlink(root, MANIFEST_PATH)) {
+    throw new Error("Refusing to write through a symlink at .murmur/");
+  }
   await mkdir(join(root, ".murmur"), { recursive: true });
   await Bun.write(
     join(root, MANIFEST_PATH),
@@ -43,6 +53,8 @@ export async function decideWrite(
   contents: string,
   manifest: OwnershipManifest,
 ): Promise<WriteDecision> {
+  if (await crossesSymlink(root, relativePath)) return "symlink";
+
   const dest = join(root, relativePath);
   if (!existsSync(dest)) return "write";
 

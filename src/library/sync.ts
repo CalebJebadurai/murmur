@@ -7,6 +7,7 @@ import type { AgentDefinition, IRSet, SubagentDefinition } from "../schema/index
 import type { LibraryConfig, LibraryItem } from "../schema/config.ts";
 import { loadIR } from "../schema/load.ts";
 import { backupFile, backupStamp } from "../util/backup.ts";
+import { crossesSymlink } from "../util/safePath.ts";
 import { emitFrontmatterDoc, type YamlValue } from "../util/yaml.ts";
 
 export const LOCK_FILE = "murmur.lock.json";
@@ -235,6 +236,9 @@ export async function syncLibrary(
 ): Promise<SyncResult> {
   const lock = await readLock(root);
   const libraryRoot = join("murmur", ".library");
+  if (await crossesSymlink(root, libraryRoot)) {
+    throw new Error("Refusing to write through a symlink at murmur/.library/");
+  }
 
   const edited: string[] = [];
   for (const [path, hash] of Object.entries(lock?.files ?? {})) {

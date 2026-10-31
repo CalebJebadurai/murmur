@@ -13,7 +13,7 @@ Keep shared agents in one git repository, and let each project choose what it us
 | You run `murmr init` in a project with `murmur/` | Keeps your agents, skills and instructions |
 | You run `murmr library sync` | Writes only inside `murmur/.library/` |
 
-Murmur replaces an existing file only if you pass `--replace` or `--force`, or use `--mode overwrite`. It backs the file up to `.murmur/backups/` first. It never deletes generated files.
+Murmur replaces an existing file only if you pass `--replace` or `--force`, or use `--mode overwrite`. It backs the file up to `.murmur/backups/` first. It never deletes generated files. It also never writes through a symlink, even with `--replace`, and if a pipeline shares an agent's name, the pipeline is emitted as `<name>-pipeline`.
 
 If you already compiled with an older version, Murmur treats changed output as yours until you run `murmr compile --replace` once. After that, it knows which files it owns.
 
