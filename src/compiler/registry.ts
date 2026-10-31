@@ -6,6 +6,8 @@ import { AntigravityAdapter } from "./adapters/antigravity.ts";
 import { ClaudeAdapter } from "./adapters/claude.ts";
 import { CursorAdapter } from "./adapters/cursor.ts";
 import { AcpAdapter } from "./adapters/acp.ts";
+import { CodexAdapter } from "./adapters/codex.ts";
+import { OpenCodeAdapter } from "./adapters/opencode.ts";
 import { defineAdapter } from "./plugin.ts";
 import type { MurmurConfig } from "../schema/config.ts";
 
@@ -19,6 +21,8 @@ const adapters = new Map<string, () => RuntimeCompiler>([
   ["claude-code", () => new ClaudeAdapter()],
   ["cursor", () => new CursorAdapter()],
   ["acp", () => new AcpAdapter()],
+  ["codex", () => new CodexAdapter()],
+  ["opencode", () => new OpenCodeAdapter()],
 ]);
 
 export function registerAdapter(id: string, factory: () => RuntimeCompiler): void {

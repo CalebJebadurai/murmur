@@ -31,3 +31,10 @@ Every method receives a `CompileContext` = `{ config, ir }`, so an adapter can r
 - `GooseAdapter` (`adapters/goose.ts`) → `recipes/<name>.yaml`, root-level `skills/` and `hints/`, plus `AGENTS.md` / `CLAUDE.md` via `finalize`.
 
 All YAML frontmatter is emitted through `util/yaml.ts` (`emitFrontmatterDoc`).
+
+## Shared AGENTS.md
+
+`src/compiler/agentsMd.ts` renders the root `AGENTS.md`. Cursor, goose, Antigravity, Codex and OpenCode all
+emit it unchanged, so compile order cannot change the file. It carries instruction bodies because Codex and
+OpenCode have no scoped rule files in this output. Codex custom agents are `.codex/agents/*.toml`; read-only
+agents get a written restriction because custom agent files do not set the sandbox.

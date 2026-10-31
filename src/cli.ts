@@ -12,8 +12,11 @@ import { watchCommand } from "./commands/watch.ts";
 import { hookCommand, type HookAction } from "./commands/hook.ts";
 import { toolCommand } from "./commands/tool.ts";
 import { docsCommand } from "./commands/docs.ts";
+import { evolveCommand } from "./commands/evolve.ts";
+import type { HarnessTargetKind } from "./harness2/types.ts";
+import type { ProviderName } from "./providers/types.ts";
 
-const VERSION = "1.1.0";
+const VERSION = "1.1.0"; // x-release-please-version
 
 type Flags = { positionals: string[]; flags: Record<string, string | boolean> };
 
@@ -43,16 +46,17 @@ const USAGE = `murmr ${VERSION} — tool-agnostic multi-agent framework
 Usage: murmr <command> [options]        (alias: mrmr)
 
 Commands:
-  init                       Generate murmur/ from the codebase (structural pass)
+  init                       Generate murmur/ (structural or --semantic via model providers)
   add <kind> <name>          Scaffold an agent|subagent|skill|instruction|tool
-  compile [--target <id>]    Compile murmur/ to a runtime (copilot, goose, agy, claude, cursor)
+  compile [--target <id>]    Compile murmur/ to a runtime (copilot, goose, agy, claude, cursor, codex, opencode, acp)
   watch [--target <id>]      Watch murmur/ for changes and recompile automatically
   hook <install|uninstall|status> Manage Git pre-commit verification hook
   tool [discover|list]       Auto-discover codebase tools and generate tool skills
   docs [--out <dir>] [--serve] Compile a browsable HTML documentation portal
   run <pipeline> [--tier T]  Walk a pipeline (deterministic); emits a RUN-LOG
   score <doc> --rubric <r>   Score a document against a rubric (arithmetic only)
-  classify <task>            Classify a task and select an agent roster
+  classify <task>            Classify a task and select an agent roster (--engine jev|heuristic)
+  evolve <task> [--k <N>]    Experimental: add a template skill, instruction or subagent
   doctor [--fix]             Validate the murmur/ IR (auto-scaffold missing refs)
   list                       Inventory the murmur/ IR
   publish [--out <dir>]      Scrub codebase context into a shareable copy
@@ -63,6 +67,7 @@ Global options:
 
 Examples:
   murmr init --tools
+  murmr init --semantic --provider openrouter --model auto
   murmr compile --target agy
   murmr watch --target agy
   murmr hook install
@@ -71,6 +76,10 @@ Examples:
   murmr doctor --fix
   murmr publish --dry-run --strict
 `;
+
+function isProviderName(value: unknown): value is ProviderName {
+  return value === "openrouter" || value === "meshapi" || value === "custom";
+}
 
 async function main(): Promise<number> {
   const { positionals, flags } = parseArgs(Bun.argv.slice(2));
@@ -93,7 +102,20 @@ async function main(): Promise<number> {
   switch (cmd) {
     case "init": {
       const mode = (flags["mode"] as InitMode) ?? undefined;
-      return initCommand(root, { mode, tools: flags["tools"] === true });
+      const semantic = flags["semantic"] === true;
+      const provider = flags["provider"];
+      if (provider !== undefined && !isProviderName(provider)) {
+        console.error('Unknown --provider. Use "openrouter", "meshapi" or "custom".');
+        return 1;
+      }
+      const model = typeof flags["model"] === "string" ? flags["model"] : undefined;
+      return initCommand(root, {
+        mode,
+        tools: flags["tools"] === true,
+        semantic,
+        provider,
+        model,
+      });
     }
     case "add": {
       const kind = positionals[1] as AddKind | undefined;
@@ -181,10 +203,28 @@ async function main(): Promise<number> {
     case "classify": {
       const task = positionals.slice(1).join(" ");
       if (!task.trim()) {
-        console.error('Usage: murmr classify "<task description>"');
+        console.error('Usage: murmr classify "<task description>" [--engine jev|heuristic]');
         return 1;
       }
+      const engine = flags["jev"] || flags["engine"] === "jev" ? "jev" : "heuristic";
       return classifyCommand(root, task, {
+        json: flags["json"] === true,
+        engine,
+        forceMock: flags["mock"] === true,
+      });
+    }
+    case "evolve": {
+      const task = positionals.slice(1).join(" ");
+      if (!task.trim()) {
+        console.error('Usage: murmr evolve "<task description>" [--k <N>] [--kind skill|instruction|subagent] [--dry-run]');
+        return 1;
+      }
+      const kRaw = flags["k"];
+      const k = typeof kRaw === "string" ? parseInt(kRaw, 10) : typeof kRaw === "number" ? kRaw : 3;
+      return evolveCommand(root, task, {
+        k: Number.isFinite(k) ? k : 3,
+        targetKind: typeof flags["kind"] === "string" ? (flags["kind"] as HarnessTargetKind) : undefined,
+        dryRun: flags["dry-run"] === true,
         json: flags["json"] === true,
       });
     }

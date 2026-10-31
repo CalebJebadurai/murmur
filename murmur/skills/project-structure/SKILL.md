@@ -13,3 +13,10 @@ description: How this project's directories, modules, and entry points are organ
 - Describe the top-level layout (src, apps, packages, tests).
 - Map each major module to its responsibility.
 - Note entry points and where new code conventionally goes.
+
+## v2 modules
+
+- `src/providers/` — model provider client used by `murmr init --semantic`.
+- `src/jev/` — Jev System One client and routing for `murmr classify --engine jev`; requires a key, and only uses the mock client with `--mock`.
+- `src/harness2/` — experimental template generator and `EXPERIENCE.md` tiers behind `murmr evolve`. Probes check structure only and never run an agent.
+- `src/util/keychain.ts` — secret lookup from the environment, then macOS Keychain.
