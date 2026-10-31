@@ -1,6 +1,7 @@
 import { copyFile, mkdir, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { crossesSymlink } from "./safePath.ts";
 
 /** A filesystem-safe timestamp shared by every backup in one run. */
 export function backupStamp(): string {
@@ -13,6 +14,9 @@ export async function backupFile(
   relativePath: string,
   stamp: string,
 ): Promise<string> {
+  if (await crossesSymlink(root, ".murmur/backups")) {
+    throw new Error("Refusing to back up through a symlink at .murmur/");
+  }
   const murmurState = join(root, ".murmur");
   const ignore = join(murmurState, ".gitignore");
   await mkdir(murmurState, { recursive: true });

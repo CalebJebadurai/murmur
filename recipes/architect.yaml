@@ -1,75 +1,61 @@
-# murmur pipeline (advisory orchestration metadata)
 version: 1.0.0
 title: architect
-description: "Use when: planning, analyzing, or designing implementation strategies through a governed multi-phase pipeline with selective dispatch, scoring, and refinement loops."
-instructions: Orchestration pipeline. Routing at phase 0b.
+description: "Use when: a task needs strategic analysis and a phased, multi-section plan before implementation begins."
+instructions: |
+  # Architect — Strategic Planner
+
+  You produce prose-based planning documents and orchestrate a roster of specialists.
+  You hold no project facts of your own; all context comes from the skills and
+  instructions the agents you coordinate reference.
+
+  ## Core Mandate
+
+  - Classify the task, dispatch only the specialists it needs, and synthesize their output.
+  - Produce a structured, multi-section strategic document — never code.
+
+  ## Constraints
+
+  - Never embed project facts in your own body; delegate to skills and instructions.
+
+available_tools:
+  - read
+  - search
+  - edit
+  - new
 sub_recipes:
-  - name: analyst
-    path: recipes/analyst.yaml
-  - name: architect
-    path: recipes/architect.yaml
-  - name: business-critic
-    path: recipes/business-critic.yaml
-  - name: critic
-    path: recipes/critic.yaml
-  - name: fact-checker
-    path: recipes/fact-checker.yaml
-  - name: implementer
-    path: recipes/implementer.yaml
-  - name: planner
-    path: recipes/planner.yaml
   - name: prompt-engineer
     path: recipes/prompt-engineer.yaml
-  - name: research-critic
-    path: recipes/research-critic.yaml
+  - name: analyst
+    path: recipes/analyst.yaml
   - name: researcher
     path: recipes/researcher.yaml
+  - name: critic
+    path: recipes/critic.yaml
+  - name: business-critic
+    path: recipes/business-critic.yaml
+  - name: data-critic
+    path: recipes/data-critic.yaml
+  - name: social-critic
+    path: recipes/social-critic.yaml
+  - name: research-critic
+    path: recipes/research-critic.yaml
+  - name: fact-checker
+    path: recipes/fact-checker.yaml
+  - name: planner
+    path: recipes/planner.yaml
+  - name: implementer
+    path: recipes/implementer.yaml
   - name: verifier
     path: recipes/verifier.yaml
 annotations:
-  murmur_advisory: "loops and parallelism are advisory; only `murmr run` enforces them"
-  routing:
-    at: 0b
-    map:
-      CODING: coding
-      RESEARCH: research
-      HYBRID: coding
-  branches:
-    coding:
-      sequence:
-        - "0"
-        - 0b
-        - "1"
-        - "2"
-        - "3"
-        - "4"
-        - "5"
-        - 5b
-        - 5c
-      loops:
-        - name: critic-planner
-          from: "3"
-          to: "3"
-          min: 1
-          max: 3
-      max_concurrent: 3
-      never_parallel:
-        - critic + planner
-    research:
-      sequence:
-        - "0"
-        - R1
-        - R2
-        - R3
-        - R4
-        - R5
-        - R5b
-      loops:
-        - name: research-critic-planner
-          from: R3
-          to: R3
-          min: 1
-          max: 2
-      max_concurrent: 2
-      never_parallel:
-        - research-critic + planner
+  murmur_dispatch:
+    invoke_when:
+      - a task needs strategic analysis and a phased, multi-section plan before implementation
+      - orchestrating specialist agents across multi-phase workflows
+    skip_when:
+      - trivial single-file edits, quick questions, or minor typos
+    tasks:
+      - plan
+      - strategy
+      - architecture
+      - design

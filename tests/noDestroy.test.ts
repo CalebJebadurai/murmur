@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import { existsSync } from "node:fs";
-import { cp, mkdtemp, readFile, rm } from "node:fs/promises";
+import { cp, mkdir, mkdtemp, readFile, rm, symlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { compileCommand } from "../src/commands/compile.ts";
@@ -67,6 +67,39 @@ describe("Murmur never destroys existing files", () => {
     const backup = join(root, ".murmur/backups", stamp, ".claude/agents/architect.md");
     expect(await readFile(backup, "utf8")).toBe(MY_AGENT);
     expect(await readFile(join(root, ".murmur/.gitignore"), "utf8")).toContain("backups/");
+  });
+
+  test("an agent keeps its name when a pipeline shares it, on every compile", async () => {
+    const mine = "---\ndescription: Mine\n---\nMy architect.\n";
+    await Bun.write(join(root, "murmur/agents/architect.md"), mine);
+    for (let run = 0; run < 3; run++) {
+      await compileCommand(root, {});
+      expect(await readFile(join(root, ".claude/agents/architect.md"), "utf8")).toContain("My architect.");
+      expect(await readFile(join(root, ".codex/agents/architect.toml"), "utf8")).toContain("My architect.");
+    }
+    expect(existsSync(join(root, ".claude/agents/architect-pipeline.md"))).toBe(true);
+  });
+
+  test("never writes through a symlink, even with --replace", async () => {
+    const outside = await mkdtemp(join(tmpdir(), "murmr-outside-"));
+    await Bun.write(join(outside, "critic.md"), "VICTIM\n");
+    await symlink(outside, join(root, ".claude"));
+    await mkdir(join(outside, "agents"), { recursive: true });
+    await Bun.write(join(outside, "agents/critic.md"), "VICTIM\n");
+
+    await compileCommand(root, { replace: true });
+
+    expect(await readFile(join(outside, "agents/critic.md"), "utf8")).toBe("VICTIM\n");
+    expect(existsSync(join(outside, "agents/analyst.md"))).toBe(false);
+    await rm(outside, { recursive: true, force: true });
+  });
+
+  test("a corrupt manifest keeps files instead of failing or overwriting", async () => {
+    await compileCommand(root, {});
+    await Bun.write(join(root, ".murmur/manifest.json"), "{broken");
+    await Bun.write(join(root, ".claude/agents/critic.md"), "Mine\n");
+    expect(await compileCommand(root, {})).toBe(0);
+    expect(await readFile(join(root, ".claude/agents/critic.md"), "utf8")).toBe("Mine\n");
   });
 
   test("init keeps existing agents and skills in merge mode", async () => {
