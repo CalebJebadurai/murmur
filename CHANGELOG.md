@@ -4,6 +4,19 @@ All notable changes to Murmuration are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the project adheres to
 semantic versioning.
 
+## [1.3.0](https://github.com/CalebJebadurai/murmur/compare/murmr-v1.2.0...murmr-v1.3.0) (2026-10-31)
+
+
+### Features
+
+* add safe shared agent library with inheritance ([cab05c1](https://github.com/CalebJebadurai/murmur/commit/cab05c1211c3b8ff50a5236d0aae894be07011f8))
+* **library:** add safe shared agent library with inheritance ([63d76df](https://github.com/CalebJebadurai/murmur/commit/63d76dfca4d8191464e7f5a1acdb56382b574d5e))
+
+
+### Documentation
+
+* add library guide and regenerate target files ([a0643c1](https://github.com/CalebJebadurai/murmur/commit/a0643c1aaee7f40b3b9c5f583bc5f19f63b91d1b))
+
 ## [1.2.0](https://github.com/CalebJebadurai/murmur/compare/murmr-v1.1.0...murmr-v1.2.0) (2026-10-31)
 
 

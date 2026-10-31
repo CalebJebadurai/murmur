@@ -17,7 +17,7 @@ import { libraryCommand } from "./commands/library.ts";
 import type { HarnessTargetKind } from "./harness2/types.ts";
 import type { ProviderName } from "./providers/types.ts";
 
-const VERSION = "1.2.0"; // x-release-please-version
+const VERSION = "1.3.0"; // x-release-please-version
 
 type Flags = { positionals: string[]; flags: Record<string, string | boolean> };
 
