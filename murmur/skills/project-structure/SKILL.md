@@ -17,6 +17,6 @@ description: How this project's directories, modules, and entry points are organ
 ## v2 modules
 
 - `src/providers/` — model provider client used by `murmr init --semantic`.
-- `src/jev/` — Jev System One client and routing for `murmr classify --engine jev`; falls back to a mock client when no key is configured.
-- `src/harness2/` — evolution engine and the `EXPERIENCE.md` tiers behind `murmr evolve`.
+- `src/jev/` — Jev System One client and routing for `murmr classify --engine jev`; requires a key, and only uses the mock client with `--mock`.
+- `src/harness2/` — experimental template generator and `EXPERIENCE.md` tiers behind `murmr evolve`. Probes check structure only and never run an agent.
 - `src/util/keychain.ts` — secret lookup from the environment, then macOS Keychain.

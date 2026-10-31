@@ -5,7 +5,7 @@
 
 A *murmuration* is thousands of starlings moving as a single, coordinated intelligence — **no central controller, emergent behavior from simple shared rules.** That's the design philosophy: a small set of generic agents, a master agent that spawns specialized subagents on demand, and a shared substrate of skills/instructions that gives them context.
 
-> **Status:** ✅ v1.0 shipped (**The Full Union**). Defines and compiles agents/subagents/skills/instructions/tools/pipelines across 6 native runtimes (GitHub Copilot, goose, Google Antigravity, Claude Code, Cursor, ACP), with directory skill assets, npm plugin auto-discovery, selective dispatch tables, full domain-critic roster, worker pool concurrency, cloud sandbox dispatch, and end-to-end orchestration validation.
+> **Status:** ✅ v1.0 shipped (**The Full Union**). Defines and compiles agents/subagents/skills/instructions/tools/pipelines across 8 native targets (GitHub Copilot, goose, Google Antigravity, Claude Code, Cursor, Codex, OpenCode, ACP), with directory skill assets, npm plugin auto-discovery, selective dispatch tables, full domain-critic roster, worker pool concurrency, cloud sandbox dispatch, and end-to-end orchestration validation.
 
 ---
 
@@ -14,7 +14,7 @@ A *murmuration* is thousands of starlings moving as a single, coordinated intell
 A critical question in modern agentic AI is how developer workflows should be organized:
 
 - **Cloud VM Fleets (e.g. Macroscope Murmur, Devin, Factory):** Infrastructure-heavy hosted platforms that spin up remote VMs, duplicate repositories into cloud sandboxes, and run proprietary orchestrators. While useful for long-running headless cloud tasks, they introduce vendor lock-in, recurring infrastructure bills ($500+/mo), and closed proprietary formats.
-- **Murmuration (`murmr`):** An open-source, local-first **universal compiler and specification layer**. You author your multi-agent team, specialist subagents, skills, instructions, rubrics, and pipelines once in human-readable Markdown/YAML inside version control (`murmur/`). From there, `murmr` compiles native configurations into whatever tool your team actually uses — VS Code Copilot, Claude Code, Cursor, Goose, or Google Antigravity.
+- **Murmuration (`murmr`):** An open-source, local-first **universal compiler and specification layer**. You author your multi-agent team, specialist subagents, skills, instructions, rubrics, and pipelines once in human-readable Markdown/YAML inside version control (`murmur/`). From there, `murmr` compiles native configurations into whatever tool your team actually uses — VS Code Copilot, Claude Code, Codex, OpenCode, Cursor, Goose, or Google Antigravity.
 
 ```mermaid
 graph TD
@@ -89,9 +89,11 @@ Agents, skills, and instructions are authored once in an abstract format and **c
 | goose (AAIF) | `recipes/*.yaml`, root-level `skills/`, `.goosehints`, `AGENTS.md` |
 | Claude Code | `.claude/agents/*.md`, `CLAUDE.md`, `.claude/skills/`, `.claude/rules/` |
 | Cursor | `.cursor/rules/*.mdc`, `.cursor/agents/*.md`, `.cursor/skills/`, `AGENTS.md` |
+| Codex | `.codex/agents/*.toml`, `.agents/skills/`, `AGENTS.md` |
+| OpenCode | `.opencode/agents/*.md`, `.opencode/skills/`, `AGENTS.md` |
 | ACP (Agent Client Protocol) | `.acp/manifest.json`, `.acp/agents/*.json`, `.acp/server.ts` ([agentclientprotocol.com](https://agentclientprotocol.com/)) |
 
-`AGENTS.md` is treated as the universal lowest-common-denominator manifest.
+`AGENTS.md` is the universal lowest-common-denominator manifest. Every target that uses it emits identical contents, including instructions, so compile order does not matter.
 
 ---
 
@@ -100,7 +102,7 @@ Agents, skills, and instructions are authored once in an abstract format and **c
 | Capability | Single-Agent Extensions (Copilot) | Local Runtimes (Claude Code, Goose) | Cloud VM Fleets (Devin, Macroscope) | **Murmuration (`murmr`)** |
 |---|---|---|---|---|
 | **Architecture layer** | IDE extension | CLI process | Cloud infrastructure / VMs | **Universal Compiler & IR** |
-| **Multi-runtime portability** | ❌ (VS Code only) | ⚠️ (Single host) | ❌ (Proprietary cloud) | ✅ (Compiles to 6 runtimes: Copilot, Goose, Antigravity, Claude, Cursor, ACP) |
+| **Multi-runtime portability** | ❌ (VS Code only) | ⚠️ (Single host) | ❌ (Proprietary cloud) | ✅ (Compiles to 8 targets: Copilot, Goose, Antigravity, Claude, Cursor, Codex, OpenCode, ACP) |
 | **Subagents with isolated context** | ❌ | ⚠️ (Tool-limited) | ✅ (Per-VM) | ✅ (Native schema & compiler) |
 | **On-demand subagent spawning** | ❌ | ❌ | ❌ | ✅ (Master-agent spawn loop) |
 | **Enforced knowledge externalization** | ❌ | ⚠️ | ❌ | ✅ (Automated CI gate) |
@@ -157,8 +159,8 @@ murmr tool discover [--write]      # auto-discover package scripts/tools & gener
 murmr docs [--out <dir>] [--serve] # compile interactive HTML documentation portal with live preview
 murmr run <pipeline> [--tier T]    # walk a pipeline with interactive progress UI; emits RUN-LOG
 murmr score <doc> --rubric <name>  # score a document against quantitative rubrics
-murmr classify "<task>" [--engine jev] # sub-10ms routing via TypeSafe Jev System One
-murmr evolve "<task>" [--k N]       # recursive harness evolution via Google Harness²
+murmr classify "<task>" [--engine jev] # optional model routing via Typesafe AI Jev (needs an API key)
+murmr evolve "<task>" [--k N]       # experimental: add a template skill, instruction or subagent
 murmr doctor [--fix]               # validate & self-heal missing references
 murmr list                         # inventory the murmur/ IR
 murmr publish [--dry-run] [--strict] # strip codebase-specific context for sharing
@@ -186,7 +188,7 @@ Before this repo (or any derived agent pack) is published, **all codebase-specif
 - ✅ **v0.8** — Git pre-commit hooks + interactive documentation portal (`murmr docs`)
 - ✅ **v0.9** — ACP protocol portability + Cloud Sandbox dispatch (Docker & remote runners)
 - ✅ **v1.0** — **The Full Union**: npm plugin discovery, directory skill assets, and cross-runtime e2e probe
-- ✅ **v1.1** — **System 1 & System 2 Synthesis**: TypeSafe Jev System One Decisions (`Choice`/`Score`/`Noul`) for sub-10ms agent routing + Google Harness² recursive self-improvement engine (`murmr evolve`)
+- ✅ **v1.2** — Codex and OpenCode targets, provider-backed `init --semantic`, optional Jev routing, experimental `murmr evolve`
 
 Full detail in [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
