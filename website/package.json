@@ -1,0 +1,10 @@
+{
+  "name": "murmuration-website",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Murmuration Universal Multi-Agent Specification & Compiler Web Showcase",
+  "scripts": {
+    "dev": "bun --serve index.html",
+    "start": "bun --serve index.html"
+  }
+}
