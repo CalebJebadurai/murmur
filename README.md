@@ -95,6 +95,8 @@ Agents, skills, and instructions are authored once in an abstract format and **c
 
 `AGENTS.md` is the universal lowest-common-denominator manifest. Every target that uses it emits identical contents, including instructions, so compile order does not matter.
 
+Existing files are safe: `murmr compile` keeps any file it did not write, and any generated file you edited. See [docs/LIBRARY.md](docs/LIBRARY.md) to share agents across projects, with inheritance and traits.
+
 ---
 
 ## How it compares
@@ -162,6 +164,7 @@ murmr score <doc> --rubric <name>  # score a document against quantitative rubri
 murmr classify "<task>" [--engine jev] # optional model routing via Typesafe AI Jev (needs an API key)
 murmr evolve "<task>" [--k N]       # experimental: add a template skill, instruction or subagent
 murmr doctor [--fix]               # validate & self-heal missing references
+murmr library <sync|status>        # import shared agents; your own files are never replaced
 murmr list                         # inventory the murmur/ IR
 murmr publish [--dry-run] [--strict] # strip codebase-specific context for sharing
 ```

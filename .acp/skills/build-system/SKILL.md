@@ -12,3 +12,9 @@ description: How this project is built, tested, and run — package manager, scr
 - The canonical build, test, lint, and typecheck commands.
 - The bundler/output target and where artifacts land.
 
+## Website deployment
+
+`website/` is a static site served by Caddy (`website/Dockerfile`, `website/Caddyfile`) on
+the Railway project `murmuration-web`, service `web`. Deploys are manual and not tied to
+git; from the repo root run `railway up ./website --path-as-root --service web --ci`.
+
